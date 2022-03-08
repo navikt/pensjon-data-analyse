@@ -24,8 +24,8 @@ def plot_automatisering1(df, box_color=px.colors.qualitative.Pastel[0]):
     fig.add_trace(go.Scatter(x=df[_automatisk]["År-måned"], y=df[_automatisk]["Andel"], 
                              name="Automatisk", mode="lines+markers",
                              line={'dash': 'solid', 'color': 'black'}),
-                  
                   secondary_y=True)
+    
     fig.add_trace(go.Scatter(x=df[~_automatisk & ~_manuell]["År-måned"], y=df[~_automatisk & ~_manuell]["Andel"], 
                              name="Del-automatisk", mode="lines",
                              line={'dash': 'solid', 'color': 'grey'}), 
@@ -66,6 +66,11 @@ def plot_automatisering2(df):
     return fig
 
 
+def hide_secondary_axis(ax):
+    if ax.side=="right": 
+        ax.showgrid=False
+
+
 def plot_automatisering_subplots(df_list, titles, box_color=px.colors.qualitative.Pastel[0]):
     '''
     df: en verdi per måned og automatiseringsgrad
@@ -103,7 +108,10 @@ def plot_automatisering_subplots(df_list, titles, box_color=px.colors.qualitativ
             fig.update_yaxes(title_text="Andel automatisert", secondary_y=True, range=[0,1], tickformat='.0%', row=i+1, col=j+1)
             fig.update_yaxes(title_text="Antall saker", range=[0,max(df_tot["Antall innkomne saker"])*1.1], secondary_y=False, row=i+1, col=j+1)
     
-    fig.layout.yaxis2.showgrid = False
+    #fig.layout.yaxis2.showgrid = False
+    #fig.update_layout(yaxis2.showgrid = False)
+    #fig.for_each_yaxis(lambda x: x.update(showgrid=False))
+    fig.for_each_yaxis(lambda ax: hide_secondary_axis(ax))
     fig.update_layout(
         autosize=False,
         width=1300,
@@ -187,7 +195,8 @@ def plot_selvbetjening_subplots(df_list, titles, box_color=px.colors.qualitative
             fig.update_yaxes(title_text="Andel selvbetjening", secondary_y=True, range=[0,1], tickformat='.0%', row=i+1, col=j+1)
             fig.update_yaxes(title_text="Antall saker", range=[0,max(df_tot["Antall innkomne saker"])*1.1], secondary_y=False, row=i+1, col=j+1)
     
-    fig.layout.yaxis2.showgrid = False
+    #fig.layout.yaxis2.showgrid = False
+    fig.for_each_yaxis(lambda ax: hide_secondary_axis(ax))
     fig.update_layout(
         autosize=False,
         width=1300,

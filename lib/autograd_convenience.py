@@ -14,7 +14,7 @@ def filter_df(df: pd.DataFrame, col_name: str, relate, field: str):
 
 # Gjør klar grunnlags-dataframe
 def prepare_df(df: pd.DataFrame, ytelse):
-    print("Fjerner rader opprettet av batch, og beholder kun førstegangsbehandling innenfor {ytelse}. \n")
+    print(f"Fjerner rader opprettet av batch, og beholder kun førstegangsbehandling innenfor {ytelse}. \n")
     print(f"Antall rader totalt: {df.shape[0]}")
     # Fjern saker opprettet av batch
     df = filter_df(df, "Opprettet av", operator.ne, "Batch")

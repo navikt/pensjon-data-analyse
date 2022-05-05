@@ -18,12 +18,18 @@ categorical_colors = (
 
 def make_fig(col: pd.core.series.Series, n: int):
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=col.index[[3,4,6,8]], y=col[names].values, marker=dict(size=10, color=categorical_colors[n])))
+    fig.add_trace(go.Scatter(x=col.index[[3,4,6,8]],
+                             y=col[names].values,
+                             text=["", col['% endring mot NP'], col['% endring mot NP.1'], col['% endring mot NP.2']],
+                             mode='lines+markers+text',
+                             marker=dict(size=10, color=categorical_colors[n]),
+                             textposition = 'top left'
+                            ))
     fig.update_xaxes(title=None)
     if col.prosent_flagg:
         fig.update_yaxes(title=None, range=[0,1], tickformat='.0%')
     else:
-        fig.update_yaxes(title=None, rangemode='nonnegative')
+        fig.update_yaxes(title=None, range=[0,max(col[names].values)*1.2])
     return fig
 
 

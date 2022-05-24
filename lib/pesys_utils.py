@@ -15,3 +15,10 @@ stonads_mapper = {
 
 def map_stonad(kode):
     return stonads_mapper[kode]
+
+def fjern_sjeldne_stonader(row):
+    sjeldne_stonader = {"Krigspensjon", "Familiepleierytelse", "Gammel yrkesskade"}
+    if row["STØNADSOMRÅDE"] in sjeldne_stonader:
+        return 
+    else:
+        return row

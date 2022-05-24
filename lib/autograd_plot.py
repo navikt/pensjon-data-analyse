@@ -4,6 +4,16 @@ from plotly.subplots import make_subplots
 
 
 
+nav_colors = (
+    "#0067C5",
+    "#BA3A26",
+    "#06893A",
+    "#634689",
+    "#FF9100",
+    "#66CBEC",
+    "#F0C419",
+)
+
 def plot_automatisering1(df, box_color=px.colors.qualitative.Pastel[0]):
     '''
     df: en verdi per måned og automatiseringsgrad

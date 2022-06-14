@@ -26,6 +26,10 @@ def make_fig(col: pd.core.series.Series, n: int):
                              textposition = 'top left'
                             ))
     fig.update_xaxes(title=None)
+    fig.update_layout(
+        autosize=False,
+        width=1000,
+        height=400,)
     if col.prosent_flagg:
         fig.update_yaxes(title=None, range=[0,1], tickformat='.0%')
     else:

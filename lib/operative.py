@@ -67,8 +67,7 @@ class MP:
         
     def show_fig(self):
         print(self.name)
-        self.fig.show()
-        sub = make_subplots().add_trace(self.subplot).show()
+        self.subfig.show()
         
 
     @classmethod

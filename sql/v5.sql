@@ -23,7 +23,7 @@ CASE
     THEN 'opprettet av batch'
     ELSE 'ikke opprettet av batch'
 END BATCH_FLAGG,
-COUNT(1) ANTALL
+COALESCE(COUNT(1), 0) ANTALL
 
 FROM PEN.t_person p
 INNER JOIN PEN.t_sak s ON s.person_id = p.PERSON_ID

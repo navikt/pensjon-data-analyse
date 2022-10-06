@@ -1,6 +1,9 @@
 # Data files
 data/
 
+# Output from papermill:
+psak_nytt_design_output.ipynb
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

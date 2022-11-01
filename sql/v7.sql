@@ -19,9 +19,9 @@ CASE
         'Prosess'
     WHEN SUBSTR(v.ANSV_SAKSBH,1,4) like 'TPEN' THEN
         'Tjeneste'
-    WHEN v.ANSV_SAKSBH in ('KONV', 'srvWAS', 'srvtps', 'srvPersonkort', 'srvpinst', 'Temporary', 'UNKNOWN_USER') THEN
+    WHEN v.ANSV_SAKSBH in ('KONV', 'srvWAS', 'srvtps', 'srvPersonkort', 'srvpinst', 'srvpselv', 'Temporary', 'UNKNOWN_USER') THEN
         'Provider tjeneste'
-    ELSE v.ANSV_SAKSBH
+    ELSE 'Annet'
 END ANSV_SAKSBH,
 CASE 
     WHEN v.K_VEDTAK_T = 'REGULERING' THEN
@@ -68,9 +68,9 @@ CASE
         'Prosess'
     WHEN SUBSTR(v.ANSV_SAKSBH,1,4) like 'TPEN' THEN
         'Tjeneste'
-    WHEN v.ANSV_SAKSBH in ('KONV', 'srvWAS', 'srvtps', 'srvPersonkort', 'srvpinst', 'Temporary', 'UNKNOWN_USER') THEN
+    WHEN v.ANSV_SAKSBH in ('KONV', 'srvWAS', 'srvtps', 'srvPersonkort', 'srvpinst', 'srvpselv', 'Temporary', 'UNKNOWN_USER') THEN
         'Provider tjeneste'
-    ELSE v.ANSV_SAKSBH
+    ELSE 'Annet'
 END,
 CASE 
     WHEN v.K_VEDTAK_T = 'REGULERING' THEN

@@ -18,7 +18,7 @@ ON S.K_SAK_T                               = DS.K_SAK_T
 INNER JOIN PEN.T_K_KRAV_GJELDER DK
 ON K.K_KRAV_GJELDER                           = DK.K_KRAV_GJELDER
 WHERE EXTRACT(YEAR FROM K.DATO_MOTTATT_KRAV) >= 2021
-AND K.K_KRAV_GJELDER                         IN ('F_BH_BO_UTL', 'F_BH_KUN_UTL', 'F_BH_MED_UTL', 'FORSTEG_BH')
+-- AND K.K_KRAV_GJELDER                         IN ('F_BH_BO_UTL', 'F_BH_KUN_UTL', 'F_BH_MED_UTL', 'FORSTEG_BH')
 GROUP BY TO_CHAR(k.DATO_MOTTATT_KRAV, 'yyyy'),
   TO_CHAR(k.DATO_MOTTATT_KRAV, 'mm'),
   TO_CHAR(k.DATO_MOTTATT_KRAV, 'yyyy-mm'),

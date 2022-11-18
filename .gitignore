@@ -1,6 +1,8 @@
 # Data files
 data/
 *.csv
+*.html
+*_files/
 
 # Output from papermill:
 psak_nytt_design_output.ipynb

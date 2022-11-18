@@ -1,3 +1,7 @@
+import cx_Oracle
+import os
+
+
 stonads_mapper = {
     "AFP": "AFP",
     "AFP_PRIVAT": "AFP Privat",
@@ -13,6 +17,29 @@ stonads_mapper = {
     "UFOREP": "Uføretrygd"
 }
 
+forstegang = {"Førstegangsbehandling",
+             "Førstegangsbehandling Norge/utland", 
+             "Førstegangsbehandling bosatt utland",
+             "Førstegangsbehandling kun utland"}
+
+# Kravtyper hvor ledetid er interessant - kan være noen som mangler her
+fra_bruker = {"Førstegangsbehandling", # Ta bort aldersovergang?
+             "Førstegangsbehandling Norge/utland", 
+             "Førstegangsbehandling bosatt utland",
+             "Førstegangsbehandling kun utland",
+             "Endring uttaksgrad",
+             "Søknad om økning av uføregrad",
+             "Søknad om reduksjon av uføregrad",
+             "Klage",
+             "Søknad om yrkesskade",
+             "Søknad ung ufør"}
+
+def open_pen_connection():
+    ORACLE_HOST = '10.53.136.15'
+    ORACLE_PORT = '1521'
+    ORACLE_SERVICE = 'pen'
+    dsnStr = cx_Oracle.makedsn(ORACLE_HOST, ORACLE_PORT, service_name=ORACLE_SERVICE)
+    return cx_Oracle.connect(user=os.environ["PEN_USER"], password=os.environ["PEN_PASSWORD"], dsn=dsnStr)
 
 def map_stonad(kode):
     return stonads_mapper[kode]

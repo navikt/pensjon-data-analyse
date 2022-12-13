@@ -1,0 +1,3 @@
+*/5 * * * * /opt/conda/bin/python /home/jupyter/pensjon-data-analyse/scheduling/crontab/run_nb.py /home/jupyter/pensjon-data-analyse/notebooks/psak_nytt_design.ipynb > /home/jupyter/pensjon-data-analyse/crontab_log.log 2>&1
+
+05 03 * * * /opt/conda/bin/python /home/jupyter/pensjon-data-analyse/scheduling/crontab/run_nb.py /home/jupyter/pensjon-data-analyse/notebooks/kravstatus.ipynb > /home/jupyter/pensjon-data-analyse/crontab_log.log 2>&1

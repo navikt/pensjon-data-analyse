@@ -1,3 +1,6 @@
+# Misc
+kladdeområde.ipynb
+
 # Data files
 data/
 *.csv
@@ -5,7 +8,8 @@ data/
 *_files/
 
 # Output from papermill:
-psak_nytt_design_output.ipynb
+outputs/
+*_output.ipynb
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -4,7 +4,8 @@ case
     else dim_krav_gjelder.dekode
 end kravtype, 
 dim_krav_s.dekode kravstatus, 
-kh.dato_opprettet
+kh.dato_opprettet,
+kh.dato_endret
 from pen.t_kravhode kh
 inner join pen.t_k_krav_s dim_krav_s on dim_krav_s.k_krav_s = kh.k_krav_s
 inner join pen.t_k_krav_gjelder dim_krav_gjelder on dim_krav_gjelder.k_krav_gjelder = kh.k_krav_gjelder

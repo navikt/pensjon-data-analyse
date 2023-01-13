@@ -1,9 +1,9 @@
 SELECT
-EXTRACT(YEAR FROM k.DATO_OPPRETTET) ÅR, 
-TRUNC((EXTRACT(MONTH FROM k.DATO_OPPRETTET) - 1) / 4) + 1 TERTIAL,
-EXTRACT(MONTH FROM k.DATO_OPPRETTET) MÅNED,
-TO_CHAR(k.DATO_OPPRETTET, 'yyyy-mm') "ÅR-MÅNED",
-CONCAT(EXTRACT(YEAR FROM k.DATO_OPPRETTET), TRUNC((EXTRACT(MONTH FROM k.DATO_OPPRETTET) - 1) / 4) + 1) "ÅR-TERTIAL",
+EXTRACT(YEAR FROM k.dato_onsket_virk) ÅR, 
+TRUNC((EXTRACT(MONTH FROM k.dato_onsket_virk) - 1) / 4) + 1 TERTIAL,
+EXTRACT(MONTH FROM k.dato_onsket_virk) MÅNED,
+TO_CHAR(k.dato_onsket_virk, 'yyyy-mm') "ÅR-MÅNED",
+CONCAT(EXTRACT(YEAR FROM k.dato_onsket_virk), TRUNC((EXTRACT(MONTH FROM k.dato_onsket_virk) - 1) / 4) + 1) "ÅR-TERTIAL",
 CASE
     WHEN sk.opprettet_av is not null OR k.kravkilde is not null THEN 
       'PSELV'
@@ -27,9 +27,10 @@ CASE
         'Prosess'
     WHEN SUBSTR(k.OPPRETTET_AV,1,4) like 'TPEN' THEN
         'Tjeneste'
-    ELSE 'ANNET'
+    ELSE k.OPPRETTET_AV
 END OPPRETTET_AV,
-k.SOKT_AFP_PRIVAT
+k.SOKT_AFP_PRIVAT,
+k.BODD_ARB_UTL
 
 FROM PEN.t_person p
 INNER JOIN PEN.t_sak s ON s.person_id = p.PERSON_ID
@@ -39,7 +40,8 @@ LEFT JOIN PEN.T_SKJEMA sk on sk.kravhode_id=k.kravhode_id
 
 WHERE s.K_SAK_T = 'ALDER'
 AND k.K_KRAV_GJELDER IN ('F_BH_BO_UTL','F_BH_MED_UTL','FORSTEG_BH','F_BH_KUN_UTL')
-and EXTRACT (year from k.DATO_OPPRETTET) >= 2021
+and EXTRACT(year from k.dato_onsket_virk) >= 2021 
+and EXTRACT(year from k.dato_onsket_virk) <= 2023 
 -- and k.kravkilde IS NOT NULL
 --and k.K_KRAV_S not like 'AVBRUTT'
 ----- BPEN006 eneste batch siden 2012. For å se på eldre må vi fjerne andre batcher og konvertering i tillegg: -----

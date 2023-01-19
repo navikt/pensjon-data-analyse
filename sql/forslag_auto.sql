@@ -1,4 +1,4 @@
-select sakstype, behandler, k_behandling_t as automatisering, kravtype, dato_virk_fom, batch
+select sakstype, behandler, k_behandling_t as automatisering, kravtype, dato_virk_fom, dato_opprettet, batch
 --, bodd_Arb_utl
 --, count(1) antall
 from (
@@ -13,6 +13,7 @@ d_s.dekode sakstype
 , kh.k_behandling_t
 , d_k.dekode kravtype  
 , v.dato_virk_fom
+, kh.dato_opprettet
 , case when substr(kh.opprettet_av,1,4) = 'BPEN' then 'Batch' else 'Ikke batch' end as batch
 --, kh.bodd_arb_utl
 from pen.t_vedtak v
@@ -35,6 +36,7 @@ d_s.dekode sakstype
 , v.k_behandling_t  
 , 'Regulering' as kravtype  
 , v.dato_virk_fom
+, v.dato_opprettet
 , case when substr(v.opprettet_av,1,4) = 'BPEN' then 'Batch' else 'Ikke batch' end as batch
 --, kh.bodd_arb_utl
 from pen.t_vedtak v

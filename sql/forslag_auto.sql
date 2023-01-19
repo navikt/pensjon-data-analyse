@@ -20,9 +20,9 @@ inner join pen.t_kravhode kh on kh.kravhode_id = v.kravhode_id
 inner join pen.t_k_krav_gjelder d_k on d_k.k_krav_gjelder = kh.k_krav_gjelder
 inner join pen.t_k_sak_t d_s on d_s.k_sak_t = v.k_sak_t
 where v.k_vedtak_s = 'IVERKS'
-  and v.dato_virk_fom >= to_Date('01.01.2022','DD.MM.YYYY')
+  and v.dato_virk_fom >= to_Date('01.01.2020','DD.MM.YYYY')
   and v.k_vedtak_t != 'REGULERING'
-  and kh.k_krav_gjelder in ('REGULERING','TILBAKEKR','OVERF_OMSGSP','ENDR_UTTAKSGRAD','INNT_E','FORSTEG_BH','REVURD', 'UT_EO')
+  --and kh.k_krav_gjelder in ('REGULERING','TILBAKEKR','OVERF_OMSGSP','ENDR_UTTAKSGRAD','INNT_E','FORSTEG_BH','REVURD', 'UT_EO')
 
 union all 
 

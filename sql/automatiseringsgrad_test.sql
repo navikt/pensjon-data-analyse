@@ -40,9 +40,9 @@ LEFT JOIN PEN.T_SKJEMA sk on sk.kravhode_id=k.kravhode_id
 
 WHERE s.K_SAK_T = 'ALDER'
 AND k.K_KRAV_GJELDER IN ('F_BH_BO_UTL','F_BH_MED_UTL','FORSTEG_BH','F_BH_KUN_UTL')
-and EXTRACT (year from k.dato_opprettet) >= 2021
+v
 -- and k.kravkilde IS NOT NULL
---and k.K_KRAV_S not like 'AVBRUTT'
+and k.K_KRAV_S not like 'AVBRUTT'
 ----- BPEN006 eneste batch siden 2012. For å se på eldre må vi fjerne andre batcher og konvertering i tillegg: -----
 --AND SUBSTR(k.OPPRETTET_AV,2,3) not like 'PEN'
 --AND k.OPPRETTET_AV not like 'KONVERTERING'

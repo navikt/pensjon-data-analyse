@@ -39,7 +39,13 @@ def open_pen_connection():
     ORACLE_PORT = '1521'
     ORACLE_SERVICE = 'pen'
     dsnStr = cx_Oracle.makedsn(ORACLE_HOST, ORACLE_PORT, service_name=ORACLE_SERVICE)
-    return cx_Oracle.connect(user=os.environ["PEN_USER"], password=os.environ["PEN_PASSWORD"], dsn=dsnStr)
+    try:
+        con = cx_Oracle.connect(user=os.environ["PEN_USER"], password=os.environ["PEN_PASSWORD"], dsn=dsnStr)
+    except cx_Oracle.DatabaseError:
+        con.close()
+        con = cx_Oracle.connect(user=os.environ["PEN_USER"], password=os.environ["PEN_PASSWORD"], dsn=dsnStr)
+    return con
+
 
 def map_stonad(kode):
     return stonads_mapper[kode]

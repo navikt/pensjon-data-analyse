@@ -2,13 +2,7 @@ import pandas as pd
 from time import time
 
 
-# def pandas_from_sql(filename: str, con):
-#     with open(filename, 'r') as file:
-#         query = file.read()
-#     return pd.read_sql(query, con=con)
-
-
-def pandas_from_sql(sqlfile, con, tuning=None):
+def pandas_from_sql(sqlfile, con, tuning=None, lowercase=False):
     with con.cursor() as cursor:
         start = time()
         
@@ -26,10 +20,12 @@ def pandas_from_sql(sqlfile, con, tuning=None):
         print(f'{len(df)} rad(er) ble returnert etter {end-start} sekunder.')
         
         if len(df) > 0:
-            df.columns = [x[0] for x in cursor.description]
+            if lowercase:
+                df.columns = [x[0].lower() for x in cursor.description]
+            else:    
+                df.columns = [x[0] for x in cursor.description]
         
         return df
-
 
 
 def add_zero_to_mnd(x: str):

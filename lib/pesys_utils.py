@@ -34,16 +34,22 @@ fra_bruker = {"Førstegangsbehandling", # Ta bort aldersovergang?
              "Søknad om yrkesskade",
              "Søknad ung ufør"}
 
+
 def open_pen_connection():
     ORACLE_HOST = '10.53.136.15'
     ORACLE_PORT = '1521'
     ORACLE_SERVICE = 'pen'
     dsnStr = cx_Oracle.makedsn(ORACLE_HOST, ORACLE_PORT, service_name=ORACLE_SERVICE)
-    try:
-        con = cx_Oracle.connect(user=os.environ["PEN_USER"], password=os.environ["PEN_PASSWORD"], dsn=dsnStr)
-    except cx_Oracle.DatabaseError:
-        con.close()
-        con = cx_Oracle.connect(user=os.environ["PEN_USER"], password=os.environ["PEN_PASSWORD"], dsn=dsnStr)
+    con = cx_Oracle.connect(user=os.environ["PEN_USER"], password=os.environ["PEN_PASSWORD"], dsn=dsnStr)
+    return con
+
+
+def open_popp_connection():
+    ORACLE_HOST = 'dm09-scan.adeo.no'
+    ORACLE_PORT = '1521'
+    ORACLE_SERVICE = 'popp'
+    dsnStr = cx_Oracle.makedsn(ORACLE_HOST, ORACLE_PORT, service_name=ORACLE_SERVICE)
+    con = cx_Oracle.connect(user=os.environ["POPP_USER"], password=os.environ["POPP_PASSWORD"], dsn=dsnStr)
     return con
 
 

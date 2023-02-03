@@ -24,4 +24,4 @@ and kh.dato_opprettet >= to_Date('01.01.2022','DD.MM.YYYY')
 --and kh.k_krav_gjelder in ('REGULERING','TILBAKEKR','OVERF_OMSGSP','ENDR_UTTAKSGRAD','INNT_E','FORSTEG_BH','REVURD', 'UT_EO')
 ) A
 
-order by sakstype, kravtype, dato_opprettet, automatisering, behandler
+--order by sakstype, kravtype, dato_opprettet, automatisering, behandler

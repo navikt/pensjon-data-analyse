@@ -20,7 +20,8 @@ inner join pen.t_sak s on kh.sak_id = s.sak_id
 inner join pen.t_k_sak_t d_s on d_s.k_sak_t = s.k_sak_t
 
 where kh.k_krav_s != 'AVBRUTT'
-and kh.dato_opprettet >= to_Date('01.01.2022','DD.MM.YYYY')
+and kh.dato_opprettet >= to_Date('01.01.x_year','DD.MM.YYYY')
+and kh.dato_opprettet < to_Date('01.01.y_year','DD.MM.YYYY')
 --and kh.k_krav_gjelder in ('REGULERING','TILBAKEKR','OVERF_OMSGSP','ENDR_UTTAKSGRAD','INNT_E','FORSTEG_BH','REVURD', 'UT_EO')
 ) A
 

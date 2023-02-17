@@ -1,4 +1,4 @@
-select sakstype, behandler, k_behandling_t as automatisering, kravtype, dato_virk_fom, dato_opprettet, dato_vedtak, dato_iverksatt, batch
+select sakstype, behandler, k_behandling_t as automatisering, kravtype, dato_virk_fom, batch
 --, bodd_Arb_utl
 --, count(1) antall
 from (
@@ -13,9 +13,6 @@ d_s.dekode sakstype
 , kh.k_behandling_t
 , d_k.dekode kravtype  
 , v.dato_virk_fom
-, kh.dato_opprettet
-, v.dato_vedtak
-, v.dato_iverksatt
 , case when substr(kh.opprettet_av,1,4) = 'BPEN' then 'Batch' else 'Ikke batch' end as batch
 --, kh.bodd_arb_utl
 from pen.t_vedtak v
@@ -23,7 +20,8 @@ inner join pen.t_kravhode kh on kh.kravhode_id = v.kravhode_id
 inner join pen.t_k_krav_gjelder d_k on d_k.k_krav_gjelder = kh.k_krav_gjelder
 inner join pen.t_k_sak_t d_s on d_s.k_sak_t = v.k_sak_t
 where v.k_vedtak_s = 'IVERKS'
-  and v.dato_virk_fom >= to_Date('01.01.2020','DD.MM.YYYY')
+  and v.dato_virk_fom >= to_Date('01.01.x_year','DD.MM.YYYY')
+  and v.dato_virk_fom < to_Date('01.01.y_year','DD.MM.YYYY')
   and v.k_vedtak_t != 'REGULERING'
   --and kh.k_krav_gjelder in ('REGULERING','TILBAKEKR','OVERF_OMSGSP','ENDR_UTTAKSGRAD','INNT_E','FORSTEG_BH','REVURD', 'UT_EO')
 
@@ -38,9 +36,6 @@ d_s.dekode sakstype
 , v.k_behandling_t  
 , 'Regulering' as kravtype  
 , v.dato_virk_fom
-, v.dato_opprettet
-, v.dato_vedtak
-, v.dato_iverksatt
 , case when substr(v.opprettet_av,1,4) = 'BPEN' then 'Batch' else 'Ikke batch' end as batch
 --, kh.bodd_arb_utl
 from pen.t_vedtak v
@@ -48,7 +43,8 @@ inner join pen.t_kravhode kh on kh.kravhode_id = v.kravhode_id
 inner join pen.t_k_krav_gjelder d_k on d_k.k_krav_gjelder = kh.k_krav_gjelder
 inner join pen.t_k_sak_t d_s on d_s.k_sak_t = v.k_sak_t
 where v.k_vedtak_s = 'IVERKS'
-  and v.dato_virk_fom >= to_Date('01.01.2020','DD.MM.YYYY')
+  and v.dato_virk_fom >= to_Date('01.01.x_year','DD.MM.YYYY')
+  and v.dato_virk_fom < to_Date('01.01.y_year','DD.MM.YYYY')
   and v.k_vedtak_t = 'REGULERING'
 ) A
 --group by k_sak_t, Behandler, k_behandling_t , k_krav_gjelder, dato_virk_fom  --, bodd_Arb_utl

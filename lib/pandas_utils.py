@@ -17,7 +17,7 @@ def pandas_from_sql(sqlfile, con, tuning=None, lowercase=False):
         
         end = time()
         
-        print(f'{len(df)} rad(er) ble returnert etter {end-start} sekunder.')
+        print(f'{len(df)} rader ble returnert etter {end-start} sekunder.')
         
         if len(df) > 0:
             if lowercase:

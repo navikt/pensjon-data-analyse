@@ -16,6 +16,7 @@ WITH personer as(
     WHERE kh.k_krav_gjelder in ('F_BH_BO_UTL','F_BH_KUN_UTL','F_BH_MED_UTL','FORSTEG_BH')
     AND (t.DATO_TOM <= v.dato_vedtak or t.DATO_TOM is null)
     and v.K_SAK_T = 'ALDER'
+    and v.k_vedtak_s = 'IVERKS'
     GROUP BY
         p.fnr_fk,
         EXTRACT(YEAR FROM v.dato_vedtak),

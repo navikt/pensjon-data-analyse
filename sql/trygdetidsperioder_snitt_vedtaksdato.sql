@@ -28,7 +28,7 @@ WITH personer as(
         'Utland'
         END
 )
-SELECT ar, land, ROUND(AVG(antall), 1) snitt
+SELECT ar, land, ROUND(AVG(antall), 1) snitt, MEDIAN(antall) median
 FROM personer
 GROUP BY ar, land
 order by ar desc, land

@@ -11,5 +11,6 @@ AND t.DATO_TOM <= v.dato_vedtak
 and v.K_SAK_T = 'ALDER'
 and v.k_vedtak_s = 'IVERKS'
 and extract( year from v.dato_vedtak) = 2022
+--and substr(t.opprettet_av,1,1) not in ('0','1','2','3','4','5','6','7','8','9') and substr(t.opprettet_av,2,1) in ('0','1','2','3','4','5','6','7','8','9') --Bare innslag saksbehandler fører inn?
 
-order by p.person_id
+order by p.person_id, t.dato_fom, t.dato_tom

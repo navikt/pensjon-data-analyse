@@ -12,6 +12,8 @@ with a as (
         inner join pen.t_trygdetid_grnl t ON t.person_grunnlag_id = p.person_grunnlag_id
     WHERE
         --Bare innslag saksbehandler fører inn?
+        t.k_grunnlag_kilde = 'SAKSB'
+        AND 
         substr(t.opprettet_av,1,1) not in ('0','1','2','3','4','5','6','7','8','9') and substr(t.opprettet_av,2,1) in ('0','1','2','3','4','5','6','7','8','9') 
     GROUP BY
         extract(year from t.dato_opprettet),

@@ -1,2 +1,2 @@
 # pensjon-data-analyse
-Analyse i PO Pensjon
+Dette repoet brukes til versjonskontroll av en stor mengde ad-hoc innsiktsarbeid i PO Pensjon. Dette består hovedsakelig av jupyter notebooks og sql-spørringer mot PEN-databasen. 

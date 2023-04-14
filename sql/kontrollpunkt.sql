@@ -1,5 +1,5 @@
 with staging as (select
-    trunc(kh.dato_opprettet) as dato,
+    trunc(kp.dato_opprettet) as dato,
     dkh.dekode as kravtype,
     (case when substr(kh.opprettet_av,1,1) in ('0','1','2','3','4','5','6','7','8','9') then 'Bruker' else
     case when substr(kh.opprettet_av,1,1) not in ('0','1','2','3','4','5','6','7','8','9') and substr(kh.opprettet_av,2,1) in ('0','1','2','3','4','5','6','7','8','9') then 'Saksbehandler' else
@@ -23,7 +23,7 @@ inner join pen.t_k_behandling_t dkb on dkb.k_behandling_t = kh.k_behandling_t
 where trunc(kp.dato_opprettet) < trunc(current_date)
 
 group by
-    trunc(kh.dato_opprettet),
+    trunc(kp.dato_opprettet),
     dkh.dekode,
     (case when substr(kh.opprettet_av,1,1) in ('0','1','2','3','4','5','6','7','8','9') then 'Bruker' else
     case when substr(kh.opprettet_av,1,1) not in ('0','1','2','3','4','5','6','7','8','9') and substr(kh.opprettet_av,2,1) in ('0','1','2','3','4','5','6','7','8','9') then 'Saksbehandler' else

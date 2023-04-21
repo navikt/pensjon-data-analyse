@@ -6,3 +6,6 @@ inner join pen.t_kravhode kh on kh.kravhode_id = l.krav_id
 inner join pen.t_k_krav_gjelder d_k on d_k.k_krav_gjelder = kh.k_krav_gjelder
 inner join pen.t_sak s on s.sak_id = l.sak_id
 inner join pen.t_k_sak_t d_s on d_s.k_sak_t = s.k_sak_t
+
+where le.elementtype != 'KRAVLINJE'
+and not (le.elementtype = 'KRAVHODE' and l.k_laast_data_handling = 'ENDR_STATUS_TYPE')

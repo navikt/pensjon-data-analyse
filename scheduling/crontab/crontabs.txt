@@ -1,3 +1,7 @@
 15 */1 * * * /opt/conda/bin/python /home/jupyter/pensjon-data-analyse/scheduling/crontab/run_nb.py /home/jupyter/pensjon-data-analyse/notebooks/psak_nytt_design.ipynb > /home/jupyter/pensjon-data-analyse/crontab_log.log 2>&1
 
 05 06 * * * /opt/conda/bin/python /home/jupyter/pensjon-data-analyse/scheduling/crontab/run_nb.py /home/jupyter/pensjon-data-analyse/notebooks/kravstatus.ipynb > /home/jupyter/pensjon-data-analyse/crontab_kravstatus_log.log 2>&1
+
+10 06 * * * /opt/conda/bin/python /home/jupyter/pensjon-data-analyse/scheduling/crontab/run_nb.py /home/jupyter/pensjon-data-analyse/notebooks/dataproduct_kontrollpunkt.ipynb > /home/jupyter/pensjon-data-analyse/crontab_kontrollpunkt_log.log 2>&1
+
+15 06 * * * /opt/conda/bin/python /home/jupyter/pensjon-data-analyse/scheduling/crontab/run_nb.py /home/jupyter/pensjon-data-analyse/notebooks/dataproduct_laaste_vedtak.ipynb > /home/jupyter/pensjon-data-analyse/crontab_laaste_vedtak_log.log 2>&1

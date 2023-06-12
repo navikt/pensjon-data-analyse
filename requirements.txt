@@ -1,0 +1,5 @@
+google-cloud-bigquery>=3.11.0
+google-cloud-secret-manager>=2.16.1
+pandas>=2.0.2
+plotly>=5.15.0
+cx-Oracle>=8.3.0

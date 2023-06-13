@@ -1,6 +1,5 @@
 import cx_Oracle
 import pandas as pd
-import plotly
 import plotly.express as px
 from datastory import DataStory
 from plotly.subplots import make_subplots

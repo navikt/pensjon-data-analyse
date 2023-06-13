@@ -1,16 +1,11 @@
-#from airflow import DAG
+from airflow import DAG
 
-#from airflow.utils.dates import days_ago
-#from airflow.operators.python_operator import PythonOperator
-#from kubernetes import client as k8s
-#from datetime import datetime
-#import os
-import sys
-sys.path.append('../../../scripts')
-sys.path.append('../../../lib')
+from airflow.utils.dates import days_ago
+from airflow.operators.python_operator import PythonOperator
+from kubernetes import client as k8s
+from datetime import datetime
 
-
-from datastory_automatisering import update_datastory
+from scripts.datastory_automatisering import update_datastory
 
 def run_update_datastory():
     update_datastory()

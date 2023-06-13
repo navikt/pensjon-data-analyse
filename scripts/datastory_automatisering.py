@@ -35,8 +35,7 @@ def update_datastory():
     figs["selvbetjening"] = make_fig_selvbetjening(df_selv)
 
     story = make_datastory(title="Automatiserings- og selvbetjeningsgrad for alderspensjon")
-    print("Skriptet funka :D")
-    # story.update(token=os.environ["AUTOMATISERING_STORY_TOKEN"], url="https://nada.intern.nav.no/api", )
+    story.update(token=os.environ["AUTOMATISERING_STORY_TOKEN"], url="https://nada.intern.nav.no/api", )
 
 
 

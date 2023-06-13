@@ -11,7 +11,7 @@ import utils
 
 
 def update_datastory():
-    utils.set_secrets_as_env()
+    utils.set_secrets_as_env(secret_name="projects/193123067890/secrets/pensjon-saksbehandling-nh4b")
     df = df_from_pen()
     df = add_aar_maaned(df)
     df["STØNADSOMRÅDE"] = df.STØNADSOMRÅDE.apply(pesys_utils.map_stonad)
@@ -35,8 +35,7 @@ def update_datastory():
     figs["selvbetjening"] = make_fig_selvbetjening(df_selv)
 
     story = make_datastory(title="Automatiserings- og selvbetjeningsgrad for alderspensjon")
-    print("Skriptet funka :D")
-    # story.update(token=os.environ["AUTOMATISERING_STORY_TOKEN"], url="https://nada.intern.nav.no/api", )
+    story.update(token=os.environ["AUTOMATISERING_STORY_TOKEN"], url="https://nada.intern.nav.no/api", )
 
 
 

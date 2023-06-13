@@ -14,10 +14,9 @@ nav_colors = (
 )
 
 
-def set_secrets_as_env(split_on=':'):
+def set_secrets_as_env(split_on=':', secret_name="projects/knada-gcp/secrets/vebjorn-rekkebo-bac1/versions/latest"):
     secrets = secretmanager.SecretManagerServiceClient()
-    resource_name = f"projects/knada-gcp/secrets/vebjorn-rekkebo-bac1/versions/latest"
-    secret = secrets.access_secret_version(name=resource_name)
+    secret = secrets.access_secret_version(name=secret_name)
     secrets = secret.payload.data.decode('UTF-8')
     for secret in secrets.splitlines():
         key, value = secret.split(split_on)

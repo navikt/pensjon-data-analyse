@@ -26,7 +26,7 @@ with DAG('datastory-automatisering-v0', start_date=datetime(2023, 6, 1), schedul
                 containers=[
                 k8s.V1Container(
                     name="base",
-                    image="europe-west1-docker.pkg.dev/knada-gcp/knada/airflow-papermill:2023-03-22-fb1c4a4"
+                    image="ghcr.io/navikt/airflow-pensjon-sb:v0"
                 )
                 ]
             )

@@ -1,9 +1,12 @@
+import sys
 import cx_Oracle
 import pandas as pd
 import plotly.express as px
 from datastory import DataStory
 from plotly.subplots import make_subplots
 from google.cloud import secretmanager
+
+sys.path.append('../lib')
 
 import pandas_utils
 import pesys_utils

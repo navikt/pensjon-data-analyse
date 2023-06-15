@@ -7,9 +7,7 @@ from datastory import DataStory
 from plotly.subplots import make_subplots
 from google.cloud import secretmanager
 
-import lib.pandas_utils
-import lib.pesys_utils
-import lib.utils
+from lib import pandas_utils, pesys_utils, utils
 
 
 def update_datastory():

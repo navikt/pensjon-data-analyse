@@ -5,9 +5,10 @@ from airflow.operators.python_operator import PythonOperator
 from kubernetes import client as k8s
 from datetime import datetime
 
-from scripts.datastory_automatisering import update_datastory
 
 def run_update_datastory():
+    from scripts.datastory_automatisering import update_datastory
+    
     update_datastory()
     
 

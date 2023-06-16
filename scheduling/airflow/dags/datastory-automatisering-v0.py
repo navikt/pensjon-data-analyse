@@ -22,7 +22,8 @@ with DAG('datastory-automatisering-v0', start_date=datetime(2023, 6, 1), schedul
                     containers=[
                     k8s.V1Container(
                         name="base",
-                        image="ghcr.io/navikt/airflow-pensjon-sb:v0"
+                        image="ghcr.io/navikt/airflow-pensjon-sb:v0",
+                        working_dir="/dags/scripts",
                     )
                     ]
                 ),

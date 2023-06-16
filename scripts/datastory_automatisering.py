@@ -41,8 +41,7 @@ def update_datastory():
 
 def df_from_pen():
     con = pesys_utils.open_pen_connection()
-    print(os.getcwd())
-    df_v3 = pandas_utils.pandas_from_sql('../sql/v3.sql', con)
+    df_v3 = pandas_utils.pandas_from_sql('/dags/pensjon-data-analyse/sql/v3.sql', con)
     con.close()
     return df_v3
 

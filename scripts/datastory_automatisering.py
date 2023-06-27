@@ -84,14 +84,14 @@ def make_fig_autograd(df_in, barcolor):
 
 
 def make_df_selv(df_in):
-    df_selv = df_ap.groupby(["ÅR", "MÅNED", "ÅR-MÅNED", "OPPRETTET_AV", "ANTALL TOTALT"], as_index=False)[["ANTALL", "ANDEL"]].sum()
+    df_selv = df_in.groupby(["ÅR", "MÅNED", "ÅR-MÅNED", "OPPRETTET_AV", "ANTALL TOTALT"], as_index=False)[["ANTALL", "ANDEL"]].sum()
     df_selv = df_selv[df_selv.OPPRETTET_AV == "bruker"].reset_index(drop=True)
     df_selv["ANDEL_PROSENT"] = df_selv["ANDEL"].apply(lambda x: round(x*100, 0)).astype(int).astype(str) + '%'
     return df_selv
 
 
 def make_fig_selvbetjening(df_in, barcolor):
-    df_plot = df_selv.copy()
+    df_plot = df_in.copy()
     fig = make_subplots(specs=[[{"secondary_y": True}]])
     fig.add_trace(go.Bar(x=df_plot["ÅR-MÅNED"], y=df_plot["ANTALL TOTALT"], marker_color=barcolor, name="Antall saker"), secondary_y=False)
 

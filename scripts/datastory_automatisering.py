@@ -16,7 +16,7 @@ def update_datastory():
     df = add_aar_maaned(df)
     df["STØNADSOMRÅDE"] = df.STØNADSOMRÅDE.apply(pesys_utils.map_stonad)
 
-    df_ap = df.copy().loc[(df.STØNADSOMRÅDE=="Alderspensjon" & df.BATCH_FLAGG == "ikke opprettet av batch")]
+    df_ap = df.copy().loc[(df.STØNADSOMRÅDE=="Alderspensjon") & (df.BATCH_FLAGG == "ikke opprettet av batch")]
     df_ap = df_ap.merge(df_ap.groupby("ÅR-MÅNED", as_index=False).ANTALL.sum(),
                     left_on="ÅR-MÅNED",
                     right_on="ÅR-MÅNED",

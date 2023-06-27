@@ -93,7 +93,7 @@ def make_df_selv(df_in):
 def make_fig_selvbetjening(df_in, barcolor):
     df_plot = df_selv.copy()
     fig = make_subplots(specs=[[{"secondary_y": True}]])
-    fig.add_trace(go.Bar(x=df_plot["ÅR-MÅNED"], y=df_plot["ANTALL TOTALT"], barcolor, name="Antall saker"), secondary_y=False)
+    fig.add_trace(go.Bar(x=df_plot["ÅR-MÅNED"], y=df_plot["ANTALL TOTALT"], marker_color=barcolor, name="Antall saker"), secondary_y=False)
 
     fig.add_trace(go.Scatter(x=df_plot["ÅR-MÅNED"], y=df_plot["ANDEL"], text=df_plot["ANDEL_PROSENT"], mode='lines+markers+text', marker_color="black", name="Selvbetjent", textposition='top center'), secondary_y=True)
     fig.update_yaxes(title_text="Andel selvbetjent", secondary_y=True, range=[0.5,1], tickformat='.0%')

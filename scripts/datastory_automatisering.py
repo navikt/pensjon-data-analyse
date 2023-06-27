@@ -59,7 +59,7 @@ def add_aar_maaned(df):
 
 def make_df_auto(df_in):
     df_auto = df_in.groupby(["ÅR", "MÅNED", "ÅR-MÅNED", "AUTOMATISERING", "ANTALL TOTALT"], as_index=False)[["ANTALL", "ANDEL"]].sum()
-    df_auto = df[df_auto.AUTOMATISERING == "AUTO"].reset_index(drop=True)
+    df_auto = df_auto[df_auto.AUTOMATISERING == "AUTO"].reset_index(drop=True)
     df_auto["ANDEL_PROSENT"] = df_auto["ANDEL"].apply(lambda x: round(x*100, 0)).astype(int).astype(str) + '%'
     return df_auto
 

@@ -36,8 +36,8 @@ def update_datastory():
     df_selv = make_df_selv(df_ap)
     figs["selvbetjening"] = make_fig_selvbetjening(df_selv, pastel[1])
 
-    story = make_datastory(title="Automatiserings- og selvbetjeningsgrad for alderspensjon")
-    story.update(token=os.environ["AUTOMATISERING_STORY_TOKEN"], url="https://nada.intern.nav.no/api", )
+    story = make_datastory(title="Automatiserings- og selvbetjeningsgrad for alderspensjon", figs=figs)
+    story.update(token=os.environ["AUTOMATISERING_STORY_TOKEN"], url="https://nada.intern.nav.no/api")
 
 
 
@@ -106,7 +106,7 @@ def make_fig_selvbetjening(df_in, barcolor):
 
     return fig
 
-def make_datastory(title):
+def make_datastory(title, figs):
     ds = DataStory(title)
 
     ds.markdown("**Dette er ikke offisiell statistikk**")

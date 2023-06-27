@@ -3,8 +3,10 @@ import os
 import cx_Oracle
 import pandas as pd
 import plotly.express as px
-from datastory import DataStory
+import plotly.graph_objects as go
+
 from plotly.subplots import make_subplots
+from datastory import DataStory
 from google.cloud import secretmanager
 
 from lib import pandas_utils, pesys_utils, utils

@@ -1,0 +1,34 @@
+{
+    "hendelse": {
+        "hendelsestype": "OPPGAVE_OPPRETTET",
+        "tidspunkt": "2023-02-23T08:58:23.832"
+    },
+    "utfortAv": {
+        "navIdent": "Z991459",
+        "enhetsnr": "2990"
+    },
+    "oppgave": {
+        "oppgaveId": 125046,
+        "versjon": 1,
+        "tilordning": {
+            "enhetsnr": "2990",
+            "enhetsmappeId": null,
+            "navIdent": "Z991459"
+        },
+        "kategorisering": {
+            "tema": "SYK",
+            "oppgavetype": "BEH_HENV",
+            "behandlingstema": null,
+            "behandlingstype": "ae0160",
+            "prioritet": "NORMAL"
+        },
+        "behandlingsperiode": {
+            "aktiv": "2023-02-23",
+            "frist": "2023-02-23"
+        },
+        "bruker": {
+            "ident": "*****",
+            "identType": "FOLKEREGISTERIDENT"
+        }
+    }
+}

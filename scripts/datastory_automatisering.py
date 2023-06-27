@@ -31,10 +31,10 @@ def update_datastory():
     figs = {}
 
     df_auto = make_df_auto(df_ap)
-    figs["autograd"] = make_fig_autograd(df_auto)
+    figs["autograd"] = make_fig_autograd(df_auto, pastel[0])
 
     df_selv = make_df_selv(df_ap)
-    figs["selvbetjening"] = make_fig_selvbetjening(df_selv)
+    figs["selvbetjening"] = make_fig_selvbetjening(df_selv, pastel[1])
 
     story = make_datastory(title="Automatiserings- og selvbetjeningsgrad for alderspensjon")
     story.update(token=os.environ["AUTOMATISERING_STORY_TOKEN"], url="https://nada.intern.nav.no/api", )
@@ -66,10 +66,10 @@ def make_df_auto(df_in):
     return df_auto
 
 
-def make_fig_autograd(df_in):
+def make_fig_autograd(df_in, barcolor):
     df_plot = df_in.copy()
     fig = make_subplots(specs=[[{"secondary_y": True}]])
-    fig.add_trace(go.Bar(x=df_plot["ÅR-MÅNED"], y=df_plot["ANTALL TOTALT"], marker_color=pastel[0], name="Antall saker"), secondary_y=False)
+    fig.add_trace(go.Bar(x=df_plot["ÅR-MÅNED"], y=df_plot["ANTALL TOTALT"], marker_color=barcolor, name="Antall saker"), secondary_y=False)
 
     fig.add_trace(go.Scatter(x=df_plot["ÅR-MÅNED"], y=df_plot["ANDEL"], text=df_plot["ANDEL_PROSENT"], mode='lines+markers+text', marker_color="black", name="Automatisk", textposition='top center'), secondary_y=True)
     fig.update_yaxes(title_text="Andel automatisert", secondary_y=True, range=[0.2,0.8], tickformat='.0%')
@@ -90,10 +90,10 @@ def make_df_selv(df_in):
     return df_selv
 
 
-def make_fig_selvbetjening(df_in):
+def make_fig_selvbetjening(df_in, barcolor):
     df_plot = df_selv.copy()
     fig = make_subplots(specs=[[{"secondary_y": True}]])
-    fig.add_trace(go.Bar(x=df_plot["ÅR-MÅNED"], y=df_plot["ANTALL TOTALT"], marker_color=pastel[1], name="Antall saker"), secondary_y=False)
+    fig.add_trace(go.Bar(x=df_plot["ÅR-MÅNED"], y=df_plot["ANTALL TOTALT"], barcolor, name="Antall saker"), secondary_y=False)
 
     fig.add_trace(go.Scatter(x=df_plot["ÅR-MÅNED"], y=df_plot["ANDEL"], text=df_plot["ANDEL_PROSENT"], mode='lines+markers+text', marker_color="black", name="Selvbetjent", textposition='top center'), secondary_y=True)
     fig.update_yaxes(title_text="Andel selvbetjent", secondary_y=True, range=[0.5,1], tickformat='.0%')

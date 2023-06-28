@@ -17,7 +17,7 @@ def overwrite_dataproduct():
 def make_df():
     tuning = 10000
     con = pesys_utils.open_pen_connection()
-    df_kontrollpunkt = pandas_utils.pandas_from_sql('/home/jupyter/pensjon-data-analyse/sql//kontrollpunkt.sql', con=con, tuning=tuning, lowercase=True)
+    df_kontrollpunkt = pandas_utils.pandas_from_sql('../sql/kontrollpunkt.sql', con=con, tuning=tuning, lowercase=True)
     con.close()
     return df_kontrollpunkt
 

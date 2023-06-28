@@ -35,4 +35,4 @@ def write_to_bq(df):
     job.result()
     end = time()
 
-    print(f'{len(df_kontrollpunkt)} rad(er) ble skrevet til bigquery etter {end-start} sekunder.')
+    print(f'{len(df)} rad(er) ble skrevet til bigquery etter {end-start} sekunder.')

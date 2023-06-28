@@ -31,7 +31,7 @@ def write_to_bq(df):
     )
 
     start = time()
-    job = client.load_table_from_dataframe(df_kontrollpunkt, table_id, job_config=job_config)
+    job = client.load_table_from_dataframe(df, table_id, job_config=job_config)
     job.result()
     end = time()
 

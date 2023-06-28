@@ -24,6 +24,13 @@ with DAG('dataproduct-kontrollpunkt', start_date=datetime(2023, 6, 28), schedule
                         name="base",
                         image="ghcr.io/navikt/airflow-pensjon-sb:v0",
                         working_dir="/dags/scripts",
+                        resources={
+                           "requests": {
+                               "cpu": "0.5",
+                               "memory": "1Gi",
+                               "ephemeral-storage": "5Gi"
+                           }
+                         }
                     )
                     ]
                 ),

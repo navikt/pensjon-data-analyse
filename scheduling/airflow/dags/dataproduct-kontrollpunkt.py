@@ -7,7 +7,7 @@ from datetime import datetime
 
 
 def run_overwrite_dataproduct():
-    from scripts.dataproduct_kontrollpunkt import update_dataproduct
+    from scripts.dataproduct_kontrollpunkt import overwrite_dataproduct
     
     overwrite_dataproduct()
     

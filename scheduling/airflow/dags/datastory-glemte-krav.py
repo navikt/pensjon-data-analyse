@@ -12,7 +12,7 @@ def run_update_datastory():
     update_datastory()
     
 
-with DAG('datastory-glemte-krav', start_date=datetime(2023, 6, 1), schedule_interval="0 0 * * *") as dag:    
+with DAG('datastory-glemte-krav', start_date=datetime(2023, 6, 28), schedule_interval="0 0 * * *") as dag:    
     run_this = PythonOperator(
         task_id='datastory-glemte-krav',
         python_callable=run_update_datastory,

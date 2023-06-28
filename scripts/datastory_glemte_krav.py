@@ -18,7 +18,7 @@ def update_datastory():
 
 def make_df():
     con = pesys_utils.open_pen_connection()
-    df = pandas_utils.pandas_from_sql('/home/jupyter/pensjon-data-analyse/sql/levetid_krav.sql', con, tuning=1000)
+    df = pandas_utils.pandas_from_sql('../sql/levetid_krav.sql', con, tuning=1000)
     con.close()
     df.columns = map(str.lower, df.columns)
     

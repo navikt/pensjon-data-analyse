@@ -7,10 +7,12 @@ from google.cloud.bigquery import Client, LoadJobConfig
 
 from lib import pandas_utils, pesys_utils, utils
 
+
 def overwrite_dataproduct():
     utils.set_secrets_as_env(split_on=":", secret_name='projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest')
     df = make_df()
     write_to_bq(df)
+
 
 def make_df():
     tuning = 10000
@@ -18,6 +20,7 @@ def make_df():
     df_kontrollpunkt = pandas_utils.pandas_from_sql('/home/jupyter/pensjon-data-analyse/sql//kontrollpunkt.sql', con=con, tuning=tuning, lowercase=True)
     con.close()
     return df_kontrollpunkt
+
 
 def write_to_bq(df):
     client = Client(project="pensjon-saksbehandli-prod-1f83")

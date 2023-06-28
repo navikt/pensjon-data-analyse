@@ -26,9 +26,8 @@ def update_datastory():
             )
     df_ap["ANDEL"] = df_ap.ANTALL.divide(df_ap["ANTALL TOTALT"])
 
-    pastel = px.colors.qualitative.Pastel
-    
     figs = {}
+    pastel = px.colors.qualitative.Pastel
 
     df_auto = make_df_auto(df_ap)
     figs["autograd"] = make_fig_autograd(df_auto, pastel[0])

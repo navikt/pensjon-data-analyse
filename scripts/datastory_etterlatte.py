@@ -15,7 +15,7 @@ from lib import pandas_utils, pesys_utils, utils
 def update_datastory():
     utils.set_secrets_as_env(split_on=':', secret_name='projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest')
     figs = {}
-    figs.update(make_figs_for_krav_utland())
+    figs.update(make_figs_krav_utland())
     figs.update(make_figs_ledetid())
     
     story = make_datastory()
@@ -45,98 +45,98 @@ def make_figs_krav_utland():
     return figs
 
 
-    def make_figs_ledetid():
-        con = pesys_utils.open_pen_connection()
-        df = pandas_utils.pandas_from_sql('../sql/GP_BP/ledetid.sql', con)
-        con.close()
-        figs = {}
+def make_figs_ledetid():
+    con = pesys_utils.open_pen_connection()
+    df = pandas_utils.pandas_from_sql('../sql/GP_BP/ledetid.sql', con)
+    con.close()
+    figs = {}
 
-        labels = {
-        "GJ_DAGER": "Gjennomsnittlig antall dager",
-        "AR": "År",
-        "STOENAD": "Stønad",
-        "KRAVTYPE": "Kravtype",
-        "MED_DAGER": "Median av antall dager",
-        "ANTALL": "Antall krav",
-        "RESULTAT": "Resultat"
-           }
+    labels = {
+    "GJ_DAGER": "Gjennomsnittlig antall dager",
+    "AR": "År",
+    "STOENAD": "Stønad",
+    "KRAVTYPE": "Kravtype",
+    "MED_DAGER": "Median av antall dager",
+    "ANTALL": "Antall krav",
+    "RESULTAT": "Resultat"
+    }
 
-        df_bp = df[df.STOENAD == "Barnepensjon"]
-        df_gjenlev = df[df.STOENAD == "Gjenlevendeytelse"]
+    df_bp = df[df.STOENAD == "Barnepensjon"]
+    df_gjenlev = df[df.STOENAD == "Gjenlevendeytelse"]
 
-        figs["barnep_gj_dager"] = px.bar(
-            df_bp[df_bp.ANTALL >= 5], 
-            "AR", 
-            "GJ_DAGER", 
-            color="KRAVTYPE", 
-            barmode="group",
-            hover_data=df_bp.columns[[2,3,4,5]],
-            labels=labels
-            )
+    figs["barnep_gj_dager"] = px.bar(
+        df_bp[df_bp.ANTALL >= 5], 
+        "AR", 
+        "GJ_DAGER", 
+        color="KRAVTYPE", 
+        barmode="group",
+        hover_data=df_bp.columns[[2,3,4,5]],
+        labels=labels
+        )
 
-        figs["barnep_med_dager"] = px.bar(
-            df_bp[df_bp.ANTALL >= 5], 
-            "AR", 
-            "MED_DAGER", 
-            color="KRAVTYPE", 
-            barmode="group", 
-            hover_data=df_bp.columns[[2,3,4,5]],
-            labels=labels
-            )
+    figs["barnep_med_dager"] = px.bar(
+        df_bp[df_bp.ANTALL >= 5], 
+        "AR", 
+        "MED_DAGER", 
+        color="KRAVTYPE", 
+        barmode="group", 
+        hover_data=df_bp.columns[[2,3,4,5]],
+        labels=labels
+        )
 
-        figs["gjenlev_gj_dager"] = px.bar(
-            df_gjenlev[df_gjenlev.ANTALL >= 5], 
-            "AR", 
-            "GJ_DAGER", 
-            color="KRAVTYPE", 
-            barmode="group", 
-            hover_data=df_gjenlev.columns[[2,3,4,5]],
-            labels=labels
-            )
+    figs["gjenlev_gj_dager"] = px.bar(
+        df_gjenlev[df_gjenlev.ANTALL >= 5], 
+        "AR", 
+        "GJ_DAGER", 
+        color="KRAVTYPE", 
+        barmode="group", 
+        hover_data=df_gjenlev.columns[[2,3,4,5]],
+        labels=labels
+        )
 
-        figs["gjenlev_med_dager"] = px.bar(
-            df_gjenlev[df_gjenlev.ANTALL >= 5], 
-            "AR", 
-            "MED_DAGER", 
-            color="KRAVTYPE", 
-            barmode="group", 
-            hover_data=df_gjenlev.columns[[2,3,4,5]],
-            labels=labels
-            )
+    figs["gjenlev_med_dager"] = px.bar(
+        df_gjenlev[df_gjenlev.ANTALL >= 5], 
+        "AR", 
+        "MED_DAGER", 
+        color="KRAVTYPE", 
+        barmode="group", 
+        hover_data=df_gjenlev.columns[[2,3,4,5]],
+        labels=labels
+        )
 
-        return figs
+    return figs
 
-        def make_datastory():
-            story = datastory.DataStory("Gjenlevendepensjon og barnepensjon")
+def make_datastory():
+    story = datastory.DataStory("Gjenlevendepensjon og barnepensjon")
 
-            # Krav innland utland
-            story.header("Antall opprettede krav fordelt på innland/utland", level=1)
+    # Krav innland utland
+    story.header("Antall opprettede krav fordelt på innland/utland", level=1)
 
-            story.header("Gjenlevendepensjon", level=2)
-            story.header("Førstegangsbehandling gjenlevendepensjon per måned", level=3)
-            story.plotly(figs["gjenlev_mmd"].to_json())
-            story.header("Førstegangsbehandling gjenlevendepensjon per år", level=3)
-            story.plotly(figs["gjenlev_ar"].to_json())
+    story.header("Gjenlevendepensjon", level=2)
+    story.header("Førstegangsbehandling gjenlevendepensjon per måned", level=3)
+    story.plotly(figs["gjenlev_mmd"].to_json())
+    story.header("Førstegangsbehandling gjenlevendepensjon per år", level=3)
+    story.plotly(figs["gjenlev_ar"].to_json())
 
-            story.header("Barnepensjon", level=2)
-            story.header("Førstegangsbehandling barnepensjon per måned", level=3)
-            story.plotly(figs["barnep_mmd"].to_json())
-            story.header("Førstegangsbehandling barnepensjon per år", level=3)
-            story.plotly(figs["barnep_ar"].to_json())
+    story.header("Barnepensjon", level=2)
+    story.header("Førstegangsbehandling barnepensjon per måned", level=3)
+    story.plotly(figs["barnep_mmd"].to_json())
+    story.header("Førstegangsbehandling barnepensjon per år", level=3)
+    story.plotly(figs["barnep_ar"].to_json())
 
-            # Tid fra mottatt krav til iverksatt vedtak
-            story.header("Tid fra mottatt krav til iverksatt vedtak", level=1)
-            story.markdown("År bestemmes av vedtaksdato. Inkluderer kun iverksatte vedtak.")
-            story.header("Gjenlevendepensjon", level=2)
-            story.markdown("Gjennomsnittlig antall dager. Hold pekeren over en stolpe for å se antall vedtak i denne kategorien.")
-            story.plotly(figs["gjenlev_gj_dager"].to_json())
-            story.markdown("Median av antall dager. Hold pekeren over en stolpe for å se antall vedtak i denne kategorien.")
-            story.plotly(figs["gjenlev_med_dager"].to_json())
+    # Tid fra mottatt krav til iverksatt vedtak
+    story.header("Tid fra mottatt krav til iverksatt vedtak", level=1)
+    story.markdown("År bestemmes av vedtaksdato. Inkluderer kun iverksatte vedtak.")
+    story.header("Gjenlevendepensjon", level=2)
+    story.markdown("Gjennomsnittlig antall dager. Hold pekeren over en stolpe for å se antall vedtak i denne kategorien.")
+    story.plotly(figs["gjenlev_gj_dager"].to_json())
+    story.markdown("Median av antall dager. Hold pekeren over en stolpe for å se antall vedtak i denne kategorien.")
+    story.plotly(figs["gjenlev_med_dager"].to_json())
 
-            story.header("Barnepensjon", level=2)
-            story.markdown("Gjennomsnittlig antall dager. Hold pekeren over en stolpe for å se antall vedtak i denne kategorien.")
-            story.plotly(figs["barnep_gj_dager"].to_json())
-            story.markdown("Median av antall dager. Hold pekeren over en stolpe for å se antall vedtak i denne kategorien.")
-            story.plotly(figs["barnep_med_dager"].to_json())
+    story.header("Barnepensjon", level=2)
+    story.markdown("Gjennomsnittlig antall dager. Hold pekeren over en stolpe for å se antall vedtak i denne kategorien.")
+    story.plotly(figs["barnep_gj_dager"].to_json())
+    story.markdown("Median av antall dager. Hold pekeren over en stolpe for å se antall vedtak i denne kategorien.")
+    story.plotly(figs["barnep_med_dager"].to_json())
 
-            return story
+    return story

@@ -18,7 +18,7 @@ def update_datastory():
     figs.update(make_figs_krav_utland())
     figs.update(make_figs_ledetid())
     
-    story = make_datastory()
+    story = make_datastory(figs)
     story.update(url="https://nada.intern.nav.no/api", token=os.environ["ETTERLATTE_STORY_TOKEN"])
 
 
@@ -106,7 +106,7 @@ def make_figs_ledetid():
 
     return figs
 
-def make_datastory():
+def make_datastory(figs):
     story = datastory.DataStory("Gjenlevendepensjon og barnepensjon")
 
     # Krav innland utland

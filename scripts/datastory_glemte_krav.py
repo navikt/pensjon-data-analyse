@@ -12,6 +12,7 @@ from lib import pandas_utils, pesys_utils, utils
 def update_datastory():
     utils.set_secrets_as_env(split_on=":", secret_name='projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest')
     df = make_df()
+    fig = make_fig(df)
     story = make_datastory(fig)
     story.update(url="https://nada.intern.nav.no/api", token=os.environ["GLEMTE_KRAV_STORY_TOKEN"])
 

@@ -10,7 +10,8 @@ from lib import pandas_utils, pesys_utils, utils
 
 def overwrite_dataproduct():
     utils.set_secrets_as_env(split_on=":", secret_name='projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest')
-    df = df_to_bq(
+    df = make_df()
+    df_to_bq(
         project_id='pensjon-saksbehandli-prod-1f83',
         full_table_id='pensjon-saksbehandli-prod-1f83.vedtak.laast_data_handling',
         dataframe=df,

@@ -7,14 +7,14 @@ from datetime import datetime
 
 
 def run_overwrite_dataproduct():
-    from scripts.dataproduct_kontrollpunkt import overwrite_dataproduct
+    from scripts.dataproduct_laaste_vedtak import overwrite_dataproduct
     
     overwrite_dataproduct()
     
 
-with DAG('dataproduct-kontrollpunkt', start_date=datetime(2023, 6, 28), schedule_interval="10 06 * * *") as dag:    
+with DAG('dataproduct-laaste-vedtak', start_date=datetime(2023, 6, 28), schedule_interval="15 06 * * *") as dag:    
     run_this = PythonOperator(
-        task_id='dataproduct-kontrollpunkt',
+        task_id='dataproduct-laaste-vedtak',
         python_callable=run_overwrite_dataproduct,
         executor_config={
             "pod_override": k8s.V1Pod(
@@ -24,13 +24,6 @@ with DAG('dataproduct-kontrollpunkt', start_date=datetime(2023, 6, 28), schedule
                         name="base",
                         image="ghcr.io/navikt/airflow-pensjon-sb:v0",
                         working_dir="/dags/scripts",
-                        resources={
-                           "requests": {
-                               "cpu": "0.5",
-                               "memory": "1Gi",
-                               "ephemeral-storage": "5Gi"
-                           }
-                         }
                     )
                     ]
                 ),

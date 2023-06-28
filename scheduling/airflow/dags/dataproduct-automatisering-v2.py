@@ -12,7 +12,7 @@ def run_overwrite_dataproduct():
     overwrite_dataproduct()
     
 
-with DAG('dataproduct-automatisering-v2', start_date=datetime(2023, 6, 28), schedule_interval="0 0 1 * *") as dag:    
+with DAG('dataproduct-automatisering-v2', start_date=datetime(2023, 6, 28), schedule_interval="22 4 1 * *") as dag:    
     run_this = PythonOperator(
         task_id='dataproduct-automatisering-v2',
         python_callable=run_overwrite_dataproduct,
@@ -34,7 +34,7 @@ with DAG('dataproduct-automatisering-v2', start_date=datetime(2023, 6, 28), sche
                     )
                     ]
                 ),
-                metadata=k8s.V1ObjectMeta(annotations={"allowlist": "dm08db03.adeo.no:1521,data.intern.nav.no"})
+                metadata=k8s.V1ObjectMeta(annotations={"allowlist": "dm08db03.adeo.no:1521"})
             )
         },
     dag=dag)

@@ -27,7 +27,7 @@ with DAG('dataproduct-automatisering-v2', start_date=datetime(2023, 6, 28), sche
                         resources={
                            "requests": {
                                "cpu": "0.5",
-                               "memory": "4Gi",
+                               "memory": "10Gi",
                                "ephemeral-storage": "5Gi"
                            }
                          }

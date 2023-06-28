@@ -20,7 +20,7 @@ def update_datastory():
 
 def make_df():
     con = pesys_utils.open_pen_connection()
-    df = pandas_utils.pandas_from_sql('/home/jupyter/pensjon-data-analyse/sql/afp_priv_res.sql', con, tuning=1000)
+    df = pandas_utils.pandas_from_sql('../sql/afp_priv_res.sql', con, tuning=1000)
     con.close()
 
     df.columns = map(str.lower, df.columns)
@@ -35,7 +35,6 @@ def make_df():
     df['day']=df.index.day
 
     return df[df.year >= 2022]
-
 
 
 def make_figs(df):

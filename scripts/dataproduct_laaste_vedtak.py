@@ -24,6 +24,7 @@ def make_df():
     con = pesys_utils.open_pen_connection()
     df_bq = pandas_utils.pandas_from_sql('../sql/laaste_vedtak.sql', con=con, tuning=tuning, lowercase=True)
     con.close()
+    return df_bq
 
 
 def df_to_bq(project_id, full_table_id, dataframe, write_disposition):

@@ -13,10 +13,16 @@ from lib import pandas_utils, pesys_utils, utils
 
 def overwrite_dataproduct():
     utils.set_secrets_as_env(split_on=":", secret_name='projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest')
-    overwrite_vedtak()
-    overwrite_krav()
+    
+    current_year = datetime.now().year
+    N = (current_year + 1) - 2008
+    years = [str(current_year-(i-1)) for i in range(N)]
 
-def overwrite_vedtak():
+    overwrite_vedtak(N, years)
+    overwrite_krav(N, years)
+    
+
+def overwrite_vedtak(N, years):
     con = pesys_utils.open_pen_connection()
     with open('../sql/forslag_auto.sql') as sql:
         query = sql.read()
@@ -66,7 +72,7 @@ def overwrite_vedtak():
     print(f"Table {table_id} successfully overwritten")
 
 
-def overwrite_krav():
+def overwrite_krav(N, years):
     con = pesys_utils.open_pen_connection()
         
     with open('../sql/forslag_auto_krav.sql') as sql:

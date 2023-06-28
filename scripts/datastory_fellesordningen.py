@@ -41,7 +41,7 @@ def make_figs(df):
     figs = {}
     figs["daglige_vedtak"] = px.bar(df, x=df.index, y="antall", color="resultat", color_discrete_map={"INNVILGET": 'green', "FEILREG": 'orange', "AVSLATT": 'red', "TRUKKET": 'purple'})
 
-    df_mnd = df.groupby("resultat")[["resultat", "antall"]].resample('MS').sum().reset_index()
+    df_mnd = df.groupby("resultat")[["antall"]].resample('MS').sum().reset_index()
     figs["månedlige_vedtak"] = px.bar(df_mnd, df_mnd.vedtaksdato, "antall", color="resultat", color_discrete_map={"INNVILGET": 'green', "FEILREG": 'orange', "AVSLATT": 'red', "TRUKKET": 'purple'})
 
     return figs

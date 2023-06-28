@@ -1,10 +1,8 @@
 import pandas as pd
-import numpy as np
 import os
-import plotly.express as px
-import plotly.graph_objects as go
 
 from datetime import datetime
+from time import time
 from datastory import DataStory
 from google.cloud.bigquery import Client, LoadJobConfig
 
@@ -20,7 +18,7 @@ def overwrite_dataproduct():
 
     overwrite_vedtak(N, years)
     overwrite_krav(N, years)
-    
+
 
 def overwrite_vedtak(N, years):
     con = pesys_utils.open_pen_connection()

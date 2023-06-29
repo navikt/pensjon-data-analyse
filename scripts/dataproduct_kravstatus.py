@@ -11,11 +11,11 @@ def update_dataproduct():
     utils.set_secrets_as_env(split_on=":", secret_name='projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest')
     df = make_df()
     append_to_bq(df)
-    
+
 
 def make_df():
     con = pesys_utils.open_pen_connection()
-    df_kravstatus = pandas_utils.pandas_from_sql('/home/jupyter/pensjon-data-analyse/sql/kravstatus.sql', con)
+    df_kravstatus = pandas_utils.pandas_from_sql('../sql/kravstatus.sql', con)
     con.close()
     df_kravstatus.columns = map(str.lower, df_kravstatus.columns)
     df_kravstatus["dato"] = datetime.utcnow()

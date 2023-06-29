@@ -6,7 +6,7 @@ from datetime import datetime
 from sqlalchemy import create_engine
 from google.cloud.bigquery import Client, LoadJobConfig, SchemaField, enums
 
-from lib import pandas_utils, pesys_utils, utils
+from lib import utils
 
 
 def update_dataproduct():
@@ -39,8 +39,6 @@ def prepare_df(df):
     
 
 def append_to_bq(df):
-    from google.cloud.bigquery import Client, LoadJobConfig, SchemaField, enums
-
     table_id = f'pensjon-saksbehandli-prod-1f83.saksbehandling_psak.nytt_gammelt_design'
     job_config = LoadJobConfig(
         schema = [
@@ -58,3 +56,5 @@ def append_to_bq(df):
     job = client.load_table_from_dataframe(df, table_id, job_config=job_config)
     job.result()
     print(f"Table {table_id} successfully updated")
+
+update_dataproduct()

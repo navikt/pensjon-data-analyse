@@ -27,7 +27,7 @@ with DAG('dataproduct-psak-nytt-design', start_date=datetime(2023, 6, 29), sched
                     )
                     ]
                 ),
-                metadata=k8s.V1ObjectMeta(annotations={"allowlist": "dm08db03.adeo.no:1521"})
+                metadata=k8s.V1ObjectMeta(annotations={"allowlist": "A01DBVL028.adeo.no:5432"})
             )
         },
     dag=dag)

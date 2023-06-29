@@ -6,7 +6,7 @@ from kubernetes import client as k8s
 from datetime import datetime
 
 
-def run_overwrite_dataproduct():
+def run_update_dataproduct():
     from scripts.dataproduct_kravstatus import update_dataproduct
     
     update_dataproduct()

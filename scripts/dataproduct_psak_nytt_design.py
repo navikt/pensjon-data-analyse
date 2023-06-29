@@ -21,7 +21,7 @@ def df_from_postgres():
     host = "A01DBVL028.adeo.no:5432"
     db_name = "pensjon-psak"
 
-    alchemyEngine = create_engine(f'{method}://{secrets["PSAK_POSTGRES_USER"]}:{secrets["PSAK_POSTGRES_PASSWORD"]}@{host}/{db_name}')
+    alchemyEngine = create_engine(f'{method}://{os.environ["PSAK_POSTGRES_USER"]}:{os.environ["PSAK_POSTGRES_PASSWORD"]}@{host}/{db_name}')
     dbConnection = alchemyEngine.connect()
 
     return pd.read_sql(

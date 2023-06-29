@@ -7,7 +7,7 @@ from datetime import datetime
 
 
 def run_update_dataproduct():
-    from scripts.dataproduct_kravstatus import update_dataproduct
+    from scripts.dataproduct_psak_nytt_design import update_dataproduct
     
     update_dataproduct()
     

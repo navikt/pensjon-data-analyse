@@ -44,7 +44,7 @@ def prepare_df(df):
     )
     
     df["Andel_nytt"] = (df.Nytt / df.sum(axis=1)).apply(lambda x: round(x, 3))
-    df["Uttrekk_tidspunkt"] = datetime.datetime.utcnow()
+    df["Uttrekk_tidspunkt"] = datetime.utcnow()
 
     return df
     

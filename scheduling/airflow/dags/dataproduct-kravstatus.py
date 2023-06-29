@@ -12,7 +12,7 @@ def run_update_dataproduct():
     update_dataproduct()
     
 
-with DAG('dataproduct-kravstatus', start_date=datetime(2023, 6, 30), schedule_interval="05 06 * * *") as dag:    
+with DAG('dataproduct-kravstatus', start_date=datetime(2023, 6, 29), schedule_interval="05 06 * * *") as dag:    
     run_this = PythonOperator(
         task_id='dataproduct-kravstatus',
         python_callable=run_update_dataproduct,

@@ -35,6 +35,16 @@ def df_from_postgres():
 def prepare_df(df):
     df["Andel_nytt"] = (df.Nytt / df.sum(axis=1)).apply(lambda x: round(x, 3))
     df["Uttrekk_tidspunkt"] = datetime.datetime.utcnow()
+
+    df = (
+        pd.DataFrame([
+            df_pref[df_pref.bruk_nytt_design == True].count(),
+            df_pref[df_pref.bruk_nytt_design == False].count(),
+            df_pref[pd.isna(df_pref.bruk_nytt_design)].count()
+        ])
+        .T
+        .rename(columns={0: "Nytt", 1: "Gammelt", 2: "Uspesifisert"})
+    )
     return df
     
 

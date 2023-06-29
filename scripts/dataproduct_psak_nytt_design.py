@@ -65,6 +65,5 @@ def append_to_bq(df):
     client = Client(project="pensjon-saksbehandli-prod-1f83")
 
     job = client.load_table_from_dataframe(df, table_id, job_config=job_config)
+    job.result()
     print(f"Table {table_id} successfully updated")
-
-update_dataproduct()

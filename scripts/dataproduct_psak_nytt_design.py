@@ -35,6 +35,7 @@ def df_from_postgres():
 def prepare_df(df):
     df["Andel_nytt"] = (df.Nytt / df.sum(axis=1)).apply(lambda x: round(x, 3))
     df["Uttrekk_tidspunkt"] = datetime.datetime.utcnow()
+    print(f"Uttrekk_tidspunkt: {df.Uttrekk_tidspunkt}")
     return df
     
 
@@ -54,7 +55,7 @@ def append_to_bq(df):
     client = Client(project="pensjon-saksbehandli-prod-1f83", credentials=credentials)
 
     job = client.load_table_from_dataframe(df, table_id, job_config=job_config)
-    job.result()
+    print(job.result())
     print(f"Table {table_id} successfully updated")
 
 update_dataproduct()

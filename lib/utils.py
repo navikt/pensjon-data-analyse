@@ -28,3 +28,7 @@ def randomize_zeros(x):
         return random.randint(0,5)
     else:
         return x
+
+
+def date_to_tertial(date):
+    return (date.month - 1) // 4 + 1

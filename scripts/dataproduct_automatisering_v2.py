@@ -55,6 +55,8 @@ def overwrite_vedtak(N, years):
             if len(df_one_year) > 0:
                     df_one_year.columns = [x[0].lower() for x in cursor.description]
             df_one_year["dato_virk_fom"] = df_one_year["dato_virk_fom"].dt.floor('D')
+            df_one_year["tertial"] = df_one_year.dato_virk_fom.apply(lambda date: utils.date_to_tertial(date))
+
 
             job = client.load_table_from_dataframe(df_one_year, table_id, job_config=job_config)
             job.result()
@@ -104,6 +106,8 @@ def overwrite_krav(N, years):
             if len(df_one_year) > 0:
                     df_one_year.columns = [x[0].lower() for x in cursor.description]
             df_one_year["dato_opprettet"] = df_one_year["dato_opprettet"].dt.floor('D')
+            df_one_year["tertial"] = df_one_year.dato_opprettet.apply(lambda date: utils.date_to_tertial(date))
+
 
             job = client.load_table_from_dataframe(df_one_year, table_id, job_config=job_config)
             job.result()

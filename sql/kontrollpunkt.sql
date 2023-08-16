@@ -1,4 +1,4 @@
-with staging as (select
+select
     trunc(kp.dato_opprettet) as dato,
     dkh.dekode as kravtype,
     (case when substr(kh.opprettet_av,1,1) in ('0','1','2','3','4','5','6','7','8','9') then 'Bruker' else
@@ -33,23 +33,3 @@ group by
     dkb.dekode,
     kp.k_kontrollpnkt_t,
     dkp.dekode_tekst
-)
-
-select * from staging
-where antall >= 5
-
-union all
-
-select 
-    dato,
-    '-' as kravtype,
-    '-' as behandler,
-    '-' as sakstype,
-    '-' as kravstatus,
-    '-' as behandlingstype,
-    '-' as kontrollpunkt,
-    'Anonymisert' as kontrollpunkt_forklaring,
-    count(*) as antall
-from staging
-where antall < 5
-group by dato, '-', '-', '-', '-', '-'

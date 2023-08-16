@@ -27,7 +27,7 @@ with DAG('dataproduct-kontrollpunkt', start_date=datetime(2023, 6, 28), schedule
                         resources={
                            "requests": {
                                "cpu": "0.5",
-                               "memory": "1Gi",
+                               "memory": "2Gi",
                                "ephemeral-storage": "5Gi"
                            }
                          }

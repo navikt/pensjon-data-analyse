@@ -1,0 +1,72 @@
+---
+title: '"Glemte krav" i pesys'
+author: Vebjørn Rekkebo
+execute:
+  echo: false
+  output: false
+toc-title: Innhold
+number-sections: true
+format:
+  html:
+    include: true
+    echo: false
+    theme: flatly
+    page-layout: full
+    self-contained: true
+jupyter: python3
+---
+
+```{python}
+import pandas as pd
+import numpy as np
+import os
+import sys
+import importlib
+import plotly.express as px
+from datetime import datetime
+
+sys.path.append('../lib')
+import utils
+import pandas_utils
+import pesys_utils
+
+importlib.reload(utils)
+importlib.reload(pandas_utils)
+importlib.reload(pesys_utils)
+
+utils.set_secrets_as_env()
+```
+
+```{python}
+con = pesys_utils.open_pen_connection()
+
+df_levetid = pandas_utils.pandas_from_sql('../sql/levetid_krav.sql', con, tuning=1000)
+con.close()
+df_levetid.columns = map(str.lower, df_levetid.columns)
+df_levetid["dato"] = datetime.utcnow()
+```
+
+```{python}
+df = df_levetid.copy()
+df.head()
+```
+
+```{python}
+df["levetid"] = df.dato.subtract(df.dato_opprettet).dt.days
+df["uendret"] = df.dato.subtract(df.dato_endret).dt.days
+```
+
+```{python}
+df_krav_over_ett_ar = df[df.uendret > 365]
+anke_filter =  ~((df_krav_over_ett_ar.sakstype == "Uføretrygd") & (df_krav_over_ett_ar.kravtype == "Anke"))
+df_sunburst = df_krav_over_ett_ar[anke_filter]
+```
+
+Oversikt over krav i pesys hvor 'endret_dato' er over et år siden, og status ikke er 'FERDIG' eller 'AVBRUTT'. Dette betyr vanligvis ikke at kravet er glemt, men er typisk en komplisert sak som venter på avklaringer fra andre. Anker på Uføretrygd er ikke inkludert.
+
+```{python}
+#| output: true
+fig_sunburst = px.sunburst(df_sunburst, path=["sakstype", "kravtype", "kravstatus"], color_discrete_sequence=px.colors.qualitative.Dark2, height=1000)
+fig_sunburst.show()
+```
+

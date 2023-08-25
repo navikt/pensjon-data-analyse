@@ -6,7 +6,7 @@ import sys
 from lib import utils
 
 def update_quarto():
-    utils.set_secrets_as_env(split_on=':', secret_name="projects/knada-gcp/secrets/vebjorn-rekkebo/versions/latest")
+    utils.set_secrets_as_env(split_on=':', secret_name="projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest")
     ENV = "datamarkedsplassen.intern.nav.no"
     QUARTO_ID = "2cc73eb9-36b4-47d4-a719-918236de37e6"
     TEAM_TOKEN = os.environ["PENSAK_NADA_TOKEN"]

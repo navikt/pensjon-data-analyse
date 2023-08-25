@@ -19,7 +19,7 @@ def update_datastory():
     figs.update(make_figs_ledetid())
     
     story = make_datastory(figs)
-    story.update(url="https://nada.intern.nav.no/api", token=os.environ["ETTERLATTE_STORY_TOKEN"])
+    story.update(url="https://datamarkedsplassen.intern.nav.no/api", token=os.environ["ETTERLATTE_STORY_TOKEN"])
 
 
 def make_figs_krav_utland():

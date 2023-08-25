@@ -14,7 +14,7 @@ def update_datastory():
     df = make_df()
     fig = make_fig(df)
     story = make_datastory(fig)
-    story.update(url="https://nada.intern.nav.no/api", token=os.environ["GLEMTE_KRAV_STORY_TOKEN"])
+    story.update(url="https://datamarkedsplassen.intern.nav.no/api", token=os.environ["GLEMTE_KRAV_STORY_TOKEN"])
 
 
 def make_df():

@@ -37,5 +37,3 @@ def upload_quarto(files_to_upload: list[str]):
                             files=multipart_form_data)
         
     print("Request to {env} with status code", response.status_code)
-
-update_quarto()

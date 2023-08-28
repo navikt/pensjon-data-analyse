@@ -21,8 +21,8 @@ inner join pen.t_k_kontrollpnkt_t dkp on dkp.k_kontrollpnkt_t = kp.k_kontrollpnk
 inner join pen.t_k_krav_s dks on dks.k_krav_s = kh.k_krav_s
 inner join pen.t_k_behandling_t dkb on dkb.k_behandling_t = kh.k_behandling_t
 
-where kp.dato_opprettet < trunc(current_date, 'MM')
-and kh.k_behandling_t = 'DEL_AUTO'
+where kh.k_behandling_t = 'DEL_AUTO'
+--where kp.dato_opprettet < trunc(current_date, 'MM')
 and s.k_sak_t = 'ALDER'
 and kh.k_krav_gjelder in ('FORSTEG_BH', 'F_BH_MED_UTL')
 and kh.k_krav_s != 'AVBRUTT'

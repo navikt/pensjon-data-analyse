@@ -1,6 +1,6 @@
 select
     extract(month from kp.dato_opprettet) as mnd,
-    extract(month from kp.dato_opprettet) as yr,
+    extract(year from kp.dato_opprettet) as yr,
     dkh.dekode as kravtype,
     (case when substr(kh.opprettet_av,1,1) in ('0','1','2','3','4','5','6','7','8','9') then 'Bruker' else
     case when substr(kh.opprettet_av,1,1) not in ('0','1','2','3','4','5','6','7','8','9') and substr(kh.opprettet_av,2,1) in ('0','1','2','3','4','5','6','7','8','9') then 'Saksbehandler' else
@@ -30,7 +30,7 @@ and kh.k_krav_s != 'AVBRUTT'
 
 group by
     extract(month from kp.dato_opprettet),
-    extract(month from kp.dato_opprettet),
+    extract(year from kp.dato_opprettet),
     dkh.dekode,
     (case when substr(kh.opprettet_av,1,1) in ('0','1','2','3','4','5','6','7','8','9') then 'Bruker' else
     case when substr(kh.opprettet_av,1,1) not in ('0','1','2','3','4','5','6','7','8','9') and substr(kh.opprettet_av,2,1) in ('0','1','2','3','4','5','6','7','8','9') then 'Saksbehandler' else

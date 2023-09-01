@@ -22,7 +22,7 @@ with DAG('datastory-etterlatte', start_date=datetime(2023, 6, 1), schedule_inter
                     containers=[
                     k8s.V1Container(
                         name="base",
-                        image="ghcr.io/navikt/airflow-pensjon-sb:v0",
+                        image="ghcr.io/navikt/airflow-pensjon-sb:v1",
                         working_dir="/dags/scripts",
                     )
                     ]

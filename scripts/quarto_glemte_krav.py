@@ -3,7 +3,9 @@ import requests
 import subprocess
 import sys
 
+from typing import List
 from lib import utils
+
 
 def update_quarto():
     utils.set_secrets_as_env(split_on=':', secret_name="projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest")
@@ -18,11 +20,11 @@ def update_quarto():
     upload_quarto(files_to_upload)
 
 
-def render_quarto(file_to_render: str):
-    subprocess.run(f"quarto render {file_to_render}")
+def render_quarto(qmd_file: str):
+    os.system(f"quarto render {qmd_file} --to html --execute")
 
 
-def upload_quarto(files_to_upload: list[str]):
+def upload_quarto(files_to_upload: List[str]):
     multipart_form_data = {}
     for file_path in files_to_upload:
         file_name = os.path.basename(file_path)

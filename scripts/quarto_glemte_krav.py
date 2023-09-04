@@ -20,11 +20,12 @@ def update_quarto():
     upload_quarto(files_to_upload)
 
 
-def render_quarto(qmd_file: str):
+def render_quarto(qmd_file):
     os.system(f"quarto render {qmd_file} --to html --execute")
+    print(f"rendered {qmd_file} to .html")
 
 
-def upload_quarto(files_to_upload: List[str]):
+def upload_quarto(files_to_upload):
     multipart_form_data = {}
     for file_path in files_to_upload:
         file_name = os.path.basename(file_path)

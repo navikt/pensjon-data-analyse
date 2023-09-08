@@ -22,7 +22,7 @@ with DAG('quarto-glemte-krav', start_date=datetime(2023, 8, 25), schedule_interv
                     containers=[
                     k8s.V1Container(
                         name="base",
-                        image="ghcr.io/navikt/pensak-airflow-images:2023-09-08-8bb7c52-main",
+                        image="ghcr.io/navikt/pensak-airflow-images:2023-09-08-531834a-main",
                         working_dir="/dags/scripts",
                     )
                     ]

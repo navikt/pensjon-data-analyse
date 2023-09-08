@@ -16,7 +16,7 @@ def update_quarto():
     render_quarto("../quarto/glemte_krav.qmd")
         
     # A list of file paths to be uploaded
-    files_to_upload=["../quarto/glemte_krav.html"]
+    files_to_upload=["glemte_krav.html"]
     upload_quarto(files_to_upload)
 
 

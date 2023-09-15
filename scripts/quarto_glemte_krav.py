@@ -21,8 +21,11 @@ def update_quarto():
 
 
 def render_quarto(qmd_file):
+    print(f"current wd: {os.system('pwd')}")
+    print(os.system("ls"))
     os.system(f"quarto render {qmd_file} --to html --execute")
     print(f"rendered {qmd_file} to .html")
+    print(os.system("ls"))
 
 
 def upload_quarto(files_to_upload):

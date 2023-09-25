@@ -14,7 +14,7 @@ with DAG(
 ) as dag:
   podop = create_pod_operator(
     dag=dag, 
-    name="update quarto",
+    name="update-quarto",
     repo="navikt/pensjon-data-analyse",
     branch="main",
     quarto={

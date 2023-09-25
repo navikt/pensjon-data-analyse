@@ -62,7 +62,7 @@ anke_filter =  ~((df_krav_over_ett_ar.sakstype == "Uføretrygd") & (df_krav_over
 df_sunburst = df_krav_over_ett_ar[anke_filter]
 ```
 
-Oversikt over krav i pesys hvor 'endret_dato' er over et år siden, og status ikke er 'FERDIG' eller 'AVBRUTT'. Dette betyr vanligvis ikke at kravet er glemt, men er typisk en komplisert sak som venter på avklaringer fra andre. Anker på Uføretrygd er ikke inkludert.
+Oversikt over krav i pesys hvor 'endret_dato' er over et år siden, og status ikke er 'FERDIG' eller 'AVBRUTT'. Dette betyr vanligvis ikke at kravet er glemt, men er typisk en komplisert sak som venter på avklaringer fra andre. Anker på Uføretrygd er ikke inkludert fordi disse ofte er tidkrevende.
 
 ```{python}
 #| output: true

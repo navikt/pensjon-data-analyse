@@ -1,33 +1,35 @@
 from airflow import DAG
-
-from airflow.utils.dates import days_ago
-from airflow.operators.python_operator import PythonOperator
-from kubernetes import client as k8s
 from datetime import datetime
+import pendulum
+from common.podop_factory import create_pod_operator
+from airflow.models import Variable
+from kubernetes import client as k8s
 
-
-def run_update_quarto():
-    from scripts.quarto_glemte_krav import update_quarto
-    
-    update_quarto()
-    
-
-with DAG('quarto-glemte-krav', start_date=datetime(2023, 8, 25), schedule_interval="8 3 * * *") as dag:    
-    run_this = PythonOperator(
-        task_id='quarto-glemte-krav',
-        python_callable=run_update_quarto,
-        executor_config={
-            "pod_override": k8s.V1Pod(
-                spec=k8s.V1PodSpec(
-                    containers=[
-                    k8s.V1Container(
-                        name="base",
-                        image="ghcr.io/navikt/pensak-airflow-images:2023-09-08-531834a-main",
-                        working_dir="/dags/scripts",
-                    )
-                    ]
-                ),
-                metadata=k8s.V1ObjectMeta(annotations={"allowlist": "dm08db03.adeo.no:1521,datamarkedsplassen.intern.nav.no"})
-            )
-        },
-    dag=dag)
+with DAG(
+    dag_id="quarto-glemte-krav-new",
+    description="Installerer pakker ved oppstart og oppdaterer quarto",
+    schedule_interval="8 3 * * *",
+    start_date=datetime(2023, 8, 26, tzinfo=pendulum.timezone("Europe/Oslo")),
+    catchup=False,
+) as dag:
+  podop = create_pod_operator(
+    dag=dag, 
+    name="update-quarto",
+    repo="navikt/pensjon-data-analyse",
+    branch="main",
+    quarto={
+        "path": "quarto/glemte_krav.qmd",
+        "environment": "datamarkedsplassen.intern.nav.no",
+        "id": "2cc73eb9-36b4-47d4-a719-918236de37e6",
+        "token": Variable.get("PENSAK_QUARTO_TOKEN"),
+    },
+    requirements_file="scheduling/airflow/docker/requirements.txt",
+    image="europe-north1-docker.pkg.dev/knada-gcp/knada-north/airflow:2023-09-22-0bb59f1",
+    delete_on_finish=False,
+    slack_channel="#pensak-airflow-alerts",
+    resources=k8s.V1ResourceRequirements(
+        requests={
+            "memory": "256Mi"
+        }
+    )
+  )

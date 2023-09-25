@@ -34,7 +34,7 @@ importlib.reload(utils)
 importlib.reload(pandas_utils)
 importlib.reload(pesys_utils)
 
-utils.set_secrets_as_env()
+utils.set_secrets_as_env(split_on=":", secret_name="projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest")
 ```
 
 ```{python}

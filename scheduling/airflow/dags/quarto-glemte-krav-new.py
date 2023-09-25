@@ -23,7 +23,7 @@ with DAG(
         "id": "2cc73eb9-36b4-47d4-a719-918236de37e6",
         "token": Variable.get("PENSAK_QUARTO_TOKEN"),
     },
-    requirements_file="scheduling/docker/requirements.txt",
+    requirements_file="scheduling/airflow/docker/requirements.txt",
     image="europe-north1-docker.pkg.dev/knada-gcp/knada-north/airflow:2023-09-22-0bb59f1",
     delete_on_finish=False,
     slack_channel="#pensak-airflow-alerts",

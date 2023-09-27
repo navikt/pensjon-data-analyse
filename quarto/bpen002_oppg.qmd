@@ -1,0 +1,99 @@
+---
+title: 'Oppgaver oppretta av BPEN002'
+author: Vebjørn Rekkebo
+execute:
+  echo: false
+  output: false
+toc-title: Innhold
+number-sections: true
+format:
+  html:
+    include: true
+    echo: false
+    theme: flatly
+    page-layout: full
+    self-contained: true
+jupyter: python3
+---
+
+```{python}
+import pandas as pd
+import sys
+import plotly.express as px
+
+from datastory import DataStory
+
+import importlib
+sys.path.append('../lib')
+import utils, pesys_utils, pandas_utils
+importlib.reload(utils)
+importlib.reload(pesys_utils)
+importlib.reload(pandas_utils)
+```
+
+```{python}
+utils.set_secrets_as_env(split_on=":", secret_name="projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest")
+```
+
+```{python}
+con = pesys_utils.open_pen_connection()
+df_bpen002 = pandas_utils.pandas_from_sql(sqlfile='../sql/bpen002_oppg.sql', con=con, tuning=10000, lowercase=True)
+con.close()
+```
+
+```{python}
+df_bpen002.head()
+```
+
+```{python}
+px.bar(df_bpen002, "dato", "antall", color="sakstype")
+```
+
+```{python}
+df = df_bpen002.copy()
+df["dato"] = pd.to_datetime(df.dato)
+df.set_index('dato',inplace=True)
+
+df["oppgavetekst_lang"] = df.oppgavetekst.apply(lambda x: pesys_utils.oppgavetekst_lang[x])
+```
+
+```{python}
+#sakstyper = df.sakstype.unique()
+sakstyper = ['Alderspensjon', "Uføretrygd"]
+figs = {}
+for i in range(len(sakstyper)):
+    ytelse = sakstyper[i]
+    df_ytelse = df.query(f"sakstype=='{ytelse}'")
+    df_mnd = df_ytelse.groupby(["oppgavetekst", "oppgavetekst_lang"])[["antall"]].resample('MS').sum().reset_index()
+    figs[ytelse] = px.bar(df_mnd, "dato", "antall", color="oppgavetekst", title=ytelse, hover_data=["oppgavetekst_lang"])
+```
+
+```{python}
+n_days = 15
+for i in range(len(sakstyper)):
+    ytelse = sakstyper[i]
+    df_now = df[df.index >= df.index.max() - pd.Timedelta(f"{n_days + 1} days")]
+    df_ytelse = df_now.query(f"sakstype=='{ytelse}'")
+    df_mnd = df_ytelse.groupby(["oppgavetekst", "oppgavetekst_lang", "prioritet"])[["antall"]].sum().reset_index().sort_values("antall", ascending=False)
+    figs[ytelse + "_now"] = px.bar(df_mnd, "oppgavetekst", "antall", title=ytelse + f" siste {n_days} dager", color="prioritet", hover_data=["oppgavetekst_lang"], color_discrete_map={'HOY':utils.nav_colors[1], 'LAV':utils.nav_colors[0]})
+```
+
+```{python}
+for i in range(len(sakstyper)):
+    ytelse = sakstyper[i]
+    df_ytelse = df.query(f"sakstype=='{ytelse}'")
+    df_mnd = df_ytelse.groupby(["prioritet"])[["antall"]].resample('MS').sum().reset_index()
+    figs[ytelse + "_prio"] = px.bar(df_mnd, "dato", "antall", color="prioritet", barmode='group', title=ytelse + f" - oppgaveprioritet", color_discrete_map={'HOY':utils.nav_colors[1], 'LAV':utils.nav_colors[0]})
+```
+
+BPEN002 er navnet på den daglige batchen som plukker opp dødsmeldinger fra TPS/PDL og initierer nødvendig saksbehandling i pesys. 
+Det er ønskelig at så mye som mulig av behandlingen skjer automatisk, men ved noen scenarioer er det nødvendig å opprette en oppgave for manuell behandling.
+Figurene under viser mengden av ulike typer oppgaver som opprettes av BPEN002.
+
+
+```{python}
+#| output: true
+for _, fig in figs.items():
+    fig.show()
+```
+

@@ -6,10 +6,10 @@ from airflow.models import Variable
 from kubernetes import client as k8s
 
 with DAG(
-    dag_id="quarto-glemte-krav",
+    dag_id="quarto-bpen002-oppg",
     description="Installerer pakker ved oppstart og oppdaterer quarto",
-    schedule_interval="8 3 * * *",
-    start_date=datetime(2023, 8, 26, tzinfo=pendulum.timezone("Europe/Oslo")),
+    schedule_interval="55 3 * * *",
+    start_date=datetime(2023, 8, 27, tzinfo=pendulum.timezone("Europe/Oslo")),
     catchup=False,
 ) as dag:
   podop = create_pod_operator(
@@ -18,9 +18,9 @@ with DAG(
     repo="navikt/pensjon-data-analyse",
     branch="main",
     quarto={
-        "path": "quarto/glemte_krav.qmd",
+        "path": "quarto/bpen002_oppg.qmd",
         "environment": "datamarkedsplassen.intern.nav.no",
-        "id": "2cc73eb9-36b4-47d4-a719-918236de37e6",
+        "id": "535c2989-db40-4c7a-a190-81a0c3f92e09",
         "token": Variable.get("PENSAK_QUARTO_TOKEN"),
     },
     requirements_file="scheduling/airflow/docker/requirements.txt",

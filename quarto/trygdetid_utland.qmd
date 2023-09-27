@@ -1,0 +1,148 @@
+---
+title: 'Trygdetidsperioder i utlandet'
+author: Vebjørn Rekkebo
+execute:
+  echo: false
+  output: false
+toc-title: Innhold
+number-sections: true
+format:
+  html:
+    include: true
+    echo: false
+    theme: flatly
+    page-layout: full
+    self-contained: true
+jupyter: python3
+---
+
+```{python}
+import sys
+import numpy as np
+import pandas as pd
+import importlib
+import plotly.express as px
+import plotly.graph_objects as go
+from datetime import datetime
+
+sys.path.append('../lib')
+import utils
+import pandas_utils
+import pesys_utils
+importlib.reload(utils)
+importlib.reload(pesys_utils)
+importlib.reload(pandas_utils)
+```
+
+```{python}
+utils.set_secrets_as_env(split_on=":", secret_name="projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest")
+```
+
+```{python}
+def group_df_on_var(df, period):
+    df = df.merge(df.groupby([period], as_index=False).frekvens.sum(),
+                    left_on=[period],
+                    right_on=[period],
+                    suffixes=(""," totalt")
+            )
+    df["andel"] = df.frekvens.divide(df["frekvens totalt"])
+    return df
+```
+
+```{python}
+con = pesys_utils.open_pen_connection()
+df_perioder_registrert = pandas_utils.pandas_from_sql('../sql/trygdetidsperioder_saksbehandler.sql', con=con, lowercase=True)
+df_perioder_frekvens = pandas_utils.pandas_from_sql('../sql/trygdetidsperioder_saksbehandler_frekvens.sql', con=con, lowercase=True)
+con.close()
+```
+
+```{python}
+df_perioder_registrert.head()
+```
+
+```{python}
+current_year = datetime.now().year
+
+df = df_perioder_registrert[df_perioder_registrert.land == 'Utland'].reset_index(drop=True)
+df = df[df.aar != current_year]
+df = df[df.aar != 2008]
+df["snitt"] = df.antall_grunnlag / df.antall_personer
+```
+
+Saksbehandlere opplever at det er veldig tidkrevende å saksbehandle utlandssaker. 
+Særlig er det veldig mye jobb å registrere trygdetidsperioder for personer med mange perioder i utlandet.
+Dette er informasjon man har i EESSI-løsningen, men som ikke automatisk overføres til pesys, slik at saksbehandler må registrere hver periode manuelt.
+Her ser vi på omfanget av personer med mange trygdetidsperioder i pesys de siste årene. 
+Dette er altså på tvers av alle ytelser i pesys, med alderspensjon og uføretrygd som de to klart største.
+
+```{python}
+#| output: true
+fig_n_personer = px.bar(df, "aar", "antall_personer", labels={'antall_personer':'Antall personer', 'aar':'År'}, title='Antall personer med minst én manuelt registrert utlandsperiode i pesys per år')
+fig_n_personer.show()
+```
+
+Figuren over viser antall personer som har minst én manuelt utfylt trygdetidsperiode for hvert år. 
+Her ser vi en svært tydelig økning i personer med utlandske perioder fram til 2014, men mer stabilt etterpå.
+
+```{python}
+#| output: true
+fig_n_grunnlag = px.bar(df, "aar", "antall_grunnlag", labels={'antall_grunnlag':'Antall perioder', 'aar':'År'}, title='Antall manuelt registrerte utlandsperioder i pesys per år')
+fig_n_grunnlag.show()
+```
+
+Denne figuren viser det totale antallet trygdetidsperioder som er registrert av saksbehandler hvert år. 
+Her er det en oppgang også etter 2014, hvilket betyr at antallet perioder per person har økt som vi ser i neste figur.
+Denne figuren illustrerer best den totale arbeidsmengden for saksbehandlerne gjennom et år.
+
+```{python}
+#| output: true
+fig_snitt_grunnlag = px.bar(df, "aar", "snitt", labels={'aar':'År', 'snitt':'Antall perioder'}, title='Gjennomsnittlig antall manuelt registrerte utlandsperioder per person')
+fig_snitt_grunnlag.show()
+```
+
+Her vises gjennomsnittlig antall utlandsperioder per person med minst én periode. Her må man være klar over at det er en mindre mengde personer med svært mange perioder som drar opp gjennomsnittet.
+Til sammenligning er median 2.
+
+```{python}
+df_perioder_frekvens = df_perioder_frekvens[df_perioder_frekvens.aar != current_year]
+df_perioder_frekvens_utland = df_perioder_frekvens[df_perioder_frekvens.land == 'Utland']
+
+df2 = group_df_on_var(df_perioder_frekvens_utland, 'aar')
+```
+
+```{python}
+df2.tail()
+```
+
+```{python}
+#| output: true
+cutoffs = [2, 5, 10, 20]
+fig4 = go.Figure()
+fig4.update_layout(title="Utvikling i andel personer med x antall trygdetidsperioder i utlandet (av alle som har minst én)")
+for cutoff in cutoffs:
+    df3 = df2[df2.antall_grunnlag >= cutoff].groupby(['aar'], as_index=False).andel.sum()
+    fig4.add_traces(go.Scatter(x=df3.aar, y=df3.andel, name=f"Minst {cutoff}"))
+    fig4.update_yaxes(tickformat='.0%')
+    fig4.update_layout(xaxis_title="År", yaxis_title="Andel")
+fig4.show()
+```
+
+For å tallfeste hvor ofte en saksbehandler må registrere *for* mange trygdetidsperioder ser vi på hvor mange av personene som har mer enn x perioder. 
+Hvis vi setter en imaginær grense på mindre enn 5 perioder per person, så er det 27% av personene som er over denne grensa.
+
+```{python}
+df2_2022 = df2[df2.aar == 2022]
+```
+
+```{python}
+df2_2022[df2_2022.antall_grunnlag >= 30].frekvens.sum()
+```
+
+```{python}
+#| output: true
+fig_histogram = px.histogram(df2_2022[df2_2022.antall_grunnlag < 30], "antall_grunnlag", "frekvens", nbins=30, labels={'antall_grunnlag':'Antall perioder'}, title='Fordeling av antall utlandsperioder per person')
+fig_histogram.update_layout(yaxis_title="Frekvens")
+fig_histogram.show()
+```
+
+Den siste figuren viser fordelingen av antall perioder per person i 2022. Merk at x-aksen er kutta på 30 perioder for små grupperinger. Det var i underkant av 200 personer med mer enn 30 perioder.

@@ -13,7 +13,7 @@ from lib import pandas_utils, pesys_utils, utils
 
 
 def update_datastory():
-    utils.set_secrets_as_env(secret_name="projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest")
+    utils.set_secrets_as_env(split_on=':', secret_name="projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest")
     df = df_from_pen()
     df = add_aar_maaned(df)
     df["STØNADSOMRÅDE"] = df.STØNADSOMRÅDE.apply(pesys_utils.map_stonad)

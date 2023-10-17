@@ -9,7 +9,7 @@ from datetime import datetime
 def run_update_datastory():
     from scripts.datastory_etterlatte import update_datastory
     
-    update_datastory(TEST)
+    update_datastory()
     
 
 with DAG('datastory-etterlatte', start_date=datetime(2023, 6, 1), schedule_interval="22 3 1 * *") as dag:
@@ -25,7 +25,7 @@ with DAG('datastory-etterlatte', start_date=datetime(2023, 6, 1), schedule_inter
             "color": "#2eb886",
             "pretext": "pensjon-saksbehandling",
             "author_name": "Airflow alert",
-            "title": f"dag.dag_id",
+            "title": f"{dag.dag_id}",
             "text": "Gå til https://pensjon-saksbehandling.airflow.knada.io/home for mer info.",
             "fields": [
                 {

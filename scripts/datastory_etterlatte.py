@@ -140,3 +140,5 @@ def make_datastory(figs):
     story.plotly(figs["barnep_med_dager"].to_json())
 
     return story
+
+update_datastory()

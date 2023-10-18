@@ -20,9 +20,9 @@ def create_email_notification(dag_id: str, email: Union[List[str], str], name: s
 
 def create_slack_notification(dag_id: str, slack_channel: str, name: str, namespace: str, dag):
     return SlackAPIPostOperator(
-            task_id="airflow_task_failed",
-            dag=dag,
-            token=os.environ["SLACK_TOKEN"],
-            text=f"@here Airflow task {name} i DAG {dag_id} feilet i namespace {namespace} kl. {datetime.now().isoformat()}.",
-            channel=slack_channel,
+        task_id="airflow_task_failed",
+        dag=dag,
+        slack_conn_id="slack_connection",
+        text=f"Airflow task {name} i DAG {dag_id} feilet i namespace {namespace} kl. {datetime.now().isoformat()}.",
+        channel=slack_channel
     )

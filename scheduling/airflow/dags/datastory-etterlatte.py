@@ -1,9 +1,7 @@
 from airflow import DAG
 
-from airflow.operators.python_operator import PythonOperator
-from airflow.providers.slack.operators.slack import SlackAPIPostOperator
+from common.podop_factory import create_pod_operator
 from common.notifications import create_slack_notification
-from kubernetes import client as k8s
 from datetime import datetime
 
 

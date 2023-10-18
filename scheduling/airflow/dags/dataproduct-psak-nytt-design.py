@@ -1,33 +1,17 @@
 from airflow import DAG
-
-from airflow.utils.dates import days_ago
-from airflow.operators.python_operator import PythonOperator
-from kubernetes import client as k8s
 from datetime import datetime
 
+from common.podop_factory import create_pod_operator
 
-def run_update_dataproduct():
-    from scripts.dataproduct_psak_nytt_design import update_dataproduct
-    
-    update_dataproduct()
-    
 
-with DAG('dataproduct-psak-nytt-design', start_date=datetime(2023, 6, 29), schedule_interval="15 */1 * * *") as dag:    
-    run_this = PythonOperator(
-        task_id='dataproduct-psak-nytt-design',
-        python_callable=run_update_dataproduct,
-        executor_config={
-            "pod_override": k8s.V1Pod(
-                spec=k8s.V1PodSpec(
-                    containers=[
-                    k8s.V1Container(
-                        name="base",
-                        image="ghcr.io/navikt/airflow-pensjon-sb:v0",
-                        working_dir="/dags/scripts",
-                    )
-                    ]
-                ),
-                metadata=k8s.V1ObjectMeta(annotations={"allowlist": "A01DBVL028.adeo.no:5432"})
-            )
-        },
-    dag=dag)
+with DAG('dataproduct-psak-nytt-design', start_date=datetime(2023, 6, 29), schedule_interval="15 */1 * * *", catchup=False) as dag:
+    t1 = create_pod_operator(
+        dag=dag,
+        name="dataproduct-psak-nytt-design",
+        slack_channel="#pensak-airflow-alerts",
+        repo="navikt/pensjon-data-analyse",
+        script_path="scripts/dataproduct_psak_nytt_design.py",
+        branch="main",
+        retries=0
+    )
+    

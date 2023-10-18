@@ -38,3 +38,8 @@ def df_to_bq(project_id, full_table_id, dataframe, write_disposition):
     end = time()
 
     print(f'{len(dataframe)} rader ble skrevet til bigquery etter {end-start} sekunder.')
+
+
+if __name__ == "__main__":
+    overwrite_dataproduct()
+    

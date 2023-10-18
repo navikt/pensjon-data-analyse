@@ -56,3 +56,7 @@ def make_datastory(figs):
     ds.plotly(figs["månedlige_vedtak"].to_json())
     
     return ds
+
+
+if __name__ == "__main__":
+    update_datastory()

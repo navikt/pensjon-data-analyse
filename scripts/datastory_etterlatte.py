@@ -141,4 +141,7 @@ def make_datastory(figs):
 
     return story
 
-update_datastory()
+
+if __name__ == "__main__":
+    update_datastory()
+    

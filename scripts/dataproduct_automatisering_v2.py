@@ -117,3 +117,7 @@ def overwrite_krav(N, years):
             )
     con.close()
     print(f"Table {table_id} successfully overwritten")
+
+
+if __name__ == "__main__":
+    overwrite_dataproduct()

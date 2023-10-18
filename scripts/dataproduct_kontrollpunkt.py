@@ -36,3 +36,8 @@ def write_to_bq(df):
     end = time()
 
     print(f'{len(df)} rad(er) ble skrevet til bigquery etter {end-start} sekunder.')
+
+
+if __name__ == "__main__":
+    overwrite_dataproduct()
+    

@@ -12,7 +12,8 @@ with DAG('dataproduct-laaste-vedtak', start_date=datetime(2023, 6, 28), schedule
         name="dataproduct-laaste-vedtak",
         slack_channel="#pensak-airflow-alerts",
         repo="navikt/pensjon-data-analyse",
-        script_path="scripts/dataprodukt_laaste_vedtak.py",
+        script_path="scripts/dataproduct_laaste_vedtak.py",
         branch="main",
         retries=0
     )
+    

@@ -11,6 +11,7 @@ with DAG('dataproduct-psak-nytt-design', start_date=datetime(2023, 6, 29), sched
         slack_channel="#pensak-airflow-alerts",
         repo="navikt/pensjon-data-analyse",
         script_path="scripts/dataproduct_psak_nytt_design.py",
+        image="ghcr.io/navikt/pensak-airflow-images:2023-09-08-531834a-main",
         branch="main",
         retries=0
     )

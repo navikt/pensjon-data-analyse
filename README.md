@@ -14,7 +14,7 @@ Alt i ordlista er bedre dokumentert på [docs.knada.io](docs.knada.io).
 
 ## Nødvendige tilganger
 ### Airflow
-Hemmeligheter for airflowjobbene til teamet `pensjon-saksbehandling` må lagres i deres secret i Google Secret Manager. Lenke finnes i [knorten.knada.io](knorten.knada.io). Servicebrukeren har automatisk tilgang til denne secreten, men den må leses ekspisitt inn i minnet for hver jobb. Nødvendige hemmeligheter er i skrivende stund følgende:
+Hemmeligheter for airflowjobbene i knada-namespacet `pensjon-saksbehandling` må lagres i tilhørende secret i Google Secret Manager. Lenke finnes i [knorten.knada.io](knorten.knada.io). Servicebrukeren har automatisk tilgang til denne secreten, men den må leses ekspisitt inn i minnet for hver jobb. Nødvendige hemmeligheter er i skrivende stund følgende:
 - Upersonlig brukernavn og passord med tilgang til prod-kopi av PEN-databasen. Fås av db-teamet.
 - Upersonlig brukernavn og passord til psak-databasen (postgres). Ligger i vault.
 - Teamtoken i datamarkedsplassen for pensjon-saksbehandling. Hentes fra [datamarkedsplassen](https://data.intern.nav.no/).
@@ -29,16 +29,17 @@ Flere av jobbene kommuniserer med BigQuery og trenger derfor tilgang til å lese
 - `BigQuery Data Editor` på hver tabell den skriver til
 - `BigQuery Job User` i prosjektet hvor queryjobben kjøres
 - `BigQuery Read Session User` i prosjektet hvor queryjobben kjøres. Denne rollen trengs bare for enkelte jobber. Dette gjelder jobbene som bruker `bigquery.Client.query` i stedet for `bigquery.Client.query_job` i følge github copilot.
+Dette håndterer vi selv i [google cloud console](https://console.cloud.google.com).
 
 
 ## Mappestruktur
 Under følger en kort beskrivelse av innholdet i hver mappe i dette repoet.
 
 ### common
-Inneholder funksjoner som brukes av airflowjobbene som oppdaterer datafortellinger laget med quarto. Dette er copy-paste fra et nada-repo og bør erstattes med å bruke dataverk-airflow i disse jobbene.
+Støttefunksjoner for airflow. Dette er copy-paste fra et nada-repo og bør erstattes med å bruke pakken dataverk-airflow.
 
 ### lib
-Funksjoner som ofte brukes på tvers av notebooks og andre kodefiler, samt støttefunksjoner brukt i bare én notebook.
+Funksjoner som ofte brukes på tvers av notebooks og andre kodefiler, samt noen støttefunksjoner brukt i bare én notebook.
 
 ### notebooks
 En haug med nye og gamle jupyter notebooks som har blitt brukt til utforskning. De som oppdaterer datafortellinger eller dataprodukter er mer eller mindre kopier av de som blir kjørt med airflow.
@@ -50,7 +51,7 @@ Filer av typen .qmd (quarto markdown). Fungerer omtrent som jupyter notebooks og
 DAGs som plukkes opp av airflowinstansen til `pensjon-saksbehandling`. Instansen administeres gjennom [knorten.knada.io](knorten.knada.io).
 
 ### scheduling/docker
-En requirements.txt som inneholder pakker som skal innstaleres på toppen av baseimaget i airflowjobbene som oppdaterer quarto. Imaget som brukes i de andre jobbene bygges i [https://github.com/navikt/pensak-airflow-images](https://github.com/navikt/pensak-airflow-images). Det er viktig å oppdatere både baseimage og versjonsnummeret på pakkene i requirements.txt regelmessig for å unngå sårbarheter.
+En requirements.txt som inneholder pakker som skal installeres på toppen av baseimaget i airflowjobbene som oppdaterer quarto. De fleste jobbene bruker bare defaultimaget som nada-teamet håndterer. Dersom det trengs et eget image for en jobb, kan det bygges med [https://github.com/navikt/pensak-airflow-images](https://github.com/navikt/pensak-airflow-images). Det er viktig å oppdatere både baseimage og versjonsnummeret på pakkene i requirements.txt regelmessig for å unngå sårbarheter.
 
 ### scripts
 Python-scripts som kjøres av airflowjobber. Det er disse som oppdaterer dataprodukter og datafortellinger.

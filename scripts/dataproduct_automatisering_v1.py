@@ -36,3 +36,7 @@ def write_to_bq(df):
     job = client.load_table_from_dataframe(df, table_id, job_config=job_config)
     job.result()
     print(f"Table {table_id} successfully updated")
+
+
+if __name__ == "__main__":
+    overwrite_dataproduct()

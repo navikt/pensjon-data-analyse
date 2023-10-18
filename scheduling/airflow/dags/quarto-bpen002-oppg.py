@@ -25,7 +25,6 @@ with DAG(
     },
     requirements_file="scheduling/airflow/docker/requirements.txt",
     image="europe-north1-docker.pkg.dev/knada-gcp/knada-north/airflow:2023-09-22-0bb59f1",
-    delete_on_finish=False,
     slack_channel="#pensak-airflow-alerts",
     resources=k8s.V1ResourceRequirements(
         requests={

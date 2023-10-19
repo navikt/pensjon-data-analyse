@@ -3,7 +3,7 @@ Dette repoet brukes til versjonskontroll av airflowjobber og en mengde ad-hoc in
 
 ## Ordliste
 - KNADA: En samling verktøy med tilgang til onprem-ressurser. Hovedbestanddelene er jupyterhub/VM og airflow.
-- Dataprodukt: En tabell i BigQuery som er publisert på datamarkedsplassen
+- Dataprodukt: En tabell i BigQuery som er registrert på datamarkedsplassen
 - Datafortelling: En rapport som er laget med quarto eller datastory og publisert på datamarkedsplassen
 - Quarto: Verktøy for å kompilere en .html-fil (datafortelling) eller andre typer filer fra en jupyter notebook
 - Datastory: Deprecated verktøy for å publisere datafortellinger. 
@@ -14,14 +14,13 @@ Alt i ordlista er bedre dokumentert på [docs.knada.io](docs.knada.io).
 
 ## Nødvendige tilganger
 ### Airflow
-Hemmeligheter for airflowjobbene i knada-namespacet `pensjon-saksbehandling` må lagres i tilhørende secret i Google Secret Manager. Lenke finnes i [knorten.knada.io](knorten.knada.io). Servicebrukeren har automatisk tilgang til denne secreten, men den må leses ekspisitt inn i minnet for hver jobb. Nødvendige hemmeligheter er i skrivende stund følgende:
-- Upersonlig brukernavn og passord med tilgang til prod-kopi av PEN-databasen. Fås av db-teamet.
+Hemmeligheter for airflowjobbene i knada-namespacet `pensjon-saksbehandling` lagres i tilhørende secret i Google Secret Manager. Lenke finnes i [knorten.knada.io](knorten.knada.io). Servicebrukeren har automatisk tilgang til denne secreten, men den må leses ekspisitt inn i minnet for hver jobb. Nødvendige hemmeligheter er i skrivende stund følgende:
+- Upersonlig brukernavn og passord med tilgang til prod-kopi av PEN-databasen. Ligger i vault.
 - Upersonlig brukernavn og passord til psak-databasen (postgres). Ligger i vault.
 - Teamtoken i datamarkedsplassen for pensjon-saksbehandling. Hentes fra [datamarkedsplassen](https://data.intern.nav.no/).
-- Under utfasing: et datastorytoken til de eksisterende datastoryene. Hentes fra [datamarkedsplassen](https://data.intern.nav.no/).
 
 ### Notebooks/VM
-For utforskning i notebook/VM skal det brukes personlige versjoner av brukernavn og passord.
+For utforskning i notebook/VM skal det brukes personlige versjoner av brukernavn og passord. Disse skal lagres i din personlige hemmelighet som kan opprettes fra [knorten](knorten.knada.io).
 
 ### BigQuery
 Flere av jobbene kommuniserer med BigQuery og trenger derfor tilgang til å lese og/eller skrive til tabeller i BigQuery. Servicebrukeren til teamet trenger følgende roller:
@@ -48,13 +47,13 @@ En haug med nye og gamle jupyter notebooks som har blitt brukt til utforskning. 
 Filer av typen .qmd (quarto markdown). Fungerer omtrent som jupyter notebooks og det er disse som blir kompilert til datafortellinger.
 
 ### scheduling/aiflow
-DAGs som plukkes opp av airflowinstansen til `pensjon-saksbehandling`. Instansen administeres gjennom [knorten.knada.io](knorten.knada.io).
+DAGs som plukkes opp av airflowinstansen til `pensjon-saksbehandling`. Her defineres schedules, kjøretidsmiljø og annen metadata for hver jobb. Instansen administeres gjennom [knorten.knada.io](knorten.knada.io).
 
 ### scheduling/docker
 En requirements.txt som inneholder pakker som skal installeres på toppen av baseimaget i airflowjobbene som oppdaterer quarto. De fleste jobbene bruker bare defaultimaget som nada-teamet håndterer. Dersom det trengs et eget image for en jobb, kan det bygges med [https://github.com/navikt/pensak-airflow-images](https://github.com/navikt/pensak-airflow-images). Det er viktig å oppdatere både baseimage og versjonsnummeret på pakkene i requirements.txt regelmessig for å unngå sårbarheter.
 
 ### scripts
-Python-scripts som kjøres av airflowjobber. Det er disse som oppdaterer dataprodukter og datafortellinger.
+Python-scripts som kjøres av airflowjobber. Det er disse som oppdaterer dataprodukter og datafortellinger av typen datastory (deprecated).
 
 ### sql
 Diverse sql-spørringer som er brukt mot PEN og enkelte andre databaser. Mange blir brukt i notebooks, quarto eller airflowjobber. Alle spørringene bør kvalitetsikres før de gjenbrukes.

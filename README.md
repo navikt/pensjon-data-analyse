@@ -20,7 +20,7 @@ Hemmeligheter for airflowjobbene i knada-namespacet `pensjon-saksbehandling` lag
 - Teamtoken i datamarkedsplassen for pensjon-saksbehandling. Hentes fra [datamarkedsplassen](https://data.intern.nav.no/).
 
 ### Notebooks/VM
-For utforskning i notebook/VM skal det brukes personlige versjoner av brukernavn og passord. Disse skal lagres i din personlige hemmelighet som kan opprettes fra [knorten](knorten.knada.io).
+For utforskning i notebook/VM skal det brukes personlige versjoner av brukernavn og passord. Disse skal lagres i din personlige hemmelighet som kan opprettes fra [knorten](knorten.knada.io). For å få tilgang til denne hemmeligheten må du kjøre `gcloud auth login --update-adc`.
 
 ### BigQuery
 Flere av jobbene kommuniserer med BigQuery og trenger derfor tilgang til å lese og/eller skrive til tabeller i BigQuery. Servicebrukeren til teamet trenger følgende roller:

@@ -14,7 +14,7 @@ nav_colors = (
 )
 
 
-def set_secrets_as_env(split_on, secret_name):
+def set_secrets_as_env(split_on=':', secret_name='projects/193123067890/secrets/vebjorn-rekkebo/versions/latest'):
     secrets = secretmanager.SecretManagerServiceClient()
     secret = secrets.access_secret_version(name=secret_name)
     secrets = secret.payload.data.decode('UTF-8')

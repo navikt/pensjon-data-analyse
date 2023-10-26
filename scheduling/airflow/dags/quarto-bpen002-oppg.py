@@ -30,5 +30,6 @@ with DAG(
         requests={
             "memory": "256Mi"
         }
-    )
+    ),
+    retries=0
   )

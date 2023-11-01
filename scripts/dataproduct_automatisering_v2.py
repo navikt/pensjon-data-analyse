@@ -42,6 +42,8 @@ def overwrite_vedtak(N, years):
         
             start = time()
 
+            print(f'Henter vedtaksdata fra perioden {years[i]}-{years[i-1]}.')
+
             cursor.execute(query.replace('x_year', years[i]).replace('y_year', years[i-1]))
 
             df_one_year = pd.DataFrame(cursor.fetchall())
@@ -94,6 +96,8 @@ def overwrite_krav(N, years):
         for i in range(1,N):
         
             start = time()
+
+            print(f'Henter kravdata fra perioden {years[i]}-{years[i-1]}.')
 
             cursor.execute(query.replace('x_year', years[i]).replace('y_year', years[i-1]))
 

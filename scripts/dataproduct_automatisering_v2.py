@@ -25,8 +25,6 @@ def overwrite_vedtak(N, years):
     with open('../sql/forslag_auto.sql') as sql:
         query = sql.read()
     
-    print(query)
-    
     client = Client(project="pensjon-saksbehandli-prod-1f83")
 
     table_id = 'pensjon-saksbehandli-prod-1f83.vedtak.vedtak_automatisering_v2'

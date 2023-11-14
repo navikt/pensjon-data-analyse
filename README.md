@@ -15,7 +15,7 @@ Alt i ordlista er bedre dokumentert i [nada sin dokumentasjon](https://docs.knad
 ## Nødvendige tilganger
 ### Airflow
 Hemmeligheter for airflowjobbene i knada-namespacet `pensjon-saksbehandling` lagres i tilhørende secret i Google Secret Manager. Lenke finnes i [knorten](https://knorten.knada.io). Servicebrukeren har automatisk tilgang til denne secreten, men den må leses ekspisitt inn i minnet for hver jobb. Nødvendige hemmeligheter er i skrivende stund følgende:
-- Upersonlig brukernavn (`pen-airflow`) og passord med tilgang til prod-kopi av PEN-databasen. Ligger i vault.
+- Upersonlig brukernavn (`pen-airflow`) og passord med tilgang til prod-kopi av PEN-databasen. Ligger i vault. Merk at denne brukeren kun har tilgang til tabellene den allerede spør mot. For tilgang til flere tabeller, ta kontakt med db-teamet.
 - Upersonlig brukernavn (`pensjon-psak-static-readonly`) og passord til psak-databasen (postgres). Ligger i vault.
 - Teamtoken i datamarkedsplassen for pensjon-saksbehandling. Hentes fra [datamarkedsplassen](https://data.intern.nav.no/).
 

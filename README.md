@@ -1,6 +1,16 @@
 # pensjon-data-analyse
 Dette repoet brukes til versjonskontroll av airflowjobber og en mengde ad-hoc innsiktsarbeid i PO Pensjon. Sistnevnte består hovedsakelig av jupyter notebooks og sql-spørringer mot PEN-databasen. Koden er beregnet på å kjøre i KNADA (se [docs.knada.io](https://docs.knada.io)).
 
+# Typisk dataflyt
+```mermaid
+flowchart TD;
+    B[Skedulerte jobber i Airflow] -- leser data --> A[PEN/PSAK];
+    C[Utforskning i Jupyter notebook/KNADA VM] -- leser data --> A;
+    B -- oppdaterer datafortelling --> E[Datafortelling];
+    B -- oppdaterer tabell --> D[BigQuery];
+    F[Dashboard i Metabase] -- leser data --> D;
+```
+
 ## Ordliste
 - KNADA: En samling verktøy med tilgang til onprem-ressurser. Hovedbestanddelene er jupyterhub/VM og airflow.
 - Dataprodukt: En tabell i BigQuery som er registrert på datamarkedsplassen

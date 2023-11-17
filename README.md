@@ -1,5 +1,7 @@
 # pensjon-data-analyse
-Dette repoet brukes til versjonskontroll av airflowjobber og en mengde ad-hoc innsiktsarbeid i PO Pensjon. Sistnevnte består hovedsakelig av jupyter notebooks og sql-spørringer mot PEN-databasen. Koden er beregnet på å kjøre i KNADA (se [docs.knada.io](https://docs.knada.io)).
+Dette repoet brukes til versjonskontroll av airflowjobber og en mengde ad-hoc innsiktsarbeid i PO Pensjon. Sistnevnte består hovedsakelig av jupyter notebooks og sql-spørringer mot PEN-databasen. Koden er beregnet på å kjøre i KNADA (se [docs.knada.io](https://docs.knada.io)). 
+
+Dersom en airflowjobb feiler vil det sendes en melding til slack på kanalen #pensak-airflow-alerts.
 
 # Typisk dataflyt
 ```mermaid
@@ -17,7 +19,7 @@ flowchart TD;
 - Datafortelling: En rapport som er laget med quarto eller datastory og publisert på datamarkedsplassen
 - Quarto: Verktøy for å kompilere en .html-fil (datafortelling) eller andre typer filer fra en jupyter notebook
 - Datastory: Deprecated verktøy for å publisere datafortellinger. 
-- Airflow: Verktøy for å skedulere jobber. Brukes til å oppdatere dataprodukter og datafortellinger.
+- Airflow: Verktøy for å skedulere jobber. Brukes til å oppdatere dataprodukter og datafortellinger. 
 - Jupyter notebook: En interaktiv notebook som kan inneholde kode, tekst og bilder. Brukes til å utforske data og lage datafortellinger.
 
 Alt i ordlista er bedre dokumentert i [nada sin dokumentasjon](https://docs.knada.io).

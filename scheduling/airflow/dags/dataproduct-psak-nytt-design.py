@@ -10,7 +10,7 @@ with DAG('dataproduct-psak-nytt-design', start_date=days_ago(1), schedule_interv
         slack_channel="#pensak-airflow-alerts",
         repo="navikt/pensjon-data-analyse",
         script_path="scripts/dataproduct_psak_nytt_design.py",
-        requirements_path="requirements.txt",
+        requirements_path="scheduling/airflow/docker/requirements_postgres.txt",
         branch="main",
         retries=0
     )

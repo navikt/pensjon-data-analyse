@@ -1,7 +1,6 @@
 from airflow import DAG
 from kubernetes import client as k8s
 from airflow.utils.dates import days_ago
-
 from dataverk_airflow import python_operator
 
 
@@ -12,7 +11,7 @@ with DAG('dataproduct-automatisering-v2', start_date=days_ago(1), schedule_inter
         slack_channel="#pensak-airflow-alerts",
         repo="navikt/pensjon-data-analyse",
         script_path="scripts/dataproduct_automatisering_v2.py",
-        requirements_path="requirements.txt",
+        requirements_path="scheduling/airflow/docker/requirements_oracle.txt",
         branch="main",
         retries=0,
         resources=k8s.V1ResourceRequirements(

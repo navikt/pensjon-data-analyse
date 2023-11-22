@@ -1,7 +1,7 @@
 from airflow import DAG
-from airflow.utils.dates import days_ago
-from common.podop_factory import create_pod_operator
 from airflow.models import Variable
+from airflow.utils.dates import days_ago
+from dataverk_airflow import quarto_operator
 from kubernetes import client as k8s
 
 with DAG(dag_id="quarto-bpen002-oppg", schedule_interval="55 3 * * *", start_date=days_ago(1), catchup=False) as dag:

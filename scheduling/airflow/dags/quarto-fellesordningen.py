@@ -23,5 +23,6 @@ with DAG(dag_id="quarto-fellesordningen", schedule_interval="22 2 * * *", start_
             "memory": "256Mi"
         }
     ),
-    retries=0
+    retries=0,
+    allowlist=["secretmanager.googleapis.com", "bigquery.googleapis.com", "a01dbfl041.adeo.no:1521", "dm08db03.adeo.no:1521", "datamarkedsplassen.intern.nav.no", "cdnjs.cloudflare.com"]
   )

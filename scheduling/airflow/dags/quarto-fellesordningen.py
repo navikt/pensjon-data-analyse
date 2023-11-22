@@ -16,7 +16,7 @@ with DAG(dag_id="quarto-fellesordningen", schedule_interval="22 2 * * *", start_
         "id": "f0badb23-c06a-4c23-a45e-a3eee008f80a",
         "token": Variable.get("PENSAK_QUARTO_TOKEN"),
     },
-    requirements_file="scheduling/airflow/docker/requirements_oracle.txt",
+    requirements_path="scheduling/airflow/docker/requirements_oracle.txt",
     slack_channel="#pensak-airflow-alerts",
     resources=k8s.V1ResourceRequirements(
         requests={

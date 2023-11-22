@@ -46,9 +46,6 @@ Dette håndterer vi selv i [google cloud console](https://console.cloud.google.c
 ## Mappestruktur
 Under følger en kort beskrivelse av innholdet i hver mappe i dette repoet.
 
-### common
-Støttefunksjoner for airflow. Dette er copy-paste fra et nada-repo og bør erstattes med å bruke pakken dataverk-airflow.
-
 ### lib
 Funksjoner som ofte brukes på tvers av notebooks og andre kodefiler, samt noen støttefunksjoner brukt i bare én notebook.
 
@@ -65,7 +62,7 @@ DAGs som plukkes opp av airflowinstansen til `pensjon-saksbehandling`. Her defin
 En requirements.txt som inneholder pakker som skal installeres på toppen av baseimaget i airflowjobbene som oppdaterer quarto. De fleste jobbene bruker bare defaultimaget som nada-teamet håndterer. Dersom det trengs et eget image for en jobb, kan det bygges med [repoet pensak-airflow-images](https://github.com/navikt/pensak-airflow-images). Det er viktig å oppdatere både baseimage og versjonsnummeret på pakkene i requirements.txt regelmessig for å unngå sårbarheter.
 
 ### scripts
-Python-scripts som kjøres av airflowjobber. Det er disse som oppdaterer dataprodukter og datafortellinger av typen datastory (deprecated).
+Python-scripts som kjøres av airflowjobber. Det er disse som oppdaterer dataprodukter og tidligere datafortellinger av typen datastory (deprecated).
 
 ### sql
 Diverse sql-spørringer som er brukt mot PEN og enkelte andre databaser. Mange blir brukt i notebooks, quarto eller airflowjobber. Alle spørringene bør kvalitetsikres før de gjenbrukes.

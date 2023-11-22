@@ -24,5 +24,5 @@ with DAG(dag_id="quarto-bpen002-oppg", schedule_interval="55 3 * * *", start_dat
         }
     ),
     retries=0,
-    allowlist=["secretmanager.googleapis.com", "bigquery.googleapis.com", "a01dbfl041.adeo.no:1521", "dm08db03.adeo.no:1521", "datamarkedsplassen.intern.nav.no", "cdnjs.cloudflare.com"]
+    allowlist=["secretmanager.googleapis.com", "bigquery.googleapis.com", "a01dbfl041.adeo.no:1521", "dm08db03.adeo.no:1521"]
   )

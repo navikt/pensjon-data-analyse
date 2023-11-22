@@ -1,5 +1,5 @@
 from airflow import DAG
-from datetime import datetime
+from airflow.utils.dates import days_ago
 import pendulum
 from common.podop_factory import create_pod_operator
 from airflow.models import Variable

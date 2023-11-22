@@ -3,7 +3,6 @@ import os
 
 from datetime import datetime
 from time import time
-from datastory import DataStory
 from google.cloud.bigquery import Client, LoadJobConfig
 
 from lib import pandas_utils, pesys_utils, utils

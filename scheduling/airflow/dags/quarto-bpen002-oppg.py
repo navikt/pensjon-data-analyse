@@ -12,7 +12,7 @@ with DAG(dag_id="quarto-bpen002-oppg", schedule_interval="55 3 * * *", start_dat
     branch="main",
     quarto={
         "path": "quarto/bpen002_oppg.qmd",
-        "environment": "datamarkedsplassen.intern.nav.no",
+        "env": "prod",
         "id": "535c2989-db40-4c7a-a190-81a0c3f92e09",
         "token": Variable.get("PENSAK_QUARTO_TOKEN"),
     },

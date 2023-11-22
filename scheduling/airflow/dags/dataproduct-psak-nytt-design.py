@@ -12,6 +12,7 @@ with DAG('dataproduct-psak-nytt-design', start_date=days_ago(1), schedule_interv
         script_path="scripts/dataproduct_psak_nytt_design.py",
         requirements_path="scheduling/airflow/docker/requirements_postgres.txt",
         branch="main",
-        retries=0
+        retries=0,
+        allowlist=["secretmanager.googleapis.com", "bigquery.googleapis.com", "a01dbvl028.adeo.no:5432"]
     )
     

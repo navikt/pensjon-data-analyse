@@ -1,12 +1,12 @@
 from airflow import DAG
 from kubernetes import client as k8s
-from datetime import datetime
+from airflow.utils.dates import days_ago
 
-from common.podop_factory import create_pod_operator
+from dataverk_airflow import python_operator
 
 
-with DAG('dataproduct-automatisering-v2', start_date=datetime(2023, 6, 28), schedule_interval="22 4 1 * *", catchup=False) as dag:
-    t1 = create_pod_operator(
+with DAG('dataproduct-automatisering-v2', start_date=days_ago(1), schedule_interval="22 4 1 * *", catchup=False) as dag:
+    t1 = python_operator(
         dag=dag,
         name="dataproduct-automatisering-v2",
         slack_channel="#pensak-airflow-alerts",

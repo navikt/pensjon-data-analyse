@@ -2,8 +2,6 @@ from airflow import DAG
 from airflow.utils.dates import days_ago
 from dataverk_airflow import python_operator
 
-#from common.podop_factory import create_pod_operator
-
 
 with DAG('dataproduct-psak-nytt-design', start_date=days_ago(1), schedule_interval="15 */1 * * *", catchup=False) as dag:
     t1 = python_operator(

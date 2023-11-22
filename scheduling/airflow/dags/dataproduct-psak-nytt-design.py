@@ -6,7 +6,7 @@ from dataverk_airflow import python_operator
 
 
 with DAG('dataproduct-psak-nytt-design', start_date=days_ago(1), schedule_interval="15 */1 * * *", catchup=False) as dag:
-    t1 = create_pod_operator(
+    t1 = python_operator(
         dag=dag,
         name="dataproduct-psak-nytt-design",
         slack_channel="#pensak-airflow-alerts",

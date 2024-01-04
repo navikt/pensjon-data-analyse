@@ -4,7 +4,7 @@ from airflow.utils.dates import days_ago
 from dataverk_airflow import python_operator
 
 
-with DAG('dataproduct-automatisering-v2', start_date=days_ago(1), schedule_interval="22 4 1 * *", catchup=False) as dag:
+with DAG('dataproduct-automatisering-v2', start_date=days_ago(1), schedule_interval="22 4 1 * *", catchup=True) as dag:
     t1 = python_operator(
         dag=dag,
         name="dataproduct-automatisering-v2",

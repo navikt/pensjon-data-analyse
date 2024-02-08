@@ -36,8 +36,7 @@ fra_bruker = {"Førstegangsbehandling", # Ta bort aldersovergang?
 
 
 def open_pen_connection():
-    # ORACLE_HOST = 'dm08db03.adeo.no' # Original host
-    ORACLE_HOST = 'a01dbfl041.adeo.no' # Temporary host
+    ORACLE_HOST = 'dm08db03-vip.adeo.no'
     ORACLE_PORT = '1521'
     ORACLE_SERVICE = 'pen'
     dsnStr = cx_Oracle.makedsn(ORACLE_HOST, ORACLE_PORT, service_name=ORACLE_SERVICE)

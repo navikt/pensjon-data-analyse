@@ -24,5 +24,5 @@ with DAG(dag_id="quarto-glemte-krav", schedule_interval="8 3 * * *", start_date=
         }
     ),
     retries=0,
-    allowlist=["secretmanager.googleapis.com", "bigquery.googleapis.com", "a01dbfl041.adeo.no:1521", "dm08db03.adeo.no:1521"]
+    allowlist=["secretmanager.googleapis.com", "bigquery.googleapis.com", "dm08db03-vip.adeo.no:1521"]
   )

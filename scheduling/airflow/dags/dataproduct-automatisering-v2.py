@@ -17,5 +17,5 @@ with DAG('dataproduct-automatisering-v2', start_date=days_ago(1), schedule_inter
         resources=k8s.V1ResourceRequirements(
             requests={"memory": "10Gi", "cpu": "0.5", "ephemeral-storage": "5Gi"}
             ),
-        allowlist=["secretmanager.googleapis.com", "bigquery.googleapis.com", "a01dbfl041.adeo.no:1521", "dm08db03.adeo.no:1521"]
+        allowlist=["secretmanager.googleapis.com", "bigquery.googleapis.com", "dm08db03-vip.adeo.no:1521"]
     )

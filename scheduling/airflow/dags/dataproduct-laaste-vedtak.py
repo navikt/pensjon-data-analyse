@@ -13,6 +13,6 @@ with DAG('dataproduct-laaste-vedtak', start_date=days_ago(1), schedule_interval=
         requirements_path="scheduling/airflow/docker/requirements_oracle.txt",
         branch="main",
         retries=0,
-        allowlist=["secretmanager.googleapis.com", "bigquery.googleapis.com", "a01dbfl041.adeo.no:1521", "dm08db03.adeo.no:1521"]
+        allowlist=["secretmanager.googleapis.com", "bigquery.googleapis.com", "dm08db03-vip.adeo.no:1521"]
     )
     

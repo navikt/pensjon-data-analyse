@@ -20,7 +20,8 @@ with DAG(dag_id="quarto-bpen002-oppg", schedule_interval="55 3 * * *", start_dat
     slack_channel="#pensak-airflow-alerts",
     resources=k8s.V1ResourceRequirements(
         requests={
-            "memory": "256Mi"
+            "memory": "256Mi",
+            "ephemeral-storage": "300Mi",
         }
     ),
     retries=0,

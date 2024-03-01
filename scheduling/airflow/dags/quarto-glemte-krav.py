@@ -20,7 +20,8 @@ with DAG(dag_id="quarto-glemte-krav", schedule_interval="8 3 * * *", start_date=
     slack_channel="#pensak-airflow-alerts",
     resources=k8s.V1ResourceRequirements(
         requests={
-            "memory": "256Mi"
+            "memory": "256Mi",
+            "ephemeral-storage": "700Mi",
         }
     ),
     retries=0,

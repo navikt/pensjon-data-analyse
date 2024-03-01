@@ -15,7 +15,7 @@ with DAG('dataproduct-kontrollpunkt', start_date=days_ago(1), schedule_interval=
         branch="main",
         retries=0,
         resources=k8s.V1ResourceRequirements(
-            requests={"memory": "2Gi", "cpu": "0.5", "ephemeral-storage": "5Gi"}
+            requests={"memory": "2Gi", "cpu": "0.5", "ephemeral-storage": "1Gi"}
             ),
         allowlist=["secretmanager.googleapis.com", "bigquery.googleapis.com", "dm08db03-vip.adeo.no:1521"]
     )

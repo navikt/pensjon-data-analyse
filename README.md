@@ -44,13 +44,13 @@ Dette håndterer vi selv i [google cloud console](https://console.cloud.google.c
 
 
 ## Mappestruktur
-Under følger en kort beskrivelse av innholdet i hver mappe i dette repoet.
+Under følger en kort beskrivelse av innholdet (eller tiltenkt innhold) i hver mappe i dette repoet.
 
 ### lib
 Funksjoner som ofte brukes på tvers av notebooks og andre kodefiler, samt noen støttefunksjoner brukt i bare én notebook.
 
 ### notebooks
-En haug med nye og gamle jupyter notebooks som har blitt brukt til utforskning. De som oppdaterer datafortellinger eller dataprodukter er mer eller mindre kopier av de som blir kjørt med airflow.
+Her legges Jupyter notebooks som brukes til utforskning.
 
 ### quarto
 Filer av typen .qmd (quarto markdown). Fungerer omtrent som jupyter notebooks og det er disse som blir kompilert til datafortellinger.

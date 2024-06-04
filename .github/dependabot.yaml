@@ -6,7 +6,7 @@
 version: 2
 updates:
   - package-ecosystem: "pip"
-    directory: "/scheduling/airflow/docker/requirements_oracle.txt"
+    directory: "/scheduling/airflow/docker/"
     schedule:
       interval: "weekly"
     groups:

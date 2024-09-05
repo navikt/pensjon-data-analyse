@@ -40,6 +40,7 @@ Flere av jobbene kommuniserer med BigQuery og trenger derfor tilgang til å lese
 - `BigQuery Data Editor` på hver tabell den skriver til
 - `BigQuery Job User` i prosjektet hvor queryjobben kjøres
 - `BigQuery Read Session User` i prosjektet hvor queryjobben kjøres. Denne rollen trengs bare for enkelte jobber. Dette gjelder jobbene som bruker `bigquery.Client.query` i stedet for `bigquery.Client.query_job` i følge github copilot.
+
 Dette håndterer vi selv i [google cloud console](https://console.cloud.google.com).
 
 

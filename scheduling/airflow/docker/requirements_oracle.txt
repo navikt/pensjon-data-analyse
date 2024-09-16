@@ -4,5 +4,5 @@ google-cloud-secret-manager==2.20.2
 nbformat==5.10.4
 nbclient==0.10.0
 pandas==2.2.2
-plotly==5.24.0
+plotly==5.24.1
 pyarrow==17.0.0

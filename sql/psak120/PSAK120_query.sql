@@ -1,4 +1,4 @@
----PSAK120
+-- Query used in BO to create report PSAK120
 
 SELECT
   DIM_TID_PERIODE.AAR_MAANED,

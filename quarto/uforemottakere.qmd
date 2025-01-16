@@ -35,10 +35,15 @@ url_ufore = 'https://dvh.adeo.no/ords/dvh/dt_p/mv_ufore_aldersgruppe.json'
 # legg til Azure AD-token, for å få tilgang til dataene. Hent fra cookie i browser
 # i terminalen: export MRHSession=xxxxx
 # i jupyter notebook: os.environ['MRHSession'] = 'xxxxx'
-cookie = os.environ['MRHSession']
-headers = {'cookie' : f'MRHSession={cookie}'}
 
-response = requests.get(url_ufore, headers=headers)
+# # lokal utvikling
+# cookie = os.environ['MRHSession']
+# headers = {'cookie' : f'MRHSession={cookie}'}
+# response = requests.get(url_ufore, headers=headers)
+
+# i airflow
+response = requests.get(url_ufore)
+
 df = pd.DataFrame(response.json()['items'])
 df_alder = df.sort_values(by=['aar_maaned', 'aldersgruppe'], ascending=False).reset_index(drop=True)
 df_alle = df.groupby(['aar_maaned', 'aar', 'periode_dato']).sum(numeric_only=True).reset_index().sort_values(by='aar_maaned', ascending=False).reset_index(drop=True)

@@ -25,7 +25,7 @@ with DAG(
         use_uv_pip_install=True,
         allowlist=["dvh.adeo.no"],
         slack_channel="#pensak-airflow-alerts",
-        requirements_path="scheduling/airflow/docker/requirements_oracle.txt",
+        requirements_path="scheduling/airflow/docker/requirements_dvhi.txt",
     )
 
     update_quarto

@@ -1,0 +1,199 @@
+---
+title: "Uføremottakere månedlig"
+jupyter: python3
+execute:
+    echo: false
+    warning: false
+    include: true
+format:
+    dashboard:
+        nav-buttons: 
+            - icon: github
+              href: https://github.com/navikt/pensjon-data-analyse
+            - icon: slack
+              href: https://nav-it.slack.com/archives/C06NKNY1399
+        embed-resources: true
+        code-copy: true
+        theme: 
+            light: [minty, highlight]
+---
+<!-- author: "Brynjar Morka Mæhlum, Pesys-Uføre" -->
+<!-- uv pip install plotly quarto jupyterlab pandas requests itables -->
+
+```{python}
+#| include: false 
+import os
+import requests
+import pandas as pd
+from itables import show
+import plotly.express as px
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+
+
+url_ufore = 'https://dvh.adeo.no/ords/dvh/dt_p/mv_ufore_aldersgruppe.json'
+# legg til Azure AD-token, for å få tilgang til dataene. Hent fra cookie i browser
+# i terminalen: export MRHSession=xxxxx
+# i jupyter notebook: os.environ['MRHSession'] = 'xxxxx'
+cookie = os.environ['MRHSession']
+headers = {'cookie' : f'MRHSession={cookie}'}
+
+response = requests.get(url_ufore, headers=headers)
+df = pd.DataFrame(response.json()['items'])
+df_alder = df.sort_values(by=['aar_maaned', 'aldersgruppe'], ascending=False).reset_index(drop=True)
+df_alle = df.groupby(['aar_maaned', 'aar', 'periode_dato']).sum(numeric_only=True).reset_index().sort_values(by='aar_maaned', ascending=False).reset_index(drop=True)
+df_alle['netto_mottakere'] = df_alle['antall_tilgang'] - df_alle['antall_avgang']
+# dataprepp ferdig
+```
+
+```{python}
+#| include: false 
+# Figur - Antall per aldersgruppe siden 2009, stacked area plots
+fig_siden_2009 = px.area(df_alder, x='periode_dato', y='antall_ufore', color='aldersgruppe')
+fig_siden_2009.update_layout(
+    title='Antall uføremottakere fordelt på aldersgruppe siden 2009',
+    xaxis_title='Måned',
+    yaxis_title='Antall uføremottakere',
+    # legend=dict(
+    #     orientation='h',
+    #     yanchor='top',
+    #     y=.975,
+    #     xanchor='center',
+    #     x=0.5,
+    #     title='Aldersgruppe:',
+    # ),
+    # hide legend
+    hovermode="x unified",
+    margin=dict(l=30, r=30, t=50, b=30),
+)
+
+# fig_siden_2009.show()
+```
+
+```{python}
+#| include: false 
+# Figur - antall_ufore siden 2022, zoomet inn x og y
+fig_siden_2022 = go.Figure()
+fig_siden_2022.add_trace(go.Scatter(
+    x=df_alle['periode_dato'],
+    y=df_alle['antall_ufore'],
+    mode='lines+markers',
+    fill='tozeroy',
+    name='Antall uføremottakere',
+    line=dict(color='#AB63FA'),
+    hoverinfo='x+y'
+))
+fig_siden_2022.update_layout(
+    title='Antall uføremottakere siden 2022, zoomet inn y-akse for å vise utviklingen',
+    xaxis=dict(range=['2022-01-01', max(df_alle['periode_dato'])]),
+    yaxis=dict(range=[350000, max(df_alle['antall_ufore'])+10000]),
+    xaxis_title='Måned',
+    yaxis_title='Antall uføremottakere',
+    margin=dict(l=30, r=30, t=50, b=30),
+    hovermode="x unified",
+    
+)
+
+# fig_siden_2022.show()
+```
+
+```{python}
+#| include: false 
+# antall_tilgang og antall_avgang
+fig_tilgang_avgang = go.Figure()
+fig_tilgang_avgang.add_trace(go.Scatter(
+    x=df_alle['periode_dato'],
+    y=df_alle['antall_tilgang'],
+    mode='lines',
+    fill='tozeroy',
+    name='Tilganger',
+    line=dict(color='#AB63FA')
+))
+fig_tilgang_avgang.add_trace(go.Scatter(
+    x=df_alle['periode_dato'],
+    y=df_alle['antall_avgang'],
+    mode='lines',
+    fill='tozeroy',
+    name='Avganger',
+    line=dict(color='#19D3F3')
+))
+fig_tilgang_avgang.add_trace(go.Scatter(
+    x=df_alle['periode_dato'],
+    y=df_alle['netto_mottakere'],
+    mode='lines+markers',
+    name='Netto mottakere',
+    line=dict(color='#BB2E2E')
+))
+
+fig_tilgang_avgang.update_layout(
+    title='Antall tilgang og avgang for mottakere av uføretrygd',
+    xaxis=dict(range=['2023-01-01', max(df_alle['periode_dato'])]),
+    xaxis_title='Måned',
+    yaxis_title='Antall',
+    # legend=dict(
+    #     orientation='h',
+    #     yanchor='top',
+    #     y=.975,
+    #     xanchor='center',
+    #     x=0.5
+    # ),
+    hovermode="x unified",
+)
+
+# fig_tilgang_avgang.show()
+```
+
+
+
+
+# Plott og tabell
+
+## rad
+
+### col - plott siden 2009
+```{python}
+fig_siden_2009.show()
+
+```
+
+### col - plott siden 2022, viser utviklingen
+```{python}
+fig_siden_2022.show()
+
+```
+
+## rad - tabell
+
+```{python}
+show(df_alle[['aar_maaned', 'antall_ufore', 'antall_avgang', 'antall_tilgang', 'netto_mottakere']], show_index=False)
+```
+
+
+# Tilgang og avgang
+
+En tilgang (lilla) er en ny mottaker og en avgang (blå) er en som har sluttet å motta uføretrygd.
+Netto mottakere (rød) er tilgang minus avgang. 
+Dobbeltklikk på plottet for å vise data fra og med 2009.
+
+```{python}
+fig_tilgang_avgang.show()
+
+```
+
+
+# Om datafortellingen
+
+Datafortellingen er laget med Quarto og ligger tilgjengelig på datamarkedsplassen.
+Dataene er datavarehuset, og er åpne for alle ansatte i Nav.
+
+En mottaker i datavarehuset er definert som en person som har mottatt en utbetaling av uføretrygd i løpet av en måned.
+
+Dataene er månedlige og oppdateres med et par måneders forsinkelse. Dataene går tilbake til 2009.
+
+Plottene er laget med Plotly, og er derfor interaktive. Zoom og naviger med musen.
+
+OBS! Quarto dashboard har noe trøbbel med figure legends, så de funker bare tidvis.
+Hover over figurene for å se legend.
+
+
+Datafortellingen er laget av Brynjar Morka Mæhlum, i team Uføre i PO Pensjon.

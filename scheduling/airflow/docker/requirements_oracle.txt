@@ -1,8 +1,8 @@
 cx-Oracle==8.3.0
-google-cloud-bigquery==3.27.0
-google-cloud-secret-manager==2.22.0
+google-cloud-bigquery==3.29.0
+google-cloud-secret-manager==2.22.1
 nbformat==5.10.4
 nbclient==0.10.2
 pandas==2.2.3
 plotly==5.24.1
-pyarrow==18.1.0
+pyarrow==19.0.0

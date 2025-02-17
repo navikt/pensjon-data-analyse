@@ -1,11 +1,11 @@
 cx-Oracle==8.3.0
 google-cloud-bigquery==3.29.0
-google-cloud-secret-manager==2.22.1
-jupytext==1.16.6
+google-cloud-secret-manager==2.23.0
+jupytext==1.16.7
 nbclient==0.10.2
 nbformat==5.10.4
 pandas==2.2.3
 plotly==6.0.0
 psycopg2==2.9.10
 pyarrow==19.0.0
-sqlalchemy==2.0.37
+sqlalchemy==2.0.38

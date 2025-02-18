@@ -37,12 +37,12 @@ url_ufore = 'https://dvh.adeo.no/ords/dvh/dt_p/mv_ufore_aldersgruppe.json'
 # i jupyter notebook: os.environ['MRHSession'] = 'xxxxx'
 
 # # lokal utvikling
-# cookie = os.environ['MRHSession']
-# headers = {'cookie' : f'MRHSession={cookie}'}
-# response = requests.get(url_ufore, headers=headers)
+cookie = os.environ['MRHSession']
+headers = {'cookie' : f'MRHSession={cookie}'}
+response = requests.get(url_ufore, headers=headers)
 
 # i airflow
-response = requests.get(url_ufore)
+# response = requests.get(url_ufore)
 
 df = pd.DataFrame(response.json()['items'])
 df_alder = df.sort_values(by=['aar_maaned', 'aldersgruppe'], ascending=False).reset_index(drop=True)

@@ -11,7 +11,7 @@ with DAG('dataproduct-kontrollpunkt', start_date=days_ago(1), schedule_interval=
         slack_channel="#pensak-airflow-alerts",
         repo="navikt/pensjon-data-analyse",
         script_path="scripts/dataproduct_kontrollpunkt.py",
-        requirements_path="scheduling/airflow/docker/requirements_oracle.txt",
+        requirements_path="requirements.txt",
         branch="main",
         retries=0,
         resources=k8s.V1ResourceRequirements(

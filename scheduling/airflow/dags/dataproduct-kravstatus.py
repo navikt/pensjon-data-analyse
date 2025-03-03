@@ -10,7 +10,7 @@ with DAG('dataproduct-kravstatus', start_date=days_ago(1), schedule_interval="05
         slack_channel="#pensak-airflow-alerts",
         repo="navikt/pensjon-data-analyse",
         script_path="scripts/dataproduct_kravstatus.py",
-        requirements_path="scheduling/airflow/docker/requirements_oracle.txt",
+        requirements_path="requirements.txt",
         branch="main",
         retries=0,
         allowlist=["secretmanager.googleapis.com", "bigquery.googleapis.com", "dm08db03-vip.adeo.no:1521"]

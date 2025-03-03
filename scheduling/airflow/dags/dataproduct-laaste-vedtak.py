@@ -13,6 +13,6 @@ with DAG('dataproduct-laaste-vedtak', start_date=days_ago(1), schedule_interval=
         requirements_path="requirements.txt",
         branch="main",
         retries=0,
-        allowlist=["secretmanager.googleapis.com", "bigquery.googleapis.com", "dm08db03-vip.adeo.no:1521"]
+        allowlist=["secretmanager.googleapis.com", "bigquery.googleapis.com", "dm09-scan.adeo.no:1521"]
     )
     

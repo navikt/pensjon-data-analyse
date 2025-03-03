@@ -25,5 +25,5 @@ with DAG(dag_id="quarto-fellesordningen", schedule_interval="22 2 * * *", start_
         }
     ),
     retries=0,
-    allowlist=["secretmanager.googleapis.com", "bigquery.googleapis.com", "dm08db03-vip.adeo.no:1521"]
+    allowlist=["secretmanager.googleapis.com", "bigquery.googleapis.com", "dm09-scan.adeo.no:1521"]
   )

@@ -1,4 +1,4 @@
-import cx_Oracle
+import oracledb
 import os
 
 
@@ -35,22 +35,35 @@ fra_bruker = {"Førstegangsbehandling", # Ta bort aldersovergang?
              "Søknad ung ufør"}
 
 
+# def open_pen_connection():
+#     ORACLE_HOST = 'dm08db03-vip.adeo.no'
+#     ORACLE_PORT = '1521'
+#     ORACLE_SERVICE = 'pen'
+#     dsnStr = cx_Oracle.makedsn(ORACLE_HOST, ORACLE_PORT, service_name=ORACLE_SERVICE)
+#     con = cx_Oracle.connect(user=os.environ["PEN_USER"], password=os.environ["PEN_PASSWORD"], dsn=dsnStr)
+#     return con
+
 def open_pen_connection():
-    ORACLE_HOST = 'dm08db03-vip.adeo.no'
-    ORACLE_PORT = '1521'
-    ORACLE_SERVICE = 'pen'
-    dsnStr = cx_Oracle.makedsn(ORACLE_HOST, ORACLE_PORT, service_name=ORACLE_SERVICE)
-    con = cx_Oracle.connect(user=os.environ["PEN_USER"], password=os.environ["PEN_PASSWORD"], dsn=dsnStr)
+    # lesekopien: host='dm08db03-vip.adeo.no', service_name=pen
+    # prod:       host='dm09-scan.adeo.no',    service_name=pen_ha
+    con = oracledb.connect(
+        host='dm09-scan.adeo.no',
+        port=1521,
+        service_name='pen_ha'
+        user=os.environ["PEN_USER"],
+        password=os.environ["PEN_PASSWORD"],
+    )
     return con
 
 
-def open_popp_connection():
-    ORACLE_HOST = 'dm09-scan.adeo.no'
-    ORACLE_PORT = '1521'
-    ORACLE_SERVICE = 'popp'
-    dsnStr = cx_Oracle.makedsn(ORACLE_HOST, ORACLE_PORT, service_name=ORACLE_SERVICE)
-    con = cx_Oracle.connect(user=os.environ["POPP_USER"], password=os.environ["POPP_PASSWORD"], dsn=dsnStr)
-    return con
+# ikke i bruk
+# def open_popp_connection():
+#     ORACLE_HOST = 'dm09-scan.adeo.no'
+#     ORACLE_PORT = '1521'
+#     ORACLE_SERVICE = 'popp'
+#     dsnStr = cx_Oracle.makedsn(ORACLE_HOST, ORACLE_PORT, service_name=ORACLE_SERVICE)
+#     con = cx_Oracle.connect(user=os.environ["POPP_USER"], password=os.environ["POPP_PASSWORD"], dsn=dsnStr)
+#     return con
 
 
 def map_stonad(kode):

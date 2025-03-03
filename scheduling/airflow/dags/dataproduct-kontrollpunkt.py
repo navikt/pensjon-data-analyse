@@ -8,7 +8,7 @@ with DAG('dataproduct-kontrollpunkt', start_date=days_ago(1), schedule_interval=
     t1 = python_operator(
         dag=dag,
         name="dataproduct-kontrollpunkt",
-        # slack_channel="#pensak-airflow-alerts",
+        slack_channel="#pensak-airflow-alerts",
         repo="navikt/pensjon-data-analyse",
         script_path="scripts/dataproduct_kontrollpunkt.py",
         requirements_path="requirements.txt",

@@ -47,9 +47,9 @@ def open_pen_connection():
     # lesekopien: host='dm08db03-vip.adeo.no', service_name=pen
     # prod:       host='dm09-scan.adeo.no',    service_name=pen_ha
     con = oracledb.connect(
-        host='dm09-scan.adeo.no',
         port=1521,
-        service_name='pen_ha'
+        service_name='pen_ha',
+        host='dm09-scan.adeo.no',
         user=os.environ["PEN_USER"],
         password=os.environ["PEN_PASSWORD"],
     )

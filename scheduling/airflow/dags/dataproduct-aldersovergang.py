@@ -3,7 +3,7 @@ from airflow.utils.dates import days_ago
 from dataverk_airflow import python_operator
 
 
-with DAG('dataproduct-aldersovergang', start_date=days_ago(1), schedule_interval="10 06 * * *", catchup=False) as dag:
+with DAG('dataproduct-aldersovergang', start_date=days_ago(1), schedule_interval="0 0 1-7 * 4", catchup=False) as dag:
     t1 = python_operator(
         dag=dag,
         name="dataproduct-aldersovergang",

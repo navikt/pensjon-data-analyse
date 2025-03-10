@@ -1,3 +1,11 @@
-select opp.BEHANDLINGSMANED, brev.KATEGORI_KODE, brev.BREV_KODE, count(BREV_KODE)
-from PEN.T_ALDERSOVERGANG_OPPSUMMERING opp join PEN.T_ALDERSOVERGANG_OPPSUMMERING_BREV brev on opp.ID = brev.ALDERSOVERGANG_OPPSUMMERING_ID
-group by opp.BEHANDLINGSMANED, brev.KATEGORI_KODE, brev.BREV_KODE
+select
+    opp.behandlingsmaned,
+    brev.kategori_kode,
+    brev.brev_kode,
+    count(brev_kode)
+from pen.t_aldersovergang_oppsummering opp
+join pen.t_aldersovergang_oppsummering_brev brev on opp.id = brev.aldersovergang_oppsummering_id
+group by
+    opp.behandlingsmaned,
+    brev.kategori_kode,
+    brev.brev_kode

@@ -1,3 +1,14 @@
-select opp.BEHANDLINGSMANED, beh.HOVEDYTELSE, beh.DELYTELSE, beh.OPPG_BESKR_KODER, count(beh.OPPG_BESKR_KODER) from PEN.T_ALDERSOVERGANG_OPPSUMMERING opp
-    join PEN.T_ALDERSOVERGANG_OPPSUMMERING_BEHANDLING beh on opp.ID = beh.ALDERSOVERGANG_OPPSUMMERING_ID
-where beh.OPPG_BESKR_KODER is not null group by opp.BEHANDLINGSMANED, beh.HOVEDYTELSE, beh.DELYTELSE, beh.OPPG_BESKR_KODER
+select
+    opp.behandlingsmaned,
+    beh.hovedytelse,
+    beh.delytelse,
+    beh.oppg_beskr_koder,
+    count(beh.oppg_beskr_koder)
+from pen.t_aldersovergang_oppsummering opp
+    join pen.t_aldersovergang_oppsummering_behandling beh on opp.id = beh.aldersovergang_oppsummering_id
+where beh.oppg_beskr_koder is not null
+group by
+    opp.behandlingsmaned,
+    beh.hovedytelse,
+    beh.delytelse,
+    beh.oppg_beskr_koder

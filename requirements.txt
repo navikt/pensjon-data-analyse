@@ -7,3 +7,4 @@ pandas==2.2.3
 plotly==5.24.1
 pyarrow==19.0.0
 pyyaml==6.0.2
+jupyterlab==4.3.5

@@ -26,16 +26,12 @@ import plotly.graph_objects as go
 from datetime import datetime
 
 sys.path.append('../lib')
-import utils
-import pandas_utils
 import pesys_utils
-importlib.reload(utils)
 importlib.reload(pesys_utils)
-importlib.reload(pandas_utils)
 ```
 
 ```{python}
-utils.set_secrets_as_env(split_on=":", secret_name="projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest")
+pesys_utils.set_secrets_as_env(split_on=":", secret_name="projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest")
 ```
 
 ```{python}
@@ -51,8 +47,8 @@ def group_df_on_var(df, period):
 
 ```{python}
 con = pesys_utils.open_pen_connection()
-df_perioder_registrert = pandas_utils.pandas_from_sql('../sql/trygdetidsperioder_saksbehandler.sql', con=con, lowercase=True)
-df_perioder_frekvens = pandas_utils.pandas_from_sql('../sql/trygdetidsperioder_saksbehandler_frekvens.sql', con=con, lowercase=True)
+df_perioder_registrert = pesys_utils.pandas_from_sql('../sql/trygdetidsperioder_saksbehandler.sql', con=con, lowercase=True)
+df_perioder_frekvens = pesys_utils.pandas_from_sql('../sql/trygdetidsperioder_saksbehandler_frekvens.sql', con=con, lowercase=True)
 con.close()
 ```
 

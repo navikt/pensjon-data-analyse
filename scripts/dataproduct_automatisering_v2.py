@@ -5,11 +5,13 @@ from datetime import datetime
 from time import time
 from google.cloud.bigquery import Client, LoadJobConfig
 
-from lib import pandas_utils, pesys_utils, utils
+from lib import pesys_utils
 
+def date_to_tertial(date):
+    return (date.month - 1) // 4 + 1
 
 def overwrite_dataproduct():
-    utils.set_secrets_as_env(split_on=":", secret_name='projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest')
+    pesys_utils.set_secrets_as_env(split_on=":", secret_name='projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest')
     
     current_year = datetime.now().year
     N = (current_year + 1) - 2008
@@ -59,7 +61,7 @@ def overwrite_vedtak(N, years):
                 continue
             
             df_one_year["dato_virk_fom"] = df_one_year["dato_virk_fom"].dt.floor('D')
-            df_one_year["tertial"] = df_one_year.dato_virk_fom.apply(lambda date: utils.date_to_tertial(date))
+            df_one_year["tertial"] = df_one_year.dato_virk_fom.apply(lambda date: date_to_tertial(date))
 
 
             job = client.load_table_from_dataframe(df_one_year, table_id, job_config=job_config)
@@ -115,7 +117,7 @@ def overwrite_krav(N, years):
                 continue
 
             df_one_year["dato_opprettet"] = df_one_year["dato_opprettet"].dt.floor('D')
-            df_one_year["tertial"] = df_one_year.dato_opprettet.apply(lambda date: utils.date_to_tertial(date))
+            df_one_year["tertial"] = df_one_year.dato_opprettet.apply(lambda date: date_to_tertial(date))
 
 
             job = client.load_table_from_dataframe(df_one_year, table_id, job_config=job_config)

@@ -1,101 +1,109 @@
-import oracledb
 import os
+import oracledb
+import pandas as pd
+from time import time
+from google.cloud import secretmanager
 
 
-stonads_mapper = {
-    "AFP": "AFP",
-    "AFP_PRIVAT": "AFP Privat",
-    "ALDER": "Alderspensjon",
-    "BARNEP": "Barnepensjon",
-    "FAM_PL": "Familiepleierytelse",
-    "GAM_YRK": "Gammel yrkesskade",
-    "GENRL": "Generell",
-    "GJENLEV": "Gjenlevendeytelse",
-    "GRBL": "Grunnblanketter",
-    "KRIGSP": "Krigspensjon",
-    "OMSORG": "Omsorgsopptjening",
-    "UFOREP": "Uføretrygd"
-}
-
-forstegang = {"Førstegangsbehandling",
-             "Førstegangsbehandling Norge/utland", 
-             "Førstegangsbehandling bosatt utland",
-             "Førstegangsbehandling kun utland"}
-
-# Kravtyper hvor ledetid er interessant - kan være noen som mangler her
-fra_bruker = {"Førstegangsbehandling", # Ta bort aldersovergang?
-             "Førstegangsbehandling Norge/utland", 
-             "Førstegangsbehandling bosatt utland",
-             "Førstegangsbehandling kun utland",
-             "Endring uttaksgrad",
-             "Søknad om økning av uføregrad",
-             "Søknad om reduksjon av uføregrad",
-             "Klage",
-             "Søknad om yrkesskade",
-             "Søknad ung ufør"}
+def set_secrets_as_env(
+    split_on=":",
+    secret_name="projects/193123067890/secrets/vebjorn-rekkebo/versions/latest",
+):
+    secrets = secretmanager.SecretManagerServiceClient()
+    secret = secrets.access_secret_version(name=secret_name)
+    secrets = secret.payload.data.decode("UTF-8")
+    for secret in secrets.splitlines():
+        key, value = secret.split(split_on)
+        os.environ[key] = value
 
 
-# def open_pen_connection():
-#     ORACLE_HOST = 'dm08db03-vip.adeo.no'
-#     ORACLE_PORT = '1521'
-#     ORACLE_SERVICE = 'pen'
-#     dsnStr = cx_Oracle.makedsn(ORACLE_HOST, ORACLE_PORT, service_name=ORACLE_SERVICE)
-#     con = cx_Oracle.connect(user=os.environ["PEN_USER"], password=os.environ["PEN_PASSWORD"], dsn=dsnStr)
-#     return con
+def pandas_from_sql(sqlfile, con, tuning=None, lowercase=False):
+    with con.cursor() as cursor:
+        start = time()
+        if tuning:
+            cursor.prefetchrows = tuning
+            cursor.arraysize = tuning
+        with open(sqlfile) as sql:
+            cursor.execute(sql.read())
+        df = pd.DataFrame(cursor.fetchall())
+        end = time()
+        print(f"{len(df)} rader ble returnert etter {end-start} sekunder.")
+        if len(df) > 0:
+            if lowercase:
+                df.columns = [x[0].lower() for x in cursor.description]
+            else:
+                df.columns = [x[0] for x in cursor.description]
+        return df
+
 
 def open_pen_connection():
     # lesekopien: host='dm08db03-vip.adeo.no', service_name=pen
     # prod:       host='dm09-scan.adeo.no',    service_name=pen_ha
     con = oracledb.connect(
         port=1521,
-        service_name='pen_ha',
-        host='dm09-scan.adeo.no',
+        service_name="pen_ha",
+        host="dm09-scan.adeo.no",
         user=os.environ["PEN_USER"],
         password=os.environ["PEN_PASSWORD"],
     )
     return con
 
 
-# ikke i bruk
-# def open_popp_connection():
-#     ORACLE_HOST = 'dm09-scan.adeo.no'
-#     ORACLE_PORT = '1521'
-#     ORACLE_SERVICE = 'popp'
-#     dsnStr = cx_Oracle.makedsn(ORACLE_HOST, ORACLE_PORT, service_name=ORACLE_SERVICE)
-#     con = cx_Oracle.connect(user=os.environ["POPP_USER"], password=os.environ["POPP_PASSWORD"], dsn=dsnStr)
-#     return con
+#######################################################################################
+
+################ Funksjonene nedenfor er ikke lenger i bruk ###########################
+
+#######################################################################################
 
 
 def map_stonad(kode):
+    stonads_mapper = {
+        "AFP": "AFP",
+        "AFP_PRIVAT": "AFP Privat",
+        "ALDER": "Alderspensjon",
+        "BARNEP": "Barnepensjon",
+        "FAM_PL": "Familiepleierytelse",
+        "GAM_YRK": "Gammel yrkesskade",
+        "GENRL": "Generell",
+        "GJENLEV": "Gjenlevendeytelse",
+        "GRBL": "Grunnblanketter",
+        "KRIGSP": "Krigspensjon",
+        "OMSORG": "Omsorgsopptjening",
+        "UFOREP": "Uføretrygd",
+    }
     return stonads_mapper[kode]
 
 
 def fjern_sjeldne_stonader(row):
     sjeldne_stonader = {"Krigspensjon", "Familiepleierytelse", "Gammel yrkesskade"}
     if row["STØNADSOMRÅDE"] in sjeldne_stonader:
-        return 
+        return
     else:
         return row
 
 
-def add_zero_to_mnd(x: str):
-    if len(x) == 2:
-        return x
-    elif len(x) == 1:
-        return '0' + x
-    else:
-        raise Exception(f"Wrong format on 'MAANED': {x}")
-        
-        
-def add_zero_to_aar_mnd(x: str):
-    if len(x) == 7:
-        return x
-    elif len(x) == 6:
-        return x[:5] + '0' + x[5:]
-    else:
-        raise Exception(f"Wrong format on 'AAR_MAANED': {x}")
+forstegang = {
+    "Førstegangsbehandling",
+    "Førstegangsbehandling Norge/utland",
+    "Førstegangsbehandling bosatt utland",
+    "Førstegangsbehandling kun utland",
+}
 
+# Kravtyper hvor ledetid er interessant - kan være noen som mangler her
+fra_bruker = {
+    "Førstegangsbehandling",  # Ta bort aldersovergang?
+    "Førstegangsbehandling Norge/utland",
+    "Førstegangsbehandling bosatt utland",
+    "Førstegangsbehandling kun utland",
+    "Endring uttaksgrad",
+    "Søknad om økning av uføregrad",
+    "Søknad om reduksjon av uføregrad",
+    "Klage",
+    "Søknad om yrkesskade",
+    "Søknad ung ufør",
+}
 
+# denne blir brukt i bpen002_oppg.qmd
 oppgavetekst_lang = {
     "SOKNAD_AP_PREFIKS": "Har ingen verdi, men det trengs et innslag for å unngå at default prefiks benyttes",
     "OPPG_DEL_AUTO_UTLAND": "Del-automatisk krav Utlandsopphold: Bruker er registrert med utlandsopphold, dette må kontrolleres.<br>Kravet har derfor gått til del-automatisk behandling.<br>Kontroller øvrige kontrollpunkt.",
@@ -221,5 +229,5 @@ oppgavetekst_lang = {
     "OPPG_UTL_UT": "Søknad om uføretrygd.",
     "OPPG_UTL_GENERELL": "Pesys kunne ikke håndtere hendelsen automatisk.<br>Saksbehandler må vurdere behov for videre behandling.",
     "OPPG_INFO_FRA_UTLAND": "",
-    "OPPG_UKJENT_HENDELSE": ""
+    "OPPG_UKJENT_HENDELSE": "",
 }

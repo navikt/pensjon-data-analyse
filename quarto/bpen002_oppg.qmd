@@ -23,19 +23,27 @@ import plotly.express as px
 
 import importlib
 sys.path.append('../lib')
-import utils, pesys_utils, pandas_utils
-importlib.reload(utils)
+import pesys_utils
 importlib.reload(pesys_utils)
-importlib.reload(pandas_utils)
+
+nav_colors = (
+    "#0067C5",
+    "#BA3A26",
+    "#06893A",
+    "#634689",
+    "#FF9100",
+    "#66CBEC",
+    "#F0C419",
+)
 ```
 
 ```{python}
-utils.set_secrets_as_env(split_on=":", secret_name="projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest")
+pesys_utils.set_secrets_as_env(split_on=":", secret_name="projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest")
 ```
 
 ```{python}
 con = pesys_utils.open_pen_connection()
-df_bpen002 = pandas_utils.pandas_from_sql(sqlfile='../sql/bpen002_oppg.sql', con=con, tuning=10000, lowercase=True)
+df_bpen002 = pesys_utils.pandas_from_sql(sqlfile='../sql/bpen002_oppg.sql', con=con, tuning=10000, lowercase=True)
 con.close()
 ```
 
@@ -73,7 +81,7 @@ for i in range(len(sakstyper)):
     df_now = df[df.index >= df.index.max() - pd.Timedelta(f"{n_days + 1} days")]
     df_ytelse = df_now.query(f"sakstype=='{ytelse}'")
     df_mnd = df_ytelse.groupby(["oppgavetekst", "oppgavetekst_lang", "prioritet"])[["antall"]].sum().reset_index().sort_values("antall", ascending=False)
-    figs[ytelse + "_now"] = px.bar(df_mnd, "oppgavetekst", "antall", title=ytelse + f" siste {n_days} dager", color="prioritet", hover_data=["oppgavetekst_lang"], color_discrete_map={'HOY':utils.nav_colors[1], 'LAV':utils.nav_colors[0]})
+    figs[ytelse + "_now"] = px.bar(df_mnd, "oppgavetekst", "antall", title=ytelse + f" siste {n_days} dager", color="prioritet", hover_data=["oppgavetekst_lang"], color_discrete_map={'HOY':nav_colors[1], 'LAV':nav_colors[0]})
 ```
 
 ```{python}
@@ -81,7 +89,7 @@ for i in range(len(sakstyper)):
     ytelse = sakstyper[i]
     df_ytelse = df.query(f"sakstype=='{ytelse}'")
     df_mnd = df_ytelse.groupby(["prioritet"])[["antall"]].resample('MS').sum().reset_index()
-    figs[ytelse + "_prio"] = px.bar(df_mnd, "dato", "antall", color="prioritet", barmode='group', title=ytelse + f" - oppgaveprioritet", color_discrete_map={'HOY':utils.nav_colors[1], 'LAV':utils.nav_colors[0]})
+    figs[ytelse + "_prio"] = px.bar(df_mnd, "dato", "antall", color="prioritet", barmode='group', title=ytelse + f" - oppgaveprioritet", color_discrete_map={'HOY':nav_colors[1], 'LAV':nav_colors[0]})
 ```
 
 BPEN002 er navnet på den daglige batchen som plukker opp dødsmeldinger fra TPS/PDL og initierer nødvendig saksbehandling i pesys. 

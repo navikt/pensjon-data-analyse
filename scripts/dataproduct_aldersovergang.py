@@ -1,17 +1,17 @@
 import logging
 from google.cloud.bigquery import Client, LoadJobConfig
 
-from lib import pandas_utils, pesys_utils, utils
+from lib import pesys_utils
 
 logging.basicConfig(level=logging.INFO)
-utils.set_secrets_as_env(split_on=":", secret_name='projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest')
+pesys_utils.set_secrets_as_env(split_on=":", secret_name='projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest')
 
 def main():
     # oracle
     tuning = 10000
     con = pesys_utils.open_pen_connection()
-    df_aldersovergang_behandle_bruker = pandas_utils.pandas_from_sql('../sql/aldersovergang_behandle_bruker.sql', con=con, tuning=tuning, lowercase=True)
-    df_aldersovergang_brev = pandas_utils.pandas_from_sql('../sql/aldersovergang_brev.sql', con=con, tuning=tuning, lowercase=True)
+    df_aldersovergang_behandle_bruker = pesys_utils.pandas_from_sql('../sql/aldersovergang_behandle_bruker.sql', con=con, tuning=tuning, lowercase=True)
+    df_aldersovergang_brev = pesys_utils.pandas_from_sql('../sql/aldersovergang_brev.sql', con=con, tuning=tuning, lowercase=True)
     con.close()
 
 

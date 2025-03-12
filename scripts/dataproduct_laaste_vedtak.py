@@ -5,11 +5,11 @@ from datetime import datetime
 from time import time
 from google.cloud.bigquery import Client, LoadJobConfig
 
-from lib import pandas_utils, pesys_utils, utils
+from lib import pesys_utils
 
 
 def overwrite_dataproduct():
-    utils.set_secrets_as_env(split_on=":", secret_name='projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest')
+    pesys_utils.set_secrets_as_env(split_on=":", secret_name='projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest')
     df = make_df()
     df_to_bq(
         project_id='pensjon-saksbehandli-prod-1f83',
@@ -22,7 +22,7 @@ def overwrite_dataproduct():
 def make_df():
     tuning = 1000
     con = pesys_utils.open_pen_connection()
-    df_bq = pandas_utils.pandas_from_sql('../sql/laaste_vedtak.sql', con=con, tuning=tuning, lowercase=True)
+    df_bq = pesys_utils.pandas_from_sql('../sql/laaste_vedtak.sql', con=con, tuning=tuning, lowercase=True)
     con.close()
     return df_bq
 

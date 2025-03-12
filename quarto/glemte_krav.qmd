@@ -26,21 +26,16 @@ import plotly.express as px
 from datetime import datetime
 
 sys.path.append('../lib')
-import utils
-import pandas_utils
 import pesys_utils
-
-importlib.reload(utils)
-importlib.reload(pandas_utils)
 importlib.reload(pesys_utils)
 
-utils.set_secrets_as_env(split_on=":", secret_name="projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest")
+pesys_utils.set_secrets_as_env(split_on=":", secret_name="projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest")
 ```
 
 ```{python}
 con = pesys_utils.open_pen_connection()
 
-df_levetid = pandas_utils.pandas_from_sql('../sql/levetid_krav.sql', con, tuning=1000)
+df_levetid = pesys_utils.pandas_from_sql('../sql/levetid_krav.sql', con, tuning=1000)
 con.close()
 df_levetid.columns = map(str.lower, df_levetid.columns)
 df_levetid["dato"] = datetime.utcnow()

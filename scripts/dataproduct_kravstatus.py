@@ -4,18 +4,18 @@ import os
 from datetime import datetime
 from google.cloud.bigquery import Client, LoadJobConfig, SchemaField, enums
 
-from lib import pandas_utils, pesys_utils, utils
+from lib import pesys_utils
 
 
 def update_dataproduct():
-    utils.set_secrets_as_env(split_on=":", secret_name='projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest')
+    pesys_utils.set_secrets_as_env(split_on=":", secret_name='projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest')
     df = make_df()
     append_to_bq(df)
 
 
 def make_df():
     con = pesys_utils.open_pen_connection()
-    df_kravstatus = pandas_utils.pandas_from_sql('../sql/kravstatus.sql', con)
+    df_kravstatus = pesys_utils.pandas_from_sql('../sql/kravstatus.sql', con)
     con.close()
     df_kravstatus.columns = map(str.lower, df_kravstatus.columns)
     df_kravstatus["dato"] = datetime.utcnow()

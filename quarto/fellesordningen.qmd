@@ -26,13 +26,13 @@ import plotly.express as px
 from datetime import datetime
 
 sys.path.append('../lib')
-import utils, pesys_utils, pandas_utils
+import pesys_utils
 ```
 
 ```{python}
 def make_df():
     con = pesys_utils.open_pen_connection()
-    df = pandas_utils.pandas_from_sql('../sql/afp_priv_res.sql', con, tuning=1000)
+    df = pesys_utils.pandas_from_sql('../sql/afp_priv_res.sql', con, tuning=1000)
     con.close()
 
     df.columns = map(str.lower, df.columns)
@@ -71,7 +71,7 @@ def make_datastory(figs):
 ```
 
 ```{python}
-utils.set_secrets_as_env(split_on=":", secret_name='projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest')
+pesys_utils.set_secrets_as_env(split_on=":", secret_name='projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest')
 df = make_df()
 figs = make_figs(df)
 

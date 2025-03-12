@@ -24,7 +24,7 @@ def python_operator_wrapped(
         use_uv_pip_install=True,
         repo="navikt/pensjon-data-analyse",
         requirements_path="requirements.txt",
-        # slack_channel="#pensak-airflow-alerts",
+        slack_channel="#pensak-airflow-alerts",
         allowlist=[
             "secretmanager.googleapis.com",
             "bigquery.googleapis.com",

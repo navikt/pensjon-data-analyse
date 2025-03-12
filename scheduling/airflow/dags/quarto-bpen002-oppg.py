@@ -17,7 +17,7 @@ with DAG(dag_id="quarto-bpen002-oppg", schedule_interval="55 3 * * *", start_dat
         "token": Variable.get("PENSAK_QUARTO_TOKEN"),
     },
     requirements_path="requirements.txt",
-    slack_channel="#pensak-airflow-alerts",
+    # slack_channel="#pensak-airflow-alerts",
     resources=k8s.V1ResourceRequirements(
         requests={
             "memory": "256Mi",
@@ -25,5 +25,6 @@ with DAG(dag_id="quarto-bpen002-oppg", schedule_interval="55 3 * * *", start_dat
         }
     ),
     retries=0,
+    use_uv_pip_install=True,
     allowlist=["secretmanager.googleapis.com", "bigquery.googleapis.com", "dm09-scan.adeo.no:1521"]
   )

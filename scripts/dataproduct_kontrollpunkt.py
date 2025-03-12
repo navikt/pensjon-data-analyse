@@ -9,35 +9,18 @@ logging.basicConfig(level=logging.INFO)
 pesys_utils.set_pen_secrets_as_env()
 
 
-def overwrite_dataproduct():
-    df = make_df()
-    write_to_bq(df)
+tuning = 10000
+con = pesys_utils.open_pen_connection()
+df_kontrollpunkt = pesys_utils.pandas_from_sql("../sql/kontrollpunkt.sql", con=con, tuning=tuning, lowercase=True)
+con.close()
 
+client = Client(project="pensjon-saksbehandli-prod-1f83")
+table_id = "pensjon-saksbehandli-prod-1f83.kontrollpunkt.kontrollpunkt_daglig"
+job_config = LoadJobConfig(write_disposition="WRITE_TRUNCATE")
 
-def make_df():
-    tuning = 10000
-    con = pesys_utils.open_pen_connection()
-    df_kontrollpunkt = pesys_utils.pandas_from_sql('../sql/kontrollpunkt.sql', con=con, tuning=tuning, lowercase=True)
-    con.close()
-    return df_kontrollpunkt
+start = time()
+job = client.load_table_from_dataframe(df_kontrollpunkt, table_id, job_config=job_config)
+job.result()
+end = time()
 
-
-def write_to_bq(df):
-    client = Client(project="pensjon-saksbehandli-prod-1f83")
-
-    table_id = 'pensjon-saksbehandli-prod-1f83.kontrollpunkt.kontrollpunkt_daglig'
-    job_config = LoadJobConfig(
-        write_disposition="WRITE_TRUNCATE",
-    )
-
-    start = time()
-    job = client.load_table_from_dataframe(df, table_id, job_config=job_config)
-    job.result()
-    end = time()
-
-    print(f'{len(df)} rad(er) ble skrevet til bigquery etter {end-start} sekunder.')
-
-
-if __name__ == "__main__":
-    overwrite_dataproduct()
-    
+print(f"{len(df_kontrollpunkt)} rad(er) ble skrevet til bigquery etter {end-start} sekunder.")

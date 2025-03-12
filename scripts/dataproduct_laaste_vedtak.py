@@ -9,37 +9,18 @@ logging.basicConfig(level=logging.INFO)
 pesys_utils.set_pen_secrets_as_env()
 
 
-def overwrite_dataproduct():
-    df = make_df()
-    df_to_bq(
-        project_id='pensjon-saksbehandli-prod-1f83',
-        full_table_id='pensjon-saksbehandli-prod-1f83.vedtak.laast_data_handling',
-        dataframe=df,
-        write_disposition='WRITE_TRUNCATE'        
-    )
+tuning = 1000
+con = pesys_utils.open_pen_connection()
+df_bq = pesys_utils.pandas_from_sql("../sql/laaste_vedtak.sql", con=con, tuning=tuning, lowercase=True)
+con.close()
 
+full_table_id = "pensjon-saksbehandli-prod-1f83.vedtak.laast_data_handling"
+client = Client(project="pensjon-saksbehandli-prod-1f83")
+job_config = LoadJobConfig(write_disposition="WRITE_TRUNCATE")
 
-def make_df():
-    tuning = 1000
-    con = pesys_utils.open_pen_connection()
-    df_bq = pesys_utils.pandas_from_sql('../sql/laaste_vedtak.sql', con=con, tuning=tuning, lowercase=True)
-    con.close()
-    return df_bq
+start = time()
+job = client.load_table_from_dataframe(df_bq, full_table_id, job_config=job_config)
+job.result()
+end = time()
 
-
-def df_to_bq(project_id, full_table_id, dataframe, write_disposition):
-    client = Client(project="pensjon-saksbehandli-prod-1f83")
-    job_config = LoadJobConfig(write_disposition=write_disposition)
-    
-    start = time()
-    job = client.load_table_from_dataframe(dataframe, full_table_id, job_config=job_config)
-    job.result()
-
-    end = time()
-
-    print(f'{len(dataframe)} rader ble skrevet til bigquery etter {end-start} sekunder.')
-
-
-if __name__ == "__main__":
-    overwrite_dataproduct()
-    
+print(f"{len(df_bq)} rader ble skrevet til bigquery etter {end-start} sekunder.")

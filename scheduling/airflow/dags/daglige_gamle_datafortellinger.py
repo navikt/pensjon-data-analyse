@@ -2,10 +2,12 @@ from airflow import DAG
 from datetime import datetime
 from pendulum import timezone
 from airflow.models import Variable
+from kubernetes import client as k8s
 from dataverk_airflow import quarto_operator
 
 # DAG for de tre datafortellingene Vebjørn lagde som oppdateres daglig.
 # Bør vurderes om de kan saneres dersom de ikke er i bruk.
+
 
 def quarto_operator_wrapped(
     *,  # Enforce keyword-only arguments
@@ -14,7 +16,7 @@ def quarto_operator_wrapped(
     quarto_path: str,
     quarto_id: str,
 ):
-    """Wrapper dataverk_airflow.quarto_operator with default arguments."""    
+    """Wrapper dataverk_airflow.quarto_operator with default arguments."""
     return quarto_operator(
         dag=dag,
         name=name,
@@ -33,11 +35,18 @@ def quarto_operator_wrapped(
             "bigquery.googleapis.com",
             "dm09-scan.adeo.no:1521",
         ],
+        resources=k8s.V1ResourceRequirements(
+            requests={
+                "memory": "256Mi",
+                "ephemeral-storage": "700Mi",
+            }
+        ),
     )
 
 
 with DAG(
     dag_id="daglige_gamle_datafortellinger",
+    description="Daglig oppdatering av (gamle) quarto-datafortellinger",
     schedule_interval="30 6 * * *",
     start_date=datetime(2025, 3, 12, tzinfo=timezone("Europe/Oslo")),
     doc_md="De tre datafortellingene Vebjørn lagde som oppdateres daglig.",

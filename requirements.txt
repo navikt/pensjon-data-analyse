@@ -1,10 +1,10 @@
-google-cloud-bigquery==3.29.0
-google-cloud-secret-manager==2.23.0
+google-cloud-bigquery==3.30.0
+google-cloud-secret-manager==2.23.1
 nbclient==0.10.2
 nbformat==5.10.4
-oracledb==2.5.1
+oracledb==3.0.0
 pandas==2.2.3
 plotly==5.24.1
-pyarrow==19.0.0
+pyarrow==19.0.1
 pyyaml==6.0.2
 jupyterlab==4.3.5

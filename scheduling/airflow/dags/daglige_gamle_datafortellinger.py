@@ -60,8 +60,9 @@ with DAG(
     )
 
     fellesordningen = quarto_operator_wrapped(
+        # "AFP Privat resultater" på datamarkedsplassen
         dag=dag,
-        name="fellesordningen - AFP Privat resultater",
+        name="fellesordningen",
         quarto_path="quarto/fellesordningen.qmd",
         quarto_id="f0badb23-c06a-4c23-a45e-a3eee008f80a",
     )

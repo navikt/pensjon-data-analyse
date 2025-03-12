@@ -1,6 +1,0 @@
-plotly
-quarto
-jupyterlab
-pandas
-requests
-itables

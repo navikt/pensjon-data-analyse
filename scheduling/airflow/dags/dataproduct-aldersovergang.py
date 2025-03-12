@@ -11,7 +11,6 @@ with DAG('dataproduct-aldersovergang', start_date=days_ago(1), schedule_interval
         repo="navikt/pensjon-data-analyse",
         script_path="scripts/dataproduct_aldersovergang.py",
         requirements_path="requirements.txt",
-        branch="main",
-        retries=0,
+        use_uv_pip_install=True,
         allowlist=["secretmanager.googleapis.com", "bigquery.googleapis.com", "dm09-scan.adeo.no:1521"]
     )

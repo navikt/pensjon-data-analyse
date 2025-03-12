@@ -9,11 +9,10 @@ with DAG('dataproduct-automatisering-v2', start_date=days_ago(40), schedule_inte
         dag=dag,
         name="dataproduct-automatisering-v2",
         slack_channel="#pensak-airflow-alerts",
+        requirements_path="requirements.txt",
         repo="navikt/pensjon-data-analyse",
         script_path="scripts/dataproduct_automatisering_v2.py",
-        requirements_path="requirements.txt",
-        branch="main",
-        retries=0,
+        use_uv_pip_install=True,
         resources=k8s.V1ResourceRequirements(
             requests={"memory": "6Gi", "cpu": "1", "ephemeral-storage": "200Mi"},
             ),

@@ -11,7 +11,7 @@ def date_to_tertial(date):
     return (date.month - 1) // 4 + 1
 
 def overwrite_dataproduct():
-    pesys_utils.set_secrets_as_env(split_on=":", secret_name='projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest')
+    pesys_utils.set_pen_secrets_as_env()
     
     current_year = datetime.now().year
     N = (current_year + 1) - 2008

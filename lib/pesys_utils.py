@@ -5,15 +5,23 @@ from time import time
 from google.cloud import secretmanager
 
 
-def set_secrets_as_env(
-    split_on=":",
-    secret_name="projects/193123067890/secrets/vebjorn-rekkebo/versions/latest",
+def set_pen_secrets_as_env(
+    secret_name="projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest",
 ):
+    """
+    Setter secrets fra GSM som miljøvariabler. Dette er i hemmelighetene:
+
+    - PEN_USER, som er brukeren pen_airflow
+    - PEN_PASSWORD, som er passordet til pen_airflow
+    - PENSAK_NADA_TOKEN, usikker på hvor det blir brukt
+
+    Se hemmeligheten i prosjektet pensjon-saksbehandling-nh4b i Google Cloud Console.
+    """
     secrets = secretmanager.SecretManagerServiceClient()
     secret = secrets.access_secret_version(name=secret_name)
     secrets = secret.payload.data.decode("UTF-8")
     for secret in secrets.splitlines():
-        key, value = secret.split(split_on)
+        key, value = secret.split(":")
         os.environ[key] = value
 
 

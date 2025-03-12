@@ -4,7 +4,7 @@ from google.cloud.bigquery import Client, LoadJobConfig
 from lib import pesys_utils
 
 logging.basicConfig(level=logging.INFO)
-pesys_utils.set_secrets_as_env(split_on=":", secret_name='projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest')
+pesys_utils.set_pen_secrets_as_env()
 
 def main():
     # oracle

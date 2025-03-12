@@ -8,7 +8,7 @@ from lib import pesys_utils
 
 
 def update_dataproduct():
-    pesys_utils.set_secrets_as_env(split_on=":", secret_name='projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest')
+    pesys_utils.set_pen_secrets_as_env()
     df = make_df()
     append_to_bq(df)
 

@@ -29,7 +29,7 @@ sys.path.append('../lib')
 import pesys_utils
 importlib.reload(pesys_utils)
 
-pesys_utils.set_secrets_as_env(split_on=":", secret_name="projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest")
+pesys_utils.set_pen_secrets_as_env()
 ```
 
 ```{python}

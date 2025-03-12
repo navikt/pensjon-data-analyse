@@ -17,14 +17,18 @@ jupyter: python3
 ---
 
 ```{python}
-import pandas as pd
 import sys
+import logging
+import pandas as pd
 import plotly.express as px
 
 import importlib
 sys.path.append('../lib')
 import pesys_utils
 importlib.reload(pesys_utils)
+
+logging.basicConfig(level=logging.INFO)
+pesys_utils.set_pen_secrets_as_env()
 
 nav_colors = (
     "#0067C5",
@@ -37,9 +41,6 @@ nav_colors = (
 )
 ```
 
-```{python}
-pesys_utils.set_pen_secrets_as_env()
-```
 
 ```{python}
 con = pesys_utils.open_pen_connection()

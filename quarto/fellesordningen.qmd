@@ -17,16 +17,21 @@ jupyter: python3
 ---
 
 ```{python}
-import pandas as pd
-import numpy as np
 import os
 import sys
+import logging
+import numpy as np
+import pandas as pd
 import plotly.express as px
-
 from datetime import datetime
 
+import importlib
 sys.path.append('../lib')
 import pesys_utils
+importlib.reload(pesys_utils)
+
+logging.basicConfig(level=logging.INFO)
+pesys_utils.set_pen_secrets_as_env()
 ```
 
 ```{python}
@@ -71,7 +76,6 @@ def make_datastory(figs):
 ```
 
 ```{python}
-pesys_utils.set_pen_secrets_as_env()
 df = make_df()
 figs = make_figs(df)
 

@@ -1,15 +1,15 @@
-import pandas as pd
-import os
-
-from datetime import datetime
+import logging
 from time import time
 from google.cloud.bigquery import Client, LoadJobConfig
 
 from lib import pesys_utils
 
 
+logging.basicConfig(level=logging.INFO)
+pesys_utils.set_pen_secrets_as_env()
+
+
 def overwrite_dataproduct():
-    pesys_utils.set_pen_secrets_as_env()
     df = make_df()
     df_to_bq(
         project_id='pensjon-saksbehandli-prod-1f83',

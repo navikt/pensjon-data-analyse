@@ -1,18 +1,20 @@
+import logging
 import pandas as pd
-import os
-
-from datetime import datetime
 from time import time
+from datetime import datetime
 from google.cloud.bigquery import Client, LoadJobConfig
 
 from lib import pesys_utils
 
+
+logging.basicConfig(level=logging.INFO)
+pesys_utils.set_pen_secrets_as_env()
+
 def date_to_tertial(date):
     return (date.month - 1) // 4 + 1
 
+
 def overwrite_dataproduct():
-    pesys_utils.set_pen_secrets_as_env()
-    
     current_year = datetime.now().year
     N = (current_year + 1) - 2008
     years = [str(current_year-(i-1)) for i in range(N)]

@@ -18,21 +18,22 @@ jupyter: python3
 
 ```{python}
 import sys
+import logging
 import numpy as np
 import pandas as pd
-import importlib
 import plotly.express as px
-import plotly.graph_objects as go
 from datetime import datetime
+import plotly.graph_objects as go
 
+import importlib
 sys.path.append('../lib')
 import pesys_utils
 importlib.reload(pesys_utils)
-```
 
-```{python}
+logging.basicConfig(level=logging.INFO)
 pesys_utils.set_pen_secrets_as_env()
 ```
+
 
 ```{python}
 def group_df_on_var(df, period):

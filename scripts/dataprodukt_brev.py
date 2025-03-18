@@ -10,7 +10,7 @@ pesys_utils.set_pen_secrets_as_env()
 tuning = 10000
 con = pesys_utils.open_pen_connection()
 df_autobrev_inntektsendring = pesys_utils.pandas_from_sql(
-    sql_file="../sql/autobrev_inntektsendring.sql",
+    sqlfile="../sql/autobrev_inntektsendring.sql",
     con=con,
     tuning=tuning,
     lowercase=True,

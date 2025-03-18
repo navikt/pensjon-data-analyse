@@ -54,6 +54,7 @@ def open_pen_connection():
         user=os.environ["PEN_USER"],
         password=os.environ["PEN_PASSWORD"],
     )
+    print(f"Connected with user: {os.environ["PEN_USER"]}")
     return con
 
 

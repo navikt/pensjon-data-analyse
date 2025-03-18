@@ -2,7 +2,7 @@ select
     extract(year from kh.dato_onsket_virk) as ar,
     extract(month from kh.dato_onsket_virk) as maned,
     concat(
-        extract(year from kh.dato_onsket_virk), '-',
+        concat(extract(year from kh.dato_onsket_virk), '-'),
         lpad(extract(month from kh.dato_onsket_virk), 2, '0')
     ) as armaned,
     (case
@@ -32,6 +32,9 @@ where
 group by
     extract(year from kh.dato_onsket_virk),
     extract(month from kh.dato_onsket_virk),
+    concat(
+        concat(extract(year from kh.dato_onsket_virk), '-'),
+        lpad(extract(month from kh.dato_onsket_virk), 2, '0')),
     (case
         when substr(v.opprettet_av, 1, 1) in ('0','1','2','3','4','5','6','7','8','9')
             then 'Bruker'

@@ -4,10 +4,13 @@ from pendulum import timezone
 from dataverk_airflow import python_operator
 from kubernetes import client as k8s
 
-# DAG for de tre dataproduktene Vebjørn lagde som oppdateres daglig.
-# Bør vurderes om de kan saneres dersom de ikke er i bruk.
-# De kan være bruk i Metabase.
+# DAG for daglig oppdaterte dataprodukter
 
+# Bør vudere om de tre dataproduktene Vebjørn lagde kan saneres.
+# Først kartlegg om de er i bruk, feks i Metabase. Det gjelder:
+# - laaste_vedtak
+# - kravstatus
+# - kontrollpunkt
 
 def python_operator_wrapped(
     *,  # Enforce keyword-only arguments
@@ -36,12 +39,16 @@ def python_operator_wrapped(
 
 with DAG(
     dag_id="daglige_dataprodukter",
-    description="Daglig oppdatering av (3 gamle) dataprodukter, altså BQ-tabeller",
+    description="Daglig oppdatering av dataprodukter, altså BQ-tabeller",
     schedule_interval="15 6 * * *",
     start_date=datetime(2025, 3, 12, tzinfo=timezone("Europe/Oslo")),
-    doc_md="De tre dataproduktene Vebjørn lagde som oppdateres daglig.",
     catchup=False,
 ) as dag:
+    # autobrev_inntektsendring = python_operator_wrapped(
+    #     dag=dag,
+    #     name="autobrev_inntektsendring",
+    #     script_path="scripts/dataprodukt_brev.py",
+    # )
     laaste_vedtak = python_operator_wrapped(
         dag=dag,
         name="laaste-vedtak",
@@ -63,6 +70,7 @@ with DAG(
         ),
     )
 
+    # autobrev_inntektsendring
     laaste_vedtak
     kravstatus
     kontrollpunkt

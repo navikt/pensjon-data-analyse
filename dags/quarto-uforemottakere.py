@@ -23,9 +23,9 @@ with DAG(
             "token": Variable.get("PENSAK_QUARTO_TOKEN"),
         },
         use_uv_pip_install=True,
-        allowlist=["dvh.adeo.no"],
-        slack_channel="#pensak-airflow-alerts",
-        requirements_path="requirements_dvhi.txt",
+        allowlist=["dvh.adeo.no", "secretmanager.googleapis.com", "a01dbfl036.adeo.no"],
+        # slack_channel="#pensak-airflow-alerts",
+        requirements_path="requirements.txt",
     )
 
     update_quarto

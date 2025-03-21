@@ -1,24 +1,66 @@
 import os
+import json
+import logging
 import oracledb
 import pandas as pd
 from time import time
 from google.cloud import secretmanager
 
 
-def set_pen_secrets_as_env(
-    secret_name="projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest",
-):
+def set_db_secrets(secret_name: str):
+    """Setter secrets fra GSM som miljøvariabler. Dette er typisk i hemmeligheten:
+    -   "DB_USER": "pen_dataprodukt",
+    -   "DB_PORT": "1521",
+    -   "DB_PASSWORD": "...",
+    -   "DB_SERVICE_NAME": "pen_q2",
+    -   "DB_HOST": "d26dbvl012.test.local",
     """
-    Setter secrets fra GSM som miljøvariabler. Dette er i hemmelighetene:
+    full_secret_name = f"projects/230094999443/secrets/{secret_name}/versions/latest"
+    client = secretmanager.SecretManagerServiceClient()
+    response = client.access_secret_version(request={"name": full_secret_name})
+    secret = json.loads(response.payload.data.decode("UTF-8"))
+    for key, value in secret.items():
+        os.environ[key] = value
 
+
+def connect_to_oracle():
+    """Bruker miljøvariabler for å koble til en Oracle-database.
+    Kombiner med set_db_secrets(secret_name) for å sette hemmeligheter fra GSM."""
+    con = oracledb.connect(
+        port=os.environ["DB_PORT"],
+        host=os.environ["DB_HOST"],
+        user=os.environ["DB_USER"],
+        password=os.environ["DB_PASSWORD"],
+        service_name=os.environ["DB_SERVICE_NAME"],
+    )
+    logging.info(f"Brukeren {os.environ['DB_USER']} er koblet til {os.environ["DB_HOST"]}")
+    return con
+
+
+def df_from_sql(sql: str, connection: oracledb.Connection):
+    """Henter data med en sql-spørring og returnerer en pandas.DataFrame."""
+    with connection.cursor() as cursor:
+        cursor.execute(sql)
+        columns = [col[0].lower() for col in cursor.description]
+        data = cursor.fetchall()
+    df = pd.DataFrame(data, columns=columns)
+    logging.info(f"Hentet {len(df)} rader")
+    return df
+
+
+def set_pen_secrets_as_env():
+    """
+    Setter secret for pen_airflow fra GSM. Gammel versjon.
+    Se hemmeligheten i prosjektet pensjon-saksbehandling-nh4b i Google Cloud Console.
+    Dette er i hemmelighetene:
     - PEN_USER, som er brukeren pen_airflow
     - PEN_PASSWORD, som er passordet til pen_airflow
     - PENSAK_NADA_TOKEN, usikker på hvor det blir brukt
 
-    Se hemmeligheten i prosjektet pensjon-saksbehandling-nh4b i Google Cloud Console.
     """
+    name="projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest"
     secrets = secretmanager.SecretManagerServiceClient()
-    secret = secrets.access_secret_version(name=secret_name)
+    secret = secrets.access_secret_version(name=name)
     secrets = secret.payload.data.decode("UTF-8")
     for secret in secrets.splitlines():
         key, value = secret.split(":")

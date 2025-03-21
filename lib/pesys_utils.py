@@ -33,7 +33,7 @@ def connect_to_oracle():
         password=os.environ["DB_PASSWORD"],
         service_name=os.environ["DB_SERVICE_NAME"],
     )
-    logging.info(f"Brukeren {os.environ['DB_USER']} er koblet til {os.environ["DB_HOST"]}")
+    logging.info(f"Brukeren {os.environ['DB_USER']} er koblet til {os.environ['DB_HOST']}")
     return con
 
 

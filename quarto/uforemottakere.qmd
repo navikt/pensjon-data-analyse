@@ -18,37 +18,48 @@ format:
             light: [minty, highlight]
 ---
 <!-- author: "Brynjar Morka Mæhlum, Pesys-Uføre" -->
-<!-- uv pip install plotly quarto jupyterlab pandas requests itables -->
 
 ```{python}
 #| include: false 
-import os
-import requests
+import json
+import logging
+import oracledb
 import pandas as pd
 from itables import show
 import plotly.express as px
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
+from google.cloud import secretmanager
 
 
-url_ufore = 'https://dvh.adeo.no/ords/dvh/dt_p/mv_ufore_aldersgruppe.json'
-# legg til Azure AD-token, for å få tilgang til dataene. Hent fra cookie i browser
-# i terminalen: export MRHSession=xxxxx
-# i jupyter notebook: os.environ['MRHSession'] = 'xxxxx'
+logging.basicConfig(level=logging.INFO)
 
-# # lokal utvikling
-cookie = os.environ['MRHSession']
-headers = {'cookie' : f'MRHSession={cookie}'}
-response = requests.get(url_ufore, headers=headers)
+secret_name = "projects/230094999443/secrets/DWHI/versions/latest"
+client = secretmanager.SecretManagerServiceClient()
+response = client.access_secret_version(request={"name": secret_name})
+secret = json.loads(response.payload.data.decode("UTF-8"))
 
-# i airflow
-# response = requests.get(url_ufore)
+connectionDWHI = oracledb.connect(
+    user=secret.get('DB_USER'),
+    host=secret.get('DB_HOST'),
+    port=secret.get('DB_PORT'),
+    password=secret.get('DB_PASSWORD'),
+    service_name=secret.get('DB_SERVICE_NAME')
+)
+logging.info(f"Koblet til DWHI med bruker: {secret.get('DB_USER')}")
 
-df = pd.DataFrame(response.json()['items'])
+sql = "select * from dt_p.mv_ufore_aldersgruppe order by aar_maaned desc"
+with connectionDWHI.cursor() as cursor:
+    cursor.execute(sql)
+    columns = [col[0].lower() for col in cursor.description]
+    data = cursor.fetchall()
+connectionDWHI.close()
+
+
+df = pd.DataFrame(data, columns=columns)
+logging.info(f'Nyeste data er: {df["periode_dato"].max()}')
 df_alder = df.sort_values(by=['aar_maaned', 'aldersgruppe'], ascending=False).reset_index(drop=True)
 df_alle = df.groupby(['aar_maaned', 'aar', 'periode_dato']).sum(numeric_only=True).reset_index().sort_values(by='aar_maaned', ascending=False).reset_index(drop=True)
 df_alle['netto_mottakere'] = df_alle['antall_tilgang'] - df_alle['antall_avgang']
-# dataprepp ferdig
 ```
 
 ```{python}

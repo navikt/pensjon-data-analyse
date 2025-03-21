@@ -7,7 +7,7 @@ with DAG('aldersovergang', start_date=days_ago(1), schedule_interval="0 0 1-7 * 
     t1 = python_operator(
         dag=dag,
         name="dataproduct-aldersovergang",
-        # slack_channel="#pensak-airflow-alerts",
+        slack_channel="#pensak-airflow-alerts",
         repo="navikt/pensjon-data-analyse",
         script_path="scripts/aldersovergang.py",
         requirements_path="requirements.txt",

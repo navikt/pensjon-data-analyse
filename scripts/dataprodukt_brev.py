@@ -4,11 +4,11 @@ from google.cloud.bigquery import Client, LoadJobConfig
 from lib import pesys_utils
 
 logging.basicConfig(level=logging.INFO)
-pesys_utils.set_pen_secrets_as_env()
 
 # oracle
+pesys_utils.set_db_secrets(secret_name='pen-PROD-dvh_dataprodukt')
 tuning = 10000
-con = pesys_utils.open_pen_connection()
+con = pesys_utils.connect_to_oracle()
 df_autobrev_inntektsendring = pesys_utils.pandas_from_sql(
     sqlfile="../sql/autobrev_inntektsendring.sql",
     con=con,

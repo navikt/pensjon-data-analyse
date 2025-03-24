@@ -1,8 +1,8 @@
 from airflow import DAG
 from datetime import datetime
 from pendulum import timezone
-from dataverk_airflow import python_operator
 from kubernetes import client as k8s
+from dataverk_airflow import python_operator
 
 # DAG for daglig oppdaterte dataprodukter
 
@@ -40,15 +40,15 @@ def python_operator_wrapped(
 with DAG(
     dag_id="daglige_dataprodukter",
     description="Daglig oppdatering av dataprodukter, altså BQ-tabeller",
-    schedule_interval="15 6 * * *",
+    schedule_interval="15 5 * * *",
     start_date=datetime(2025, 3, 12, tzinfo=timezone("Europe/Oslo")),
     catchup=False,
 ) as dag:
-    # autobrev_inntektsendring = python_operator_wrapped(
-    #     dag=dag,
-    #     name="autobrev_inntektsendring",
-    #     script_path="scripts/dataprodukt_brev.py",
-    # )
+    autobrev_inntektsendring = python_operator_wrapped(
+        dag=dag,
+        name="autobrev_inntektsendring",
+        script_path="scripts/dataprodukt_brev.py",
+    )
     laaste_vedtak = python_operator_wrapped(
         dag=dag,
         name="laaste-vedtak",
@@ -70,7 +70,7 @@ with DAG(
         ),
     )
 
-    # autobrev_inntektsendring
+    autobrev_inntektsendring
     laaste_vedtak
     kravstatus
     kontrollpunkt

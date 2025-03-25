@@ -32,6 +32,7 @@ def python_operator_wrapped(
             "secretmanager.googleapis.com",
             "bigquery.googleapis.com",
             "dm09-scan.adeo.no:1521",
+            "dm08db03-vip.adeo.no:1521",
         ],
         resources=resources,
     )

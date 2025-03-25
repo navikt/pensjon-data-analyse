@@ -20,6 +20,8 @@ def set_db_secrets(secret_name: str):
     response = client.access_secret_version(request={"name": full_secret_name})
     secret = json.loads(response.payload.data.decode("UTF-8"))
     for key, value in secret.items():
+        if key == "DB_USER":
+            logging.info(f"Setter secrets for bruker: {value}")
         os.environ[key] = value
 
 

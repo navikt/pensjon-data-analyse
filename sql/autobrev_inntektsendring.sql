@@ -14,7 +14,7 @@ select
             then 'Saksbehandler'
         else v.opprettet_av
     end) as opprettet_av,
-    (case when ab.k_batchbrev_id is not null then 'Autobrev' else 'Manuelt/ingen' end) as brevtype,
+    (case when ab.k_batchbrev_id is not null then 'Autobrev' else 'Manuelt brev eller uten brev' end) as brevtype,
     lower(kh.k_behandling_t) as behandlingstype,
     count(1) as antall
 from pen.t_kravhode kh
@@ -44,7 +44,7 @@ group by
             then 'Saksbehandler'
         else v.opprettet_av
     end),
-    (case when ab.k_batchbrev_id is not null then 'Autobrev' else 'Manuelt/ingen' end),
+    (case when ab.k_batchbrev_id is not null then 'Autobrev' else 'Manuelt brev eller uten brev' end),
     kh.k_behandling_t
 order by
     extract(year from kh.dato_onsket_virk) desc,

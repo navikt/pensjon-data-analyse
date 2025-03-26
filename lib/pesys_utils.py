@@ -8,7 +8,9 @@ from google.cloud import secretmanager
 
 
 def set_db_secrets(secret_name: str):
-    """Setter secrets fra GSM som miljøvariabler. Dette er typisk i hemmeligheten:
+    """Setter secrets fra GSM som miljøvariabler, for å kunne kjøre connect_to_oracle().
+    Hvis DB_USER og DB_PASSWORD er satt allerede for lokal kjøring, så endres de ikke.
+    Dette skal være i hemmelighetene, med eksempelverdier for Q2:
     -   "DB_USER": "pen_dataprodukt",
     -   "DB_PORT": "1521",
     -   "DB_PASSWORD": "...",
@@ -19,10 +21,13 @@ def set_db_secrets(secret_name: str):
     client = secretmanager.SecretManagerServiceClient()
     response = client.access_secret_version(request={"name": full_secret_name})
     secret = json.loads(response.payload.data.decode("UTF-8"))
-    for key, value in secret.items():
-        if key == "DB_USER":
-            logging.info(f"Setter secrets for bruker: {value}")
-        os.environ[key] = value
+    os.environ["DB_HOST"] = secret["DB_HOST"]
+    os.environ["DB_PORT"] = secret["DB_PORT"]
+    os.environ["DB_SERVICE_NAME"] = secret["DB_SERVICE_NAME"]
+    # hvis DB_USER eksisterer som miljøvariabel, bruk den, ellers bruk den fra secret
+    os.environ["DB_USER"] = os.environ.get("DB_USER", secret["DB_USER"])
+    os.environ["DB_PASSWORD"] = os.environ.get("DB_PASSWORD", secret["DB_PASSWORD"])
+    logging.info(f"Secrets for {os.environ['DB_USER']} mot {os.environ['DB_HOST']}")
 
 
 def connect_to_oracle():

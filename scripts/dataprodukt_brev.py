@@ -6,7 +6,7 @@ from lib import pesys_utils
 logging.basicConfig(level=logging.INFO)
 
 # oracle
-pesys_utils.set_db_secrets(secret_name='pen-PROD-dvh_dataprodukt')
+pesys_utils.set_db_secrets(secret_name="pen-PROD-dvh_dataprodukt")
 tuning = 10000
 con = pesys_utils.connect_to_oracle()
 df_autobrev_inntektsendring = pesys_utils.pandas_from_sql(
@@ -16,6 +16,31 @@ df_autobrev_inntektsendring = pesys_utils.pandas_from_sql(
     lowercase=True,
 )
 con.close()
+
+# datavask for å få bedre visualisering i Metabase
+
+# BPEN090 navn
+df_autobrev_inntektsendring.loc[
+    (df_autobrev_inntektsendring["opprettet_av"] == "PPEN011")
+    & (df_autobrev_inntektsendring["maned"] != 1),
+    "opprettet_av",
+] = "BPEN090"
+
+# BPEN091 navn
+df_autobrev_inntektsendring.loc[
+    (df_autobrev_inntektsendring["opprettet_av"] == "PPEN011")
+    & (df_autobrev_inntektsendring["maned"] == 1),
+    "opprettet_av",
+] = "BPEN091"
+
+# BPEN091 brevtype der det ikke er sendt brev
+df_autobrev_inntektsendring.loc[
+    (df_autobrev_inntektsendring["opprettet_av"] == "BPEN091")
+    & (df_autobrev_inntektsendring["maned"] == 1)
+    & (df_autobrev_inntektsendring["brevtype"] == "Manuelt brev eller uten brev")
+    & (df_autobrev_inntektsendring["behandlingstype"] == "auto"),
+    "brevtype",
+] = "BPEN091 uten endret utbetaling, og da uten brev"
 
 # bigquery
 client = Client(project="pensjon-saksbehandli-prod-1f83")

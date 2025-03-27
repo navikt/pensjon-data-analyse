@@ -9,3 +9,5 @@ pyarrow==19.0.0
 pyyaml==6.0.2
 jupyterlab==4.3.5
 itables==2.2.5
+db-dtypes==1.4.2
+pyarrow==19.0.1

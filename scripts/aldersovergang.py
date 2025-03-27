@@ -7,7 +7,7 @@ logging.basicConfig(level=logging.INFO)
 
 # oracle PEN
 tuning = 10000
-pesys_utils.set_db_secrets(secret_name='pen-PROD-dvh_dataprodukt')
+pesys_utils.set_db_secrets(secret_name='pen-prod-pen_dataprodukt')
 con = pesys_utils.connect_to_oracle()
 df_aldersovergang_behandle_bruker = pesys_utils.pandas_from_sql('../sql/aldersovergang_behandle_bruker.sql', con=con, tuning=tuning, lowercase=True)
 df_aldersovergang_brev = pesys_utils.pandas_from_sql('../sql/aldersovergang_brev.sql', con=con, tuning=tuning, lowercase=True)

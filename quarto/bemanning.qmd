@@ -22,6 +22,7 @@ import pandas as pd
 from pathlib import Path
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+from itables import show
 
 colors = {
     'Kvinne': '#AC96FA',
@@ -290,4 +291,99 @@ fig.update_layout(
 fig.show()
 
 print('Plottet viser kvinneandel og internandel for hvert team i pensjonsområdet. Størrelsen på prikken representerer antall personer i hvert team. Fargen er kvinneandelen.')
+```
+
+# POene 2D-plott
+
+```{python}
+#| include: false
+# plot with kvinneandel as x-axis, internandel as y-axis, and size as antall for PO
+df_po_grouped_2d = df_alle_po[["po", "antall", "kjonn", "ansettelsestype"]].groupby(["po", "kjonn", "ansettelsestype"]).sum().reset_index()
+df_po_grouped_2d["sum_antall"] = df_po_grouped_2d.groupby("po")["antall"].transform("sum")
+df_po_grouped_2d["andel"] = df_po_grouped_2d["antall"] / df_po_grouped_2d["sum_antall"]
+df_po_grouped_2d["andel_text"] = df_po_grouped_2d["andel"].map("{:.0%}".format)
+
+# Calculate kvinneandel and internandel for each PO
+df_po_2d = df_po_grouped_2d.pivot_table(
+    index="po", 
+    columns=["kjonn", "ansettelsestype"], 
+    values="andel", 
+    fill_value=0
+).reset_index()
+
+df_po_2d["kvinneandel"] = df_po_2d[("Kvinne", "Intern")] + df_po_2d[("Kvinne", "Ekstern")]
+df_po_2d["internandel"] = df_po_2d[("Kvinne", "Intern")] + df_po_2d[("Mann", "Intern")]
+df_po_2d["antall"] = df_po_grouped_2d.groupby("po")["sum_antall"].first().values
+
+# Create scatter plot
+fig_po = go.Figure()
+
+fig_po.add_trace(go.Scatter(
+    x=df_po_2d["kvinneandel"],
+    y=df_po_2d["internandel"],
+    mode="markers",
+    marker=dict(
+        size=df_po_2d["antall"],
+        sizemode="area",
+        sizeref=1. * max(df_po_2d["antall"]) / (40. ** 2),
+        sizemin=4,
+        color=df_po_2d["kvinneandel"],
+        colorscale="Sunset",
+        showscale=True,
+        colorbar=dict(title="Kvinneandel"),
+    ),
+    text=df_po_2d["po"],
+    hovertemplate=(
+        "%{text}<br>Kvinneandel: %{x:.0%}<br>Internandel: %{y:.0%}<br>Antall: %{marker.size}"
+    )
+))
+
+fig_po.update_layout(
+    title="2D-plott: Kvinneandel vs Internandel for PO",
+    xaxis=dict(title="Kvinneandel"),
+    yaxis=dict(title="Internandel"),
+    showlegend=False
+)
+
+```
+
+
+```{python}
+fig_po.show()
+
+print('Plottet viser kvinneandel og internandel for hvert produktområde (PO). Størrelsen på prikken representerer antall personer i hvert PO. Fargen er kvinneandelen.')
+```
+
+
+# Roller pensjonsområdet
+
+```{python}
+#| include: false
+
+# Count occurrences of each "rolle" and show in a table
+df_rolle = df_pensjon["rolle"].value_counts().reset_index()
+df_rolle.columns = ["Primærrolle", "Antall"]
+df_rolle["Andel"] = df_rolle["Antall"] / df_rolle["Antall"].sum()
+df_rolle["Andel"] = df_rolle["Andel"].map("{:.1%}".format)
+```
+
+```{python}
+#| include: false
+
+# Count occurrences of each "rolle" and show in a table
+df_rolle2 = df_pensjon["rolle2"].value_counts().reset_index()
+df_rolle2.columns = ["Sekundærrolle", "Antall"]
+df_rolle2["Andel"] = df_rolle2["Antall"] / df_rolle2["Antall"].sum()
+df_rolle2["Andel"] = df_rolle2["Andel"].map("{:.1%}".format)
+```
+##
+
+###
+```{python}
+show(df_rolle, show_index=False)
+```
+
+###
+```{python}
+show(df_rolle2, show_index=False)
 ```

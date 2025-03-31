@@ -26,11 +26,16 @@ from plotly.subplots import make_subplots
 colors = {
     'Kvinne': '#AC96FA',
     'Mann': '#FAD682',
-    'under 35': '#E3CDB8',
-    '35-50': '#AC9A88',
-    'over 50': '#8E765D',
-    'Intern': '#96CFFA',
-    'Ekstern': '#9EAEBA',
+    # 'under 35': '#99DEAD', # grønn
+    # '35-50': '#06893A',
+    # 'over 50': '#005519',
+    'under 35': '#99C4DD',
+    '35-50': '#3380A5',
+    'over 50': '#005077',
+    # 'Intern': '#96CFFA', # blå og grå
+    # 'Ekstern': '#9EAEBA',
+    'Intern': '#2AA758',
+    'Ekstern': '#003B0F',
 }
 
 
@@ -78,7 +83,7 @@ df_po_ansettelsestype["andel_text"] = df_po_ansettelsestype["andel"].map("{:.1%}
 
 
 # function which give the three pie charts for a given po
-def po_oversikt(po: str):
+def po_ovesikt_pie(po: str):
     fig = make_subplots(
         rows=1, 
         cols=3, 
@@ -92,6 +97,7 @@ def po_oversikt(po: str):
     df_aldersgruppe = df_po_aldersgruppe[df_po_aldersgruppe["po"] == po]
     df_ansettelsestype = df_po_ansettelsestype[df_po_ansettelsestype["po"] == po]
 
+    # kjønn
     fig.add_trace(go.Pie(
         labels=df_kjonn["kjonn"],
         values=df_kjonn["antall"],
@@ -101,15 +107,28 @@ def po_oversikt(po: str):
         marker=dict(colors=[colors[label] for label in df_kjonn["kjonn"]])
     ), row=1, col=1)
 
+    
+    # Ensure the order of the labels is as desired
+    df_aldersgruppe = df_aldersgruppe.copy()
+    df_aldersgruppe.loc[:, "aldersgruppe"] = pd.Categorical(
+        df_aldersgruppe["aldersgruppe"], 
+        categories=["under 35", "35-50", "over 50"], 
+        ordered=True
+    )
+    df_aldersgruppe = df_aldersgruppe.sort_values("aldersgruppe")
+
+    # aldersgruppe
     fig.add_trace(go.Pie(
         labels=df_aldersgruppe["aldersgruppe"],
         values=df_aldersgruppe["antall"],
         textinfo="label+percent",
         name="Aldersgruppe",
         hoverinfo="label+percent",
-        marker=dict(colors=[colors[label] for label in df_aldersgruppe["aldersgruppe"]])
+        marker=dict(colors=[colors[label] for label in df_aldersgruppe["aldersgruppe"]]),
+        sort=False  # Disable automatic sorting
     ), row=1, col=2)
 
+    # intern/ekstern
     fig.add_trace(go.Pie(
         labels=df_ansettelsestype["ansettelsestype"],
         values=df_ansettelsestype["antall"],
@@ -122,10 +141,10 @@ def po_oversikt(po: str):
     fig.update_layout(
         title_text=plot_title,
         annotations=[
-            dict(text="Kjønn", x=0.1, y=0.1, font_size=14, showarrow=False),
+            dict(text="Kjønn", x=0.15, y=0.1, font_size=14, showarrow=False),
             dict(text="Aldersgruppe", x=0.5, y=0.1, font_size=14, showarrow=False),
-            dict(text="Ansettelsestype", x=0.9, y=0.1, font_size=14, showarrow=False)
-        ]
+            dict(text="Ansettelsestype", x=0.85, y=0.1, font_size=14, showarrow=False)
+        ],
     )
     return fig
 
@@ -133,32 +152,32 @@ def po_oversikt(po: str):
 
 ## {height=20%}
 ```{python}
-po_oversikt("PO pensjon")
+po_ovesikt_pie("PO pensjon")
 ```
 
 ```{python}
-po_oversikt('PO arbeidsgiver')
+po_ovesikt_pie('PO arbeidsgiver')
 ```
 ## {height=20%}
 ```{python}
-po_oversikt('PO utbetaling')
+po_ovesikt_pie('PO utbetaling')
 ```
 ```{python}
-po_oversikt('PO helse')
-```
-## {height=20%}
-```{python}
-po_oversikt('PO familie')
-```
-```{python}
-po_oversikt('PO arbeidsoppfølging')
+po_ovesikt_pie('PO helse')
 ```
 ## {height=20%}
 ```{python}
-po_oversikt('PO arbeid')
+po_ovesikt_pie('PO familie')
 ```
 ```{python}
-po_oversikt('PO AAP')
+po_ovesikt_pie('PO arbeidsoppfølging')
+```
+## {height=20%}
+```{python}
+po_ovesikt_pie('PO arbeid')
+```
+```{python}
+po_ovesikt_pie('PO AAP')
 ```
 
 
@@ -167,7 +186,7 @@ po_oversikt('PO AAP')
 ```{python}
 #| include: false
 
-def create_pensjon_bar_chart(group_by_column: str):
+def create_pensjon_bar_chart(group_by_column: str, plot_order: list = None):
     if group_by_column not in ["kjonn", "aldersgruppe", "ansettelsestype"]:
         raise ValueError("Invalid group_by_column. Must be 'kjonn', 'aldersgruppe', or 'ansettelsestype'.")
 
@@ -177,10 +196,15 @@ def create_pensjon_bar_chart(group_by_column: str):
     df_pensjon_grouped["andel_text"] = df_pensjon_grouped.apply(
         lambda row: f"{row['andel']:.0%} {row[group_by_column]}", axis=1
     )
-    df_pensjon_grouped = df_pensjon_grouped.sort_values(by=["andel_text", "team"], ascending=[False, False])
+
+    if plot_order:
+        df_pensjon_grouped[group_by_column] = pd.Categorical(
+            df_pensjon_grouped[group_by_column], categories=plot_order, ordered=True
+        )
+    df_pensjon_grouped = df_pensjon_grouped.sort_values(by=["team", group_by_column])
 
     fig = go.Figure()
-    for value in df_pensjon_grouped[group_by_column].unique()[::-1]:
+    for value in df_pensjon_grouped[group_by_column].cat.categories[::-1] if plot_order else df_pensjon_grouped[group_by_column].unique()[::-1]:
         df = df_pensjon_grouped[df_pensjon_grouped[group_by_column] == value]
         fig.add_trace(go.Bar(
             x=df["team"],
@@ -196,11 +220,11 @@ def create_pensjon_bar_chart(group_by_column: str):
 ```
 
 ```{python}
-create_pensjon_bar_chart("kjonn")
+create_pensjon_bar_chart("kjonn", plot_order=["Kvinne", "Mann"])
 ```
 
 ```{python}
-create_pensjon_bar_chart("aldersgruppe")
+create_pensjon_bar_chart("aldersgruppe", plot_order=["under 35", "35-50", "over 50"])
 ```
 
 ```{python}

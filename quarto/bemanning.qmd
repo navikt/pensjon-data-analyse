@@ -211,7 +211,7 @@ def create_pensjon_bar_chart(group_by_column: str, plot_order: list = None):
             y=df["andel"],
             name=value,
             customdata=df[["sum_antall", "andel_text", group_by_column]],
-            hovertemplate="Team: %{x}<br>Antall i team: %{customdata[0]}<br>%{customdata[2]} andel: %{y}<br>%{customdata[1]}",
+            hovertemplate="%{x}<br>Antall i team: %{customdata[0]}<br>%{customdata[2]} andel: %{y}<br>%{customdata[1]}",
             marker_color=colors.get(value, "#CCCCCC")
         ))
     fig.update_layout(barmode="stack")
@@ -229,4 +229,65 @@ create_pensjon_bar_chart("aldersgruppe", plot_order=["under 35", "35-50", "over 
 
 ```{python}
 create_pensjon_bar_chart("ansettelsestype")
+```
+
+
+# 2D-plott
+
+```{python}
+#| include: false
+
+# plot with kvinneandel as x-axis, internandel as y-axis, and size as antall
+df_pensjon_grouped_2d = df_pensjon[["team", "antall", "kjonn", "ansettelsestype"]].groupby(["team", "kjonn", "ansettelsestype"]).sum().reset_index()
+df_pensjon_grouped_2d["sum_antall"] = df_pensjon_grouped_2d.groupby("team")["antall"].transform("sum")
+df_pensjon_grouped_2d["andel"] = df_pensjon_grouped_2d["antall"] / df_pensjon_grouped_2d["sum_antall"]
+df_pensjon_grouped_2d["andel_text"] = df_pensjon_grouped_2d["andel"].map("{:.0%}".format)
+# Calculate kvinneandel and internandel for each team
+df_pensjon_2d = df_pensjon_grouped_2d.pivot_table(
+    index="team", 
+    columns=["kjonn", "ansettelsestype"], 
+    values="andel", 
+    fill_value=0
+).reset_index()
+
+df_pensjon_2d["kvinneandel"] = df_pensjon_2d[("Kvinne", "Intern")] + df_pensjon_2d[("Kvinne", "Ekstern")]
+df_pensjon_2d["internandel"] = df_pensjon_2d[("Kvinne", "Intern")] + df_pensjon_2d[("Mann", "Intern")]
+df_pensjon_2d["antall"] = df_pensjon_grouped_2d.groupby("team")["sum_antall"].first().values
+
+# Create scatter plot
+fig = go.Figure()
+
+fig.add_trace(go.Scatter(
+    x=df_pensjon_2d["kvinneandel"],
+    y=df_pensjon_2d["internandel"],
+    mode="markers",
+    marker=dict(
+        size=df_pensjon_2d["antall"],
+        sizemode="area",
+        sizeref=1. * max(df_pensjon_2d["antall"]) / (40. ** 2),
+        sizemin=4,
+        color=df_pensjon_2d["kvinneandel"],
+        colorscale="Sunset",
+        showscale=True,
+        colorbar=dict(title="Kvinneandel"),
+    ),
+    text=df_pensjon_2d["team"],
+    hovertemplate=(
+        "%{text}<br>Kvinneandel: %{x:.0%}<br>Internandel: %{y:.0%}<br>Antall: %{marker.size}"
+    )
+))
+
+fig.update_layout(
+    title="2D-plott: Kvinneandel vs Internandel",
+    xaxis=dict(title="Kvinneandel"),
+    yaxis=dict(title="Internandel"),
+    showlegend=False
+)
+
+```
+
+```{python}
+fig.show()
+
+print('Plottet viser kvinneandel og internandel for hvert team i pensjonsområdet. Størrelsen på prikken representerer antall personer i hvert team. Fargen er kvinneandelen.')
 ```

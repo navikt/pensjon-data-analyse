@@ -1,0 +1,208 @@
+---
+title: "Bemanning i pensjonsområdet"
+jupyter: python3
+execute:
+    echo: false
+    warning: false
+    include: true
+format:
+  dashboard:
+    scrolling: true
+    embed-resources: true
+    nav-buttons:
+      - icon: slack
+        href: https://nav-it.slack.com/
+      - icon: github
+        href: https://github.com/navikt/pensjon-data-analyse
+---
+
+```{python}
+#| include: false
+import pandas as pd
+from pathlib import Path
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+
+colors = {
+    'Kvinne': '#AC96FA',
+    'Mann': '#FAD682',
+    'under 35': '#E3CDB8',
+    '35-50': '#AC9A88',
+    'over 50': '#8E765D',
+    'Intern': '#96CFFA',
+    'Ekstern': '#9EAEBA',
+}
+
+
+def find_project_root(start_path: Path = Path.cwd()):
+    if (start_path / ".git").exists():
+        return start_path
+    else:
+        return find_project_root(start_path.parent)
+
+project_root = find_project_root()
+df_pensjon = pd.read_csv(Path(project_root, "data", "bemanningsoversikt_pensjon_teams.csv"), sep=";")
+# ['team', 'po', 'rolle', 'rolle2', 'avdeling', 'omrade', 'stilling', 'ansettelsestype', 'kjonn', 'aldersgruppe', 'antall', 'dato_hentet']
+df_alle_po = pd.read_csv(Path(project_root, "data", "bemanningsoversikt_alle_po.csv"), sep=";")
+# ['po', 'ansettelsestype', 'kjonn', 'aldersgruppe', 'antall', 'dato_hentet']
+pensjon_teams_list = df_pensjon["team"].unique()
+
+```
+
+# Alle produktområder
+
+```{python}
+#| include: false
+
+# aggregert for po på:
+# - kjonn
+# - aldersgruppe
+# - ansettelsestype
+
+df_po_kjonn = df_alle_po[["po", "kjonn", "antall"]].groupby(["po", "kjonn"]).sum().reset_index()
+df_po_kjonn["andel"] = df_po_kjonn["antall"] / df_po_kjonn.groupby("po")["antall"].transform("sum")
+df_po_kjonn["andel_text"] = df_po_kjonn["andel"].map("{:.1%}".format)
+
+df_po_aldersgruppe = df_alle_po[["po", "aldersgruppe", "antall"]].groupby(["po", "aldersgruppe"]).sum().reset_index()
+df_po_aldersgruppe["andel"] = df_po_aldersgruppe["antall"] / df_po_aldersgruppe.groupby("po")["antall"].transform("sum")
+df_po_aldersgruppe["andel_text"] = df_po_aldersgruppe["andel"].map("{:.1%}".format)
+
+df_po_ansettelsestype = df_alle_po[["po", "ansettelsestype", "antall"]].groupby(["po", "ansettelsestype"]).sum().reset_index()
+df_po_ansettelsestype["andel"] = df_po_ansettelsestype["antall"] / df_po_ansettelsestype.groupby("po")["antall"].transform("sum")
+df_po_ansettelsestype["andel_text"] = df_po_ansettelsestype["andel"].map("{:.1%}".format)
+
+```
+
+```{python}
+#| include: false
+
+
+# function which give the three pie charts for a given po
+def po_oversikt(po: str):
+    fig = make_subplots(
+        rows=1, 
+        cols=3, 
+        subplot_titles=("Kjønn", "Aldersgruppe", "Ansettelsestype"),
+        specs=[[{"type": "domain"}, {"type": "domain"}, {"type": "domain"}]]
+    )
+    antall_i_po = df_alle_po[df_alle_po["po"] == po]["antall"].sum()
+    plot_title = f"{po} - {antall_i_po} unike personer i teamene"
+
+    df_kjonn = df_po_kjonn[df_po_kjonn["po"] == po]
+    df_aldersgruppe = df_po_aldersgruppe[df_po_aldersgruppe["po"] == po]
+    df_ansettelsestype = df_po_ansettelsestype[df_po_ansettelsestype["po"] == po]
+
+    fig.add_trace(go.Pie(
+        labels=df_kjonn["kjonn"],
+        values=df_kjonn["antall"],
+        textinfo="label+percent",
+        name="Kjønn",
+        hoverinfo="label+percent",
+        marker=dict(colors=[colors[label] for label in df_kjonn["kjonn"]])
+    ), row=1, col=1)
+
+    fig.add_trace(go.Pie(
+        labels=df_aldersgruppe["aldersgruppe"],
+        values=df_aldersgruppe["antall"],
+        textinfo="label+percent",
+        name="Aldersgruppe",
+        hoverinfo="label+percent",
+        marker=dict(colors=[colors[label] for label in df_aldersgruppe["aldersgruppe"]])
+    ), row=1, col=2)
+
+    fig.add_trace(go.Pie(
+        labels=df_ansettelsestype["ansettelsestype"],
+        values=df_ansettelsestype["antall"],
+        textinfo="label+percent",
+        name="Ansettelsestype",
+        hoverinfo="label+percent",
+        marker=dict(colors=[colors[label] for label in df_ansettelsestype["ansettelsestype"]])
+    ), row=1, col=3)
+    
+    fig.update_layout(
+        title_text=plot_title,
+        annotations=[
+            dict(text="Kjønn", x=0.1, y=0.1, font_size=14, showarrow=False),
+            dict(text="Aldersgruppe", x=0.5, y=0.1, font_size=14, showarrow=False),
+            dict(text="Ansettelsestype", x=0.9, y=0.1, font_size=14, showarrow=False)
+        ]
+    )
+    return fig
+
+```
+
+## {height=20%}
+```{python}
+po_oversikt("PO pensjon")
+```
+
+```{python}
+po_oversikt('PO arbeidsgiver')
+```
+## {height=20%}
+```{python}
+po_oversikt('PO utbetaling')
+```
+```{python}
+po_oversikt('PO helse')
+```
+## {height=20%}
+```{python}
+po_oversikt('PO familie')
+```
+```{python}
+po_oversikt('PO arbeidsoppfølging')
+```
+## {height=20%}
+```{python}
+po_oversikt('PO arbeid')
+```
+```{python}
+po_oversikt('PO AAP')
+```
+
+
+# Pensjonsområdet
+
+```{python}
+#| include: false
+
+def create_pensjon_bar_chart(group_by_column: str):
+    if group_by_column not in ["kjonn", "aldersgruppe", "ansettelsestype"]:
+        raise ValueError("Invalid group_by_column. Must be 'kjonn', 'aldersgruppe', or 'ansettelsestype'.")
+
+    df_pensjon_grouped = df_pensjon[["team", "antall", group_by_column]].groupby(["team", group_by_column]).sum().reset_index()
+    df_pensjon_grouped["sum_antall"] = df_pensjon_grouped.groupby("team")["antall"].transform("sum")
+    df_pensjon_grouped["andel"] = df_pensjon_grouped["antall"] / df_pensjon_grouped["sum_antall"]
+    df_pensjon_grouped["andel_text"] = df_pensjon_grouped.apply(
+        lambda row: f"{row['andel']:.0%} {row[group_by_column]}", axis=1
+    )
+    df_pensjon_grouped = df_pensjon_grouped.sort_values(by=["andel_text", "team"], ascending=[False, False])
+
+    fig = go.Figure()
+    for value in df_pensjon_grouped[group_by_column].unique()[::-1]:
+        df = df_pensjon_grouped[df_pensjon_grouped[group_by_column] == value]
+        fig.add_trace(go.Bar(
+            x=df["team"],
+            y=df["andel"],
+            name=value,
+            customdata=df[["sum_antall", "andel_text", group_by_column]],
+            hovertemplate="Team: %{x}<br>Antall i team: %{customdata[0]}<br>%{customdata[2]} andel: %{y}<br>%{customdata[1]}",
+            marker_color=colors.get(value, "#CCCCCC")
+        ))
+    fig.update_layout(barmode="stack")
+    return fig
+
+```
+
+```{python}
+create_pensjon_bar_chart("kjonn")
+```
+
+```{python}
+create_pensjon_bar_chart("aldersgruppe")
+```
+
+```{python}
+create_pensjon_bar_chart("ansettelsestype")
+```

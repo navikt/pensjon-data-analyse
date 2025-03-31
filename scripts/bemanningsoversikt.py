@@ -21,7 +21,7 @@ po as (
 -- har duplikater innad i PO der det er en person er i flere team
 team_i_po as (
     select 
-        name as team_navn,
+        name as team,
         -- productareaid as po_id,
         po.po_navn as po_navn,
         json_extract_scalar(member, '$.navIdent') as nav_id,
@@ -54,7 +54,7 @@ unike_identer_i_po as (
 po_pensjon as (
     select
         nav_id,
-        team_navn,
+        team,
         po_navn,
         rolle,
         rolle2
@@ -105,7 +105,10 @@ hr_data as (
         remedy_enhet as avdeling,
         orgenhet_paa_ressurs_beskrivelse as omrade,
         stillingsnavn,
-        resource_typ as ansettelsestype,
+        case
+            when resource_typ = 'E' then 'Ekstern'
+            else 'Intern' -- neglisjerer typ lærling og innlån/utlån, som er veldig få
+        end as ansettelsestype,
         kjonn,
         case 
             when floor(months_between(sysdate, fodselsdato) / 12) < 35 then 'under 35'
@@ -118,19 +121,19 @@ hr_data as (
 pensjon_teams as (
     select
         nav_id,
-        team_navn,
+        team,
         po_navn,
         rolle,
         rolle2
     from (
-        { ' UNION ALL '.join([f"SELECT '{row.nav_id}' AS nav_id, '{row.team_navn}' AS team_navn, '{row.po_navn}' AS po_navn, '{row.rolle}' AS rolle, '{row.rolle2}' AS rolle2 from dual" for row in df_pensjon_teams.itertuples(index=False)]) }
+        { ' UNION ALL '.join([f"SELECT '{row.nav_id}' AS nav_id, '{row.team}' AS team, '{row.po_navn}' AS po_navn, '{row.rolle}' AS rolle, '{row.rolle2}' AS rolle2 from dual" for row in df_pensjon_teams.itertuples(index=False)]) }
     )
 ),
 
 joined as (
     select
         pensjon_teams.nav_id,
-        pensjon_teams.team_navn,
+        pensjon_teams.team,
         pensjon_teams.po_navn,
         pensjon_teams.rolle,
         pensjon_teams.rolle2,
@@ -146,13 +149,13 @@ joined as (
 
 aggregert as (
     select
-        team_navn,
-        po_navn,
+        team,
+        po_navn as po,
         rolle,
         rolle2,
         avdeling,
         omrade,
-        stillingsnavn,
+        stillingsnavn as stilling,
         ansettelsestype,
         kjonn,
         aldersgruppe,
@@ -160,7 +163,7 @@ aggregert as (
         trunc(sysdate) as dato_hentet
     from joined
     group by
-        team_navn,
+        team,
         po_navn,
         rolle,
         rolle2,
@@ -186,7 +189,10 @@ hr_data as (
         remedy_enhet as avdeling,
         orgenhet_paa_ressurs_beskrivelse as omrade,
         stillingsnavn,
-        resource_typ as ansettelsestype,
+        case
+            when resource_typ = 'E' then 'Ekstern'
+            else 'Intern' -- neglisjerer typ lærling og innlån/utlån, som er veldig få
+        end as ansettelsestype,
         kjonn,
         case 
             when floor(months_between(sysdate, fodselsdato) / 12) < 35 then 'under 35'
@@ -210,10 +216,10 @@ joined as (
     select
         alle_po.nav_id,
         alle_po.po_navn,
-        alle_po.rolle,
-        hr_data.avdeling,
-        hr_data.omrade,
-        hr_data.stillingsnavn,
+        -- alle_po.rolle,
+        -- hr_data.avdeling,
+        -- hr_data.omrade,
+        -- hr_data.stillingsnavn,
         hr_data.ansettelsestype,
         hr_data.kjonn,
         hr_data.aldersgruppe
@@ -223,7 +229,7 @@ joined as (
 
 aggregert as (
     select
-        po_navn,
+        po_navn as po,
         ansettelsestype,
         kjonn,
         aldersgruppe,

@@ -293,59 +293,54 @@ show(df_rolle2, show_index=False)
 # Sammenlikne PO med stolpe-diagram
 # Create three bar plots for PO with PO-name on the x-axis
 
+po_totalt = df_alle_po.groupby("po")["antall"].sum().reset_index()
+po_totalt = po_totalt.rename(columns={"antall": "total"})
+po_totalt["po_navn_total"] = po_totalt["po"] + " (" + po_totalt["total"].map(str) + ")"
+
 # Plot 1: Gender distribution
 fig_gender = go.Figure()
 for gender in ["Kvinne", "Mann"]:
     df = df_po_kjonn[df_po_kjonn["kjonn"] == gender]
+    df = df.merge(po_totalt[["po", "total", "po_navn_total"]], on="po")
     fig_gender.add_trace(go.Bar(
         x=df["po"],
         y=df["andel"],
         name=gender,
         marker_color=colors[gender],
-        text=df["antall"],
-        textposition="auto",
-        hovertemplate="%{x}<br>%{y:.1%}<br>Antall: %{text}"
+        customdata=df[["antall", "total"]],
+        hovertemplate="%{x}<br>%{y:.1%}<br>Antall: %{customdata[0]} av %{customdata[1]}"
     ))
-fig_gender.update_layout(
-    title="Kjønnsfordeling per PO",
-    barmode="stack"
-)
+fig_gender.update_layout(barmode="stack")
 
 # Plot 2: Age group distribution
 fig_age = go.Figure()
 for age_group in [ "over 50", "35-50", "under 35"]:
     df = df_po_aldersgruppe[df_po_aldersgruppe["aldersgruppe"] == age_group]
+    df = df.merge(po_totalt[["po", "total", "po_navn_total"]], on="po")
     fig_age.add_trace(go.Bar(
         x=df["po"],
         y=df["andel"],
         name=age_group,
         marker_color=colors[age_group],
-        text=df["antall"],
-        textposition="auto",
-        hovertemplate="%{x}<br>%{y:.1%}<br>Antall: %{text}"
+        customdata=df[["antall", "total"]],
+        hovertemplate="%{x}<br>%{y:.1%}<br>Antall: %{customdata[0]} av %{customdata[1]}"
     ))
-fig_age.update_layout(
-    title="Aldersgruppefordeling per PO",
-    barmode="stack"
-)
+fig_age.update_layout(barmode="stack")
 
 # Plot 3: Employment type distribution
 fig_employment = go.Figure()
 for employment_type in ["Intern", "Ekstern"]:
     df = df_po_ansettelsestype[df_po_ansettelsestype["ansettelsestype"] == employment_type]
+    df = df.merge(po_totalt[["po", "total", "po_navn_total"]], on="po")
     fig_employment.add_trace(go.Bar(
         x=df["po"],
         y=df["andel"],
         name=employment_type,
         marker_color=colors[employment_type],
-        text=df["antall"],
-        textposition="auto",
-        hovertemplate="%{x}<br>%{y:.1%}<br>Antall: %{text}"
+        customdata=df[["antall", "total"]],
+        hovertemplate="%{x}<br>%{y:.1%}<br>Antall: %{customdata[0]} av %{customdata[1]}"
     ))
-fig_employment.update_layout(
-    title="Intern/ekstern per PO",
-    barmode="stack"
-)
+fig_employment.update_layout(barmode="stack")
 ```
 
 ```{python}

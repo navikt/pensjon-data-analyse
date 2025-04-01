@@ -308,8 +308,6 @@ for gender in ["Kvinne", "Mann"]:
     ))
 fig_gender.update_layout(
     title="Kjønnsfordeling per PO",
-    xaxis_title="PO",
-    yaxis_title="Andel",
     barmode="stack"
 )
 
@@ -328,8 +326,6 @@ for age_group in [ "over 50", "35-50", "under 35"]:
     ))
 fig_age.update_layout(
     title="Aldersgruppefordeling per PO",
-    xaxis_title="PO",
-    yaxis_title="Andel",
     barmode="stack"
 )
 
@@ -348,8 +344,6 @@ for employment_type in ["Intern", "Ekstern"]:
     ))
 fig_employment.update_layout(
     title="Intern/ekstern per PO",
-    xaxis_title="PO",
-    yaxis_title="Andel",
     barmode="stack"
 )
 ```

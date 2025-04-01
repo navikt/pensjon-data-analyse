@@ -11,30 +11,25 @@ format:
     embed-resources: true
     nav-buttons:
       - icon: slack
-        href: https://nav-it.slack.com/
+        href: https://nav-it.slack.com/archives/C08AKB1T6F7
       - icon: github
-        href: https://github.com/navikt/pensjon-data-analyse
+        href: https://github.com/navikt/pensjon-data-analyse/quarto/bemanning.qmd
 ---
 
 ```{python}
 #| include: false
 import pandas as pd
+from itables import show
 from pathlib import Path
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-from itables import show
 
 colors = {
     'Kvinne': '#AC96FA',
     'Mann': '#FAD682',
-    # 'under 35': '#99DEAD', # grønn
-    # '35-50': '#06893A',
-    # 'over 50': '#005519',
     'under 35': '#99C4DD',
     '35-50': '#3380A5',
     'over 50': '#005077',
-    # 'Intern': '#96CFFA', # blå og grå
-    # 'Ekstern': '#9EAEBA',
     'Intern': '#2AA758',
     'Ekstern': '#003B0F',
 }
@@ -53,18 +48,7 @@ df_alle_po = pd.read_csv(Path(project_root, "data", "bemanningsoversikt_alle_po.
 # ['po', 'ansettelsestype', 'kjonn', 'aldersgruppe', 'antall', 'dato_hentet']
 pensjon_teams_list = df_pensjon["team"].unique()
 
-```
-
-# Alle produktområder
-
-```{python}
-#| include: false
-
-# aggregert for po på:
-# - kjonn
-# - aldersgruppe
-# - ansettelsestype
-
+# gjenbrukt aggregering
 df_po_kjonn = df_alle_po[["po", "kjonn", "antall"]].groupby(["po", "kjonn"]).sum().reset_index()
 df_po_kjonn["andel"] = df_po_kjonn["antall"] / df_po_kjonn.groupby("po")["antall"].transform("sum")
 df_po_kjonn["andel_text"] = df_po_kjonn["andel"].map("{:.1%}".format)
@@ -76,13 +60,315 @@ df_po_aldersgruppe["andel_text"] = df_po_aldersgruppe["andel"].map("{:.1%}".form
 df_po_ansettelsestype = df_alle_po[["po", "ansettelsestype", "antall"]].groupby(["po", "ansettelsestype"]).sum().reset_index()
 df_po_ansettelsestype["andel"] = df_po_ansettelsestype["antall"] / df_po_ansettelsestype.groupby("po")["antall"].transform("sum")
 df_po_ansettelsestype["andel_text"] = df_po_ansettelsestype["andel"].map("{:.1%}".format)
+```
 
+
+# 2D-plott
+
+```{python}
+#| include: false
+
+# plot with kvinneandel as x-axis, internandel as y-axis, and size as antall
+df_pensjon_grouped_2d = df_pensjon[["team", "antall", "kjonn", "ansettelsestype"]].groupby(["team", "kjonn", "ansettelsestype"]).sum().reset_index()
+df_pensjon_grouped_2d["sum_antall"] = df_pensjon_grouped_2d.groupby("team")["antall"].transform("sum")
+df_pensjon_grouped_2d["andel"] = df_pensjon_grouped_2d["antall"] / df_pensjon_grouped_2d["sum_antall"]
+df_pensjon_grouped_2d["andel_text"] = df_pensjon_grouped_2d["andel"].map("{:.0%}".format)
+# Calculate kvinneandel and internandel for each team
+df_pensjon_2d = df_pensjon_grouped_2d.pivot_table(
+    index="team", 
+    columns=["kjonn", "ansettelsestype"], 
+    values="andel", 
+    fill_value=0
+).reset_index()
+
+df_pensjon_2d["kvinneandel"] = df_pensjon_2d[("Kvinne", "Intern")] + df_pensjon_2d[("Kvinne", "Ekstern")]
+df_pensjon_2d["internandel"] = df_pensjon_2d[("Kvinne", "Intern")] + df_pensjon_2d[("Mann", "Intern")]
+df_pensjon_2d["antall"] = df_pensjon_grouped_2d.groupby("team")["sum_antall"].first().values
+
+# Create scatter plot
+fig = go.Figure()
+
+fig.add_trace(go.Scatter(
+    x=df_pensjon_2d["kvinneandel"],
+    y=df_pensjon_2d["internandel"],
+    mode="markers+text",
+    marker=dict(
+        size=df_pensjon_2d["antall"],
+        sizemode="area",
+        sizeref=1. * max(df_pensjon_2d["antall"]) / (40. ** 2),
+        sizemin=4,
+        color=df_pensjon_2d["kvinneandel"],
+        colorscale="Sunset",
+        showscale=True,
+        colorbar=dict(title="Kvinneandel"),
+    ),
+    text=df_pensjon_2d["team"],
+    hovertemplate=(
+        "%{text}<br>Kvinneandel: %{x:.0%}<br>Internandel: %{y:.0%}<br>Antall: %{marker.size}"
+    ),
+    textposition="top center"
+))
+
+fig.update_layout(
+    title="2D-plott: Kvinneandel vs Internandel",
+    xaxis=dict(title="Kvinneandel"),
+    yaxis=dict(title="Internandel"),
+    showlegend=False
+)
+
+```
+
+```{python}
+fig.show()
+
+print('Plottet viser kvinneandel og internandel for hvert team i pensjonsområdet. Størrelsen på prikken representerer antall personer i hvert team. Fargen er kvinneandelen.')
+```
+
+# POene 2D-plott
+
+```{python}
+#| include: false
+# plot with kvinneandel as x-axis, internandel as y-axis, and size as antall for PO
+df_po_grouped_2d = df_alle_po[["po", "antall", "kjonn", "ansettelsestype"]].groupby(["po", "kjonn", "ansettelsestype"]).sum().reset_index()
+df_po_grouped_2d["sum_antall"] = df_po_grouped_2d.groupby("po")["antall"].transform("sum")
+df_po_grouped_2d["andel"] = df_po_grouped_2d["antall"] / df_po_grouped_2d["sum_antall"]
+df_po_grouped_2d["andel_text"] = df_po_grouped_2d["andel"].map("{:.0%}".format)
+
+# Calculate kvinneandel and internandel for each PO
+df_po_2d = df_po_grouped_2d.pivot_table(
+    index="po", 
+    columns=["kjonn", "ansettelsestype"], 
+    values="andel", 
+    fill_value=0
+).reset_index()
+
+df_po_2d["kvinneandel"] = df_po_2d[("Kvinne", "Intern")] + df_po_2d[("Kvinne", "Ekstern")]
+df_po_2d["internandel"] = df_po_2d[("Kvinne", "Intern")] + df_po_2d[("Mann", "Intern")]
+df_po_2d["antall"] = df_po_grouped_2d.groupby("po")["sum_antall"].first().values
+
+# Create scatter plot
+fig_po = go.Figure()
+
+fig_po.add_trace(go.Scatter(
+    x=df_po_2d["kvinneandel"],
+    y=df_po_2d["internandel"],
+    mode="markers+text",
+    marker=dict(
+        size=df_po_2d["antall"],
+        sizemode="area",
+        sizeref=1. * max(df_po_2d["antall"]) / (40. ** 2),
+        sizemin=4,
+        color=df_po_2d["kvinneandel"],
+        colorscale="Sunset",
+        showscale=True,
+        colorbar=dict(title="Kvinneandel"),
+    ),
+    text=df_po_2d["po"],
+    textposition="top center",
+    hovertemplate=(
+        "%{text}<br>Kvinneandel: %{x:.0%}<br>Internandel: %{y:.0%}<br>Antall: %{marker.size}"
+    )
+))
+
+fig_po.update_layout(
+    title="2D-plott: Kvinneandel vs Internandel for PO",
+    xaxis=dict(title="Kvinneandel"),
+    yaxis=dict(title="Internandel"),
+    showlegend=False
+)
+
+```
+
+```{python}
+fig_po.show()
+
+print('Plottet viser kvinneandel og internandel for hvert produktområde (PO). Størrelsen på prikken representerer antall personer i hvert PO. Fargen er kvinneandelen.')
+```
+
+
+# Pensjonsområdet  {scrolling="false"}
+
+```{python}
+#| include: false
+
+def create_pensjon_bar_chart(group_by_column: str, plot_order: list = None):
+    if group_by_column not in ["kjonn", "aldersgruppe", "ansettelsestype"]:
+        raise ValueError("Invalid group_by_column. Must be 'kjonn', 'aldersgruppe', or 'ansettelsestype'.")
+
+    df_pensjon_grouped = df_pensjon[["team", "antall", group_by_column]].groupby(["team", group_by_column]).sum().reset_index()
+    df_pensjon_grouped["sum_antall"] = df_pensjon_grouped.groupby("team")["antall"].transform("sum")
+    df_pensjon_grouped["andel"] = df_pensjon_grouped["antall"] / df_pensjon_grouped["sum_antall"]
+    df_pensjon_grouped["andel_text"] = df_pensjon_grouped.apply(
+        lambda row: f"{row['andel']:.0%} {row[group_by_column]}", axis=1
+    )
+
+    if plot_order:
+        df_pensjon_grouped[group_by_column] = pd.Categorical(
+            df_pensjon_grouped[group_by_column], categories=plot_order, ordered=True
+        )
+    df_pensjon_grouped = df_pensjon_grouped.sort_values(by=["team", group_by_column])
+
+    fig = go.Figure()
+    for value in df_pensjon_grouped[group_by_column].cat.categories[::-1] if plot_order else df_pensjon_grouped[group_by_column].unique()[::-1]:
+        df = df_pensjon_grouped[df_pensjon_grouped[group_by_column] == value]
+        fig.add_trace(go.Bar(
+            x=df["team"],
+            y=df["andel"],
+            name=value,
+            customdata=df[["sum_antall", "andel_text", group_by_column]],
+            hovertemplate="%{x}<br>Antall i team: %{customdata[0]}<br>%{customdata[2]} andel: %{y}<br>%{customdata[1]}",
+            marker_color=colors.get(value, "#CCCCCC")
+        ))
+    fig.update_layout(barmode="stack")
+    return fig
+
+```
+
+```{python}
+create_pensjon_bar_chart("kjonn", plot_order=["Kvinne", "Mann"])
+```
+
+```{python}
+create_pensjon_bar_chart("aldersgruppe", plot_order=["under 35", "35-50", "over 50"])
+```
+
+```{python}
+create_pensjon_bar_chart("ansettelsestype")
+```
+
+
+
+# Roller pensjonsområdet
+
+```{python}
+#| include: false
+
+# Count occurrences of each "rolle" and show in a table
+df_rolle = df_pensjon[["rolle", "kjonn"]].value_counts().reset_index()
+df_rolle = df_rolle.pivot(index="rolle", columns="kjonn", values="count").reset_index().fillna(0)
+df_rolle.columns.name = None  # Remove the name of the columns index
+df_rolle["Totalt"] = df_rolle["Kvinne"] + df_rolle["Mann"]
+df_rolle["Kvinneandel"] = (df_rolle["Kvinne"] / df_rolle["Totalt"]).map("{:.1%}".format)
+df_rolle = df_rolle.sort_values(by="Totalt", ascending=False)
+df_rolle = df_rolle.rename(columns={"rolle": "Primærrolle"})
+df_rolle.loc[df_rolle["Totalt"] < 3, "Kvinneandel"] = "-"
+df_rolle = df_rolle[["Primærrolle", "Totalt", "Kvinneandel"]].reset_index(drop=True)
 ```
 
 ```{python}
 #| include: false
 
+# Count occurrences of each "rolle" and show in a table
+df_rolle2 = df_pensjon[["rolle2", "kjonn"]].value_counts().reset_index()
+df_rolle2 = df_rolle2.pivot(index="rolle2", columns="kjonn", values="count").reset_index().fillna(0)
+df_rolle2.columns.name = None  # Remove the name of the columns index
+df_rolle2["Totalt"] = df_rolle2["Kvinne"] + df_rolle2["Mann"]
+df_rolle2["Kvinneandel"] = (df_rolle2["Kvinne"] / df_rolle2["Totalt"]).map("{:.1%}".format)
+df_rolle2 = df_rolle2.sort_values(by="Totalt", ascending=False)
+df_rolle2 = df_rolle2.rename(columns={"rolle2": "Sekundærrolle"})
+df_rolle2.loc[df_rolle2["Totalt"] < 3, "Kvinneandel"] = "-"
+df_rolle2 = df_rolle2[["Sekundærrolle", "Totalt", "Kvinneandel"]].reset_index(drop=True)
+```
 
+##
+
+###
+```{python}
+show(df_rolle, show_index=False)
+```
+
+###
+```{python}
+show(df_rolle2, show_index=False)
+```
+
+
+
+
+# POene med stolpediagram {scrolling="false"}
+
+```{python}
+#| include: false
+
+# Sammenlikne PO med stolpe-diagram
+# Create three bar plots for PO with PO-name on the x-axis
+
+# Plot 1: Gender distribution
+fig_gender = go.Figure()
+for gender in ["Kvinne", "Mann"]:
+    df = df_po_kjonn[df_po_kjonn["kjonn"] == gender]
+    fig_gender.add_trace(go.Bar(
+        x=df["po"],
+        y=df["andel"],
+        name=gender,
+        marker_color=colors[gender],
+        text=df["antall"],
+        textposition="auto",
+        hovertemplate="%{x}<br>%{y:.1%}<br>Antall: %{text}"
+    ))
+fig_gender.update_layout(
+    title="Kjønnsfordeling per PO",
+    xaxis_title="PO",
+    yaxis_title="Andel",
+    barmode="stack"
+)
+
+# Plot 2: Age group distribution
+fig_age = go.Figure()
+for age_group in [ "over 50", "35-50", "under 35"]:
+    df = df_po_aldersgruppe[df_po_aldersgruppe["aldersgruppe"] == age_group]
+    fig_age.add_trace(go.Bar(
+        x=df["po"],
+        y=df["andel"],
+        name=age_group,
+        marker_color=colors[age_group],
+        text=df["antall"],
+        textposition="auto",
+        hovertemplate="%{x}<br>%{y:.1%}<br>Antall: %{text}"
+    ))
+fig_age.update_layout(
+    title="Aldersgruppefordeling per PO",
+    xaxis_title="PO",
+    yaxis_title="Andel",
+    barmode="stack"
+)
+
+# Plot 3: Employment type distribution
+fig_employment = go.Figure()
+for employment_type in ["Intern", "Ekstern"]:
+    df = df_po_ansettelsestype[df_po_ansettelsestype["ansettelsestype"] == employment_type]
+    fig_employment.add_trace(go.Bar(
+        x=df["po"],
+        y=df["andel"],
+        name=employment_type,
+        marker_color=colors[employment_type],
+        text=df["antall"],
+        textposition="auto",
+        hovertemplate="%{x}<br>%{y:.1%}<br>Antall: %{text}"
+    ))
+fig_employment.update_layout(
+    title="Intern/ekstern per PO",
+    xaxis_title="PO",
+    yaxis_title="Andel",
+    barmode="stack"
+)
+```
+
+```{python}
+
+# Show the plots
+fig_gender.show()
+fig_age.show()
+fig_employment.show()
+
+```
+
+
+
+# POene i piechart
+
+```{python}
+#| include: false
 # function which give the three pie charts for a given po
 def po_ovesikt_pie(po: str):
     fig = make_subplots(
@@ -179,211 +465,4 @@ po_ovesikt_pie('PO arbeid')
 ```
 ```{python}
 po_ovesikt_pie('PO AAP')
-```
-
-
-# Pensjonsområdet
-
-```{python}
-#| include: false
-
-def create_pensjon_bar_chart(group_by_column: str, plot_order: list = None):
-    if group_by_column not in ["kjonn", "aldersgruppe", "ansettelsestype"]:
-        raise ValueError("Invalid group_by_column. Must be 'kjonn', 'aldersgruppe', or 'ansettelsestype'.")
-
-    df_pensjon_grouped = df_pensjon[["team", "antall", group_by_column]].groupby(["team", group_by_column]).sum().reset_index()
-    df_pensjon_grouped["sum_antall"] = df_pensjon_grouped.groupby("team")["antall"].transform("sum")
-    df_pensjon_grouped["andel"] = df_pensjon_grouped["antall"] / df_pensjon_grouped["sum_antall"]
-    df_pensjon_grouped["andel_text"] = df_pensjon_grouped.apply(
-        lambda row: f"{row['andel']:.0%} {row[group_by_column]}", axis=1
-    )
-
-    if plot_order:
-        df_pensjon_grouped[group_by_column] = pd.Categorical(
-            df_pensjon_grouped[group_by_column], categories=plot_order, ordered=True
-        )
-    df_pensjon_grouped = df_pensjon_grouped.sort_values(by=["team", group_by_column])
-
-    fig = go.Figure()
-    for value in df_pensjon_grouped[group_by_column].cat.categories[::-1] if plot_order else df_pensjon_grouped[group_by_column].unique()[::-1]:
-        df = df_pensjon_grouped[df_pensjon_grouped[group_by_column] == value]
-        fig.add_trace(go.Bar(
-            x=df["team"],
-            y=df["andel"],
-            name=value,
-            customdata=df[["sum_antall", "andel_text", group_by_column]],
-            hovertemplate="%{x}<br>Antall i team: %{customdata[0]}<br>%{customdata[2]} andel: %{y}<br>%{customdata[1]}",
-            marker_color=colors.get(value, "#CCCCCC")
-        ))
-    fig.update_layout(barmode="stack")
-    return fig
-
-```
-
-```{python}
-create_pensjon_bar_chart("kjonn", plot_order=["Kvinne", "Mann"])
-```
-
-```{python}
-create_pensjon_bar_chart("aldersgruppe", plot_order=["under 35", "35-50", "over 50"])
-```
-
-```{python}
-create_pensjon_bar_chart("ansettelsestype")
-```
-
-
-# 2D-plott
-
-```{python}
-#| include: false
-
-# plot with kvinneandel as x-axis, internandel as y-axis, and size as antall
-df_pensjon_grouped_2d = df_pensjon[["team", "antall", "kjonn", "ansettelsestype"]].groupby(["team", "kjonn", "ansettelsestype"]).sum().reset_index()
-df_pensjon_grouped_2d["sum_antall"] = df_pensjon_grouped_2d.groupby("team")["antall"].transform("sum")
-df_pensjon_grouped_2d["andel"] = df_pensjon_grouped_2d["antall"] / df_pensjon_grouped_2d["sum_antall"]
-df_pensjon_grouped_2d["andel_text"] = df_pensjon_grouped_2d["andel"].map("{:.0%}".format)
-# Calculate kvinneandel and internandel for each team
-df_pensjon_2d = df_pensjon_grouped_2d.pivot_table(
-    index="team", 
-    columns=["kjonn", "ansettelsestype"], 
-    values="andel", 
-    fill_value=0
-).reset_index()
-
-df_pensjon_2d["kvinneandel"] = df_pensjon_2d[("Kvinne", "Intern")] + df_pensjon_2d[("Kvinne", "Ekstern")]
-df_pensjon_2d["internandel"] = df_pensjon_2d[("Kvinne", "Intern")] + df_pensjon_2d[("Mann", "Intern")]
-df_pensjon_2d["antall"] = df_pensjon_grouped_2d.groupby("team")["sum_antall"].first().values
-
-# Create scatter plot
-fig = go.Figure()
-
-fig.add_trace(go.Scatter(
-    x=df_pensjon_2d["kvinneandel"],
-    y=df_pensjon_2d["internandel"],
-    mode="markers",
-    marker=dict(
-        size=df_pensjon_2d["antall"],
-        sizemode="area",
-        sizeref=1. * max(df_pensjon_2d["antall"]) / (40. ** 2),
-        sizemin=4,
-        color=df_pensjon_2d["kvinneandel"],
-        colorscale="Sunset",
-        showscale=True,
-        colorbar=dict(title="Kvinneandel"),
-    ),
-    text=df_pensjon_2d["team"],
-    hovertemplate=(
-        "%{text}<br>Kvinneandel: %{x:.0%}<br>Internandel: %{y:.0%}<br>Antall: %{marker.size}"
-    )
-))
-
-fig.update_layout(
-    title="2D-plott: Kvinneandel vs Internandel",
-    xaxis=dict(title="Kvinneandel"),
-    yaxis=dict(title="Internandel"),
-    showlegend=False
-)
-
-```
-
-```{python}
-fig.show()
-
-print('Plottet viser kvinneandel og internandel for hvert team i pensjonsområdet. Størrelsen på prikken representerer antall personer i hvert team. Fargen er kvinneandelen.')
-```
-
-# POene 2D-plott
-
-```{python}
-#| include: false
-# plot with kvinneandel as x-axis, internandel as y-axis, and size as antall for PO
-df_po_grouped_2d = df_alle_po[["po", "antall", "kjonn", "ansettelsestype"]].groupby(["po", "kjonn", "ansettelsestype"]).sum().reset_index()
-df_po_grouped_2d["sum_antall"] = df_po_grouped_2d.groupby("po")["antall"].transform("sum")
-df_po_grouped_2d["andel"] = df_po_grouped_2d["antall"] / df_po_grouped_2d["sum_antall"]
-df_po_grouped_2d["andel_text"] = df_po_grouped_2d["andel"].map("{:.0%}".format)
-
-# Calculate kvinneandel and internandel for each PO
-df_po_2d = df_po_grouped_2d.pivot_table(
-    index="po", 
-    columns=["kjonn", "ansettelsestype"], 
-    values="andel", 
-    fill_value=0
-).reset_index()
-
-df_po_2d["kvinneandel"] = df_po_2d[("Kvinne", "Intern")] + df_po_2d[("Kvinne", "Ekstern")]
-df_po_2d["internandel"] = df_po_2d[("Kvinne", "Intern")] + df_po_2d[("Mann", "Intern")]
-df_po_2d["antall"] = df_po_grouped_2d.groupby("po")["sum_antall"].first().values
-
-# Create scatter plot
-fig_po = go.Figure()
-
-fig_po.add_trace(go.Scatter(
-    x=df_po_2d["kvinneandel"],
-    y=df_po_2d["internandel"],
-    mode="markers",
-    marker=dict(
-        size=df_po_2d["antall"],
-        sizemode="area",
-        sizeref=1. * max(df_po_2d["antall"]) / (40. ** 2),
-        sizemin=4,
-        color=df_po_2d["kvinneandel"],
-        colorscale="Sunset",
-        showscale=True,
-        colorbar=dict(title="Kvinneandel"),
-    ),
-    text=df_po_2d["po"],
-    hovertemplate=(
-        "%{text}<br>Kvinneandel: %{x:.0%}<br>Internandel: %{y:.0%}<br>Antall: %{marker.size}"
-    )
-))
-
-fig_po.update_layout(
-    title="2D-plott: Kvinneandel vs Internandel for PO",
-    xaxis=dict(title="Kvinneandel"),
-    yaxis=dict(title="Internandel"),
-    showlegend=False
-)
-
-```
-
-
-```{python}
-fig_po.show()
-
-print('Plottet viser kvinneandel og internandel for hvert produktområde (PO). Størrelsen på prikken representerer antall personer i hvert PO. Fargen er kvinneandelen.')
-```
-
-
-# Roller pensjonsområdet
-
-```{python}
-#| include: false
-
-# Count occurrences of each "rolle" and show in a table
-df_rolle = df_pensjon["rolle"].value_counts().reset_index()
-df_rolle.columns = ["Primærrolle", "Antall"]
-df_rolle["Andel"] = df_rolle["Antall"] / df_rolle["Antall"].sum()
-df_rolle["Andel"] = df_rolle["Andel"].map("{:.1%}".format)
-```
-
-```{python}
-#| include: false
-
-# Count occurrences of each "rolle" and show in a table
-df_rolle2 = df_pensjon["rolle2"].value_counts().reset_index()
-df_rolle2.columns = ["Sekundærrolle", "Antall"]
-df_rolle2["Andel"] = df_rolle2["Antall"] / df_rolle2["Antall"].sum()
-df_rolle2["Andel"] = df_rolle2["Andel"].map("{:.1%}".format)
-```
-##
-
-###
-```{python}
-show(df_rolle, show_index=False)
-```
-
-###
-```{python}
-show(df_rolle2, show_index=False)
 ```

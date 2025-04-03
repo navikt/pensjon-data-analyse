@@ -12,7 +12,6 @@ with DAG(
 ) as dag:
     historisering = python_operator(
         dag=dag,
-        retries=0,
         use_uv_pip_install=True,
         name="historiserer-fire-tabeller",
         repo="navikt/pensjon-data-analyse",

@@ -7,8 +7,9 @@ logging.basicConfig(level=logging.INFO)
 
 # makes a monthly status of the teamkatalogen table
 
+# teamkatalogen_dataset = 'org-prod-1016.teamkatalogen_federated_query_updated_dataset'
+# trenger sørvisbruker med tilgang for å lese rett fra teamkatalogen, så leser heller fra et view
 target_dataset = 'pensjon-saksbehandli-prod-1f83.teamkatalogen_historisert'
-teamkatalogen_dataset = 'org-prod-1016.teamkatalogen_federated_query_updated_dataset'
 table_teams = 'Teams'
 table_klynger = 'Klynger'
 table_personer = 'Personer'
@@ -25,7 +26,7 @@ for table in [table_teams, table_klynger, table_personer, table_produktomraader]
     select
         '{historisert_tidspunkt}' as historisert_tidspunkt,
         *
-    from `{teamkatalogen_dataset}.{table}`
+    from `{target_dataset}.view_{table}`
     """
     
     query_job = client.query(sql_read)

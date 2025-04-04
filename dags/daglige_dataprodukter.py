@@ -31,7 +31,7 @@ def python_operator_wrapped(
         allowlist=[
             "secretmanager.googleapis.com",
             "bigquery.googleapis.com",
-            "dmv18-scan.adeo.no:1521",
+            "dm08db03-vip.adeo.no", # prod lesekopien
         ],
         resources=resources,
     )

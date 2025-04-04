@@ -9,9 +9,15 @@ logging.basicConfig(level=logging.INFO)
 pesys_utils.set_pen_secrets_as_env()
 
 
+pesys_utils.set_db_secrets(secret_name="pen-prod-lesekopien-pen_dataprodukt")
 tuning = 1000
-con = pesys_utils.open_pen_connection()
-df_bq = pesys_utils.pandas_from_sql("../sql/laaste_vedtak.sql", con=con, tuning=tuning, lowercase=True)
+con = pesys_utils.connect_to_oracle()
+df_bq = pesys_utils.pandas_from_sql(
+    sqlfile="../sql/laaste_vedtak.sql",
+    con=con,
+    tuning=tuning,
+    lowercase=True,
+)
 con.close()
 
 full_table_id = "pensjon-saksbehandli-prod-1f83.vedtak.laast_data_handling"

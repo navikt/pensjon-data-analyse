@@ -19,7 +19,7 @@ with DAG(
         script_path="dbt/dbt_run_airflow.py",
         allowlist=["bigquery.googleapis.com"],
         # slack_channel="#pensak-airflow-alerts",
-        requirements_path="uv.lock",
+        requirements_path="requirements.txt",
     )
 
     dbt_snapshot

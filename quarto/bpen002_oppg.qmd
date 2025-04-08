@@ -28,7 +28,7 @@ import pesys_utils
 importlib.reload(pesys_utils)
 
 logging.basicConfig(level=logging.INFO)
-pesys_utils.set_pen_secrets_as_env()
+pesys_utils.set_db_secrets(secret_name='pen-prod-lesekopien-pen_airflow')
 
 nav_colors = (
     "#0067C5",
@@ -43,7 +43,7 @@ nav_colors = (
 
 
 ```{python}
-con = pesys_utils.open_pen_connection()
+con = pesys_utils.connect_to_oracle()
 df_bpen002 = pesys_utils.pandas_from_sql(sqlfile='../sql/bpen002_oppg.sql', con=con, tuning=10000, lowercase=True)
 con.close()
 ```

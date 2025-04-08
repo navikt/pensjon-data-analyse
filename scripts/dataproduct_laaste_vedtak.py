@@ -6,10 +6,8 @@ from lib import pesys_utils
 
 
 logging.basicConfig(level=logging.INFO)
-pesys_utils.set_pen_secrets_as_env()
+pesys_utils.set_db_secrets(secret_name='pen-prod-lesekopien-pen_airflow')
 
-
-pesys_utils.set_db_secrets(secret_name="pen-prod-lesekopien-pen_dataprodukt")
 tuning = 1000
 con = pesys_utils.connect_to_oracle()
 df_bq = pesys_utils.pandas_from_sql(

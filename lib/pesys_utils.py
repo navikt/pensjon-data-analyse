@@ -17,6 +17,7 @@ def set_db_secrets(secret_name: str):
     -   "DB_SERVICE_NAME": "pen_q2",
     -   "DB_HOST": "d26dbvl012.test.local",
     """
+    logging.info(f"Setter miljøvariabl-hemmeligheter fra: {secret_name}")
     full_secret_name = f"projects/230094999443/secrets/{secret_name}/versions/latest"
     client = secretmanager.SecretManagerServiceClient()
     response = client.access_secret_version(request={"name": full_secret_name})
@@ -27,7 +28,7 @@ def set_db_secrets(secret_name: str):
     # hvis DB_USER eksisterer som miljøvariabel, bruk den, ellers bruk den fra secret
     os.environ["DB_USER"] = os.environ.get("DB_USER", secret["DB_USER"])
     os.environ["DB_PASSWORD"] = os.environ.get("DB_PASSWORD", secret["DB_PASSWORD"])
-    logging.info(f"Secrets for {os.environ['DB_USER']} mot {os.environ['DB_HOST']}")
+    logging.info(f"Secrets for {os.environ['DB_USER']} mot {os.environ['DB_HOST']}:{os.environ['DB_PORT']}/{os.environ['DB_SERVICE_NAME']}")
 
 
 def connect_to_oracle():

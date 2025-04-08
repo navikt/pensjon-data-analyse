@@ -8,7 +8,7 @@ from lib import pesys_utils
 
 
 logging.basicConfig(level=logging.INFO)
-pesys_utils.set_pen_secrets_as_env()
+pesys_utils.set_db_secrets(secret_name='pen-prod-lesekopien-pen_airflow')
 
 def date_to_tertial(date):
     return (date.month - 1) // 4 + 1
@@ -24,7 +24,7 @@ def overwrite_dataproduct():
 
 
 def overwrite_vedtak(N, years):
-    con = pesys_utils.open_pen_connection()
+    con = pesys_utils.connect_to_oracle()
     with open('../sql/forslag_auto.sql') as sql:
         query = sql.read()
     
@@ -81,7 +81,7 @@ def overwrite_vedtak(N, years):
 
 
 def overwrite_krav(N, years):
-    con = pesys_utils.open_pen_connection()
+    con = pesys_utils.connect_to_oracle()
         
     with open('../sql/forslag_auto_krav.sql') as sql:
         query = sql.read()

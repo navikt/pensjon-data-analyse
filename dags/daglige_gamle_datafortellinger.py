@@ -33,7 +33,7 @@ def quarto_operator_wrapped(
         allowlist=[
             "secretmanager.googleapis.com",
             "bigquery.googleapis.com",
-            "dm09-scan.adeo.no:1521",
+            "dm08db03-vip.adeo.no:1521", # prod lesekopien
         ],
         resources=k8s.V1ResourceRequirements(
             requests={

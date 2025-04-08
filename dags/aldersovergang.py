@@ -12,5 +12,9 @@ with DAG('aldersovergang', start_date=days_ago(1), schedule_interval="0 1 2-8 * 
         script_path="scripts/aldersovergang.py",
         requirements_path="requirements.txt",
         use_uv_pip_install=True,
-        allowlist=["secretmanager.googleapis.com", "bigquery.googleapis.com", "dm09-scan.adeo.no:1521"]
+        allowlist=[
+            "secretmanager.googleapis.com",
+            "bigquery.googleapis.com",
+            "dm08db03-vip.adeo.no:1521", # prod lesekopien
+        ],
     )

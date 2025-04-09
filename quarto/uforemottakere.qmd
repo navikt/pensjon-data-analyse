@@ -38,21 +38,21 @@ client = secretmanager.SecretManagerServiceClient()
 response = client.access_secret_version(request={"name": secret_name})
 secret = json.loads(response.payload.data.decode("UTF-8"))
 
-connectionDWHI = oracledb.connect(
+connectionDVHP = oracledb.connect(
     user=secret.get('DB_USER'),
     host=secret.get('DB_HOST'),
     port=secret.get('DB_PORT'),
     password=secret.get('DB_PASSWORD'),
     service_name=secret.get('DB_SERVICE_NAME')
 )
-logging.info(f"Koblet til DWHI med bruker: {secret.get('DB_USER')}")
+logging.info(f"Koblet til DVHP med bruker: {secret.get('DB_USER')}")
 
 sql = "select * from dt_p.mv_ufore_aldersgruppe order by aar_maaned desc"
-with connectionDWHI.cursor() as cursor:
+with connectionDVHP.cursor() as cursor:
     cursor.execute(sql)
     columns = [col[0].lower() for col in cursor.description]
     data = cursor.fetchall()
-connectionDWHI.close()
+connectionDVHP.close()
 
 
 df = pd.DataFrame(data, columns=columns)

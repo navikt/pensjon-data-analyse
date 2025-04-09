@@ -8,12 +8,11 @@ with DAG(
     dag_id="quarto-uforemottakere",
     schedule_interval="30 6 * * 1",
     start_date=datetime(2025, 1, 16, tzinfo=timezone("Europe/Oslo")),
-    doc_md="Datafortelling med månedlige uføremottakere fra dvhi.",
+    doc_md="Datafortelling med månedlige uføremottakere fra datavarehuset. Tall oppdateres vel kvartalsvis.",
     catchup=False,
 ) as dag:
     update_quarto = quarto_operator(
         dag=dag,
-        retries=0,
         name="update-quarto-uforemottakere",
         repo="navikt/pensjon-data-analyse",
         quarto={
@@ -23,7 +22,7 @@ with DAG(
             "token": Variable.get("PENSAK_QUARTO_TOKEN"),
         },
         use_uv_pip_install=True,
-        allowlist=["dvh.adeo.no", "secretmanager.googleapis.com", "a01dbfl036.adeo.no"],
+        allowlist=["secretmanager.googleapis.com", "dmv09-scan.adeo.no:1521"], # DVHP
         # slack_channel="#pensak-airflow-alerts",
         requirements_path="requirements.txt",
     )

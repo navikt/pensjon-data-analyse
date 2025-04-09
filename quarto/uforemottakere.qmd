@@ -33,7 +33,7 @@ from google.cloud import secretmanager
 
 logging.basicConfig(level=logging.INFO)
 
-secret_name = "projects/230094999443/secrets/DWHI/versions/latest"
+secret_name = "projects/230094999443/secrets/DVHP-dvh_sch_sbx_po_pensjon_py/versions/latest"
 client = secretmanager.SecretManagerServiceClient()
 response = client.access_secret_version(request={"name": secret_name})
 secret = json.loads(response.payload.data.decode("UTF-8"))

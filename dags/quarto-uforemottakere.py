@@ -18,7 +18,7 @@ with DAG(
         quarto={
             "path": "quarto/uforemottakere.qmd",
             "env": "prod",
-            "id": "1168253f-0bfb-4a8c-964c-e1796582f72c",
+            "id": "d1e4cefc-2658-4519-a8c0-0f29db301d9d",
             "token": Variable.get("PENSAK_QUARTO_TOKEN"),
         },
         use_uv_pip_install=True,

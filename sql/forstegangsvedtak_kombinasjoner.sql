@@ -1,7 +1,8 @@
 
 select
-    ar_vedtak,
+    ar_vedtak as ar,
     kravtype,
+    k_krav_arsak_t as krav_arsak,
     k_vedtak_t,
     inngangsvilkar_oppfylt,
     hensiktsmessig_beh,
@@ -34,6 +35,7 @@ select
         else 'nei'
     end as inngangsvilkar_oppfylt,
     v.k_vedtak_t,
+    ka.k_krav_arsak_t,
     --vi_HENSI.k_vilkar_oppfylt_ut_t || " - " || vi_HENSI.k_vilkar_stdbegr as HENSIKTSMESSIG_BEH,
     vi_HENSI.k_vilkar_oppfylt_ut_t as HENSIKTSMESSIG_BEH,
     vi_HENS.k_vilkar_oppfylt_ut_t as HENS_ARBRETT_TILTAK,
@@ -72,6 +74,7 @@ inner join pen.t_vilkar_vedtak vv on vv.vedtak_id = v.vedtak_id
                                  and vv.dato_virk_fom = v.dato_virk_fom
                                  and vv.k_kravlinje_t = 'UT'
 inner join pen.t_kravlinje kl on kl.kravlinje_id = vv.kravlinje_id and kl.k_land_3_tegn_id = 161
+inner join pen.t_krav_arsak ka on ka.kravhode_id = kh.kravhode_id
 
 --left outer join pen.t_vilkar vi on vi.vilkar_vedtak_id = vv.vilkar_vedtak_id
 left outer join pen.t_vilkar vi_HENSI on vi_HENSI.vilkar_vedtak_id = vv.vilkar_vedtak_id and vi_HENSI.k_vilkar_t = 'HENSIKTSMESSIG_BEH'
@@ -97,6 +100,7 @@ where
 group by
     ar_vedtak,
     kravtype,
+    k_krav_arsak_t,
     k_vedtak_t,
     inngangsvilkar_oppfylt,
     hensiktsmessig_beh,

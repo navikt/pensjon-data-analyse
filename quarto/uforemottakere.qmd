@@ -1,5 +1,5 @@
 ---
-title: "Uføremottakere månedlig"
+title: "Uføremottakere månedlig (offentlige tall fra datavarehuset)"
 jupyter: python3
 execute:
     echo: false
@@ -7,55 +7,60 @@ execute:
     include: true
 format:
     dashboard:
-        nav-buttons: 
+        nav-buttons:
             - icon: github
               href: https://github.com/navikt/pensjon-data-analyse
             - icon: slack
               href: https://nav-it.slack.com/archives/C06NKNY1399
         embed-resources: true
         code-copy: true
-        theme: 
-            light: [minty, highlight]
+        theme: flatly
 ---
 <!-- author: "Brynjar Morka Mæhlum, Pesys-Uføre" -->
 
 ```{python}
-#| include: false 
+#| include: false
+import os
 import json
 import logging
 import oracledb
 import pandas as pd
 from itables import show
 import plotly.express as px
+from datetime import datetime
 import plotly.graph_objects as go
 from google.cloud import secretmanager
 
 
 logging.basicConfig(level=logging.INFO)
 
-secret_name = "projects/230094999443/secrets/DVHP-dvh_sch_sbx_po_pensjon_py/versions/latest"
-client = secretmanager.SecretManagerServiceClient()
-response = client.access_secret_version(request={"name": secret_name})
-secret = json.loads(response.payload.data.decode("UTF-8"))
+if os.getenv('RUNNING_IN_AIRFLOW') == 'true':
+    logging.info("Kjører i Airflow")
+    secret_name = "projects/230094999443/secrets/DVHP-dvh_sch_sbx_po_pensjon_py/versions/latest"
+    client = secretmanager.SecretManagerServiceClient()
+    response = client.access_secret_version(request={"name": secret_name})
+    secret = json.loads(response.payload.data.decode("UTF-8"))
+    connectionDVHP = oracledb.connect(
+        user=secret.get('DB_USER'),
+        host=secret.get('DB_HOST'),
+        port=secret.get('DB_PORT'),
+        password=secret.get('DB_PASSWORD'),
+        service_name=secret.get('DB_SERVICE_NAME')
+    )
+    logging.info(f"Koblet til DVHP med bruker: {secret.get('DB_USER')}")
+    with connectionDVHP.cursor() as cursor:
+        cursor.execute("select * from dt_p.mv_ufore_aldersgruppe order by aar_maaned desc")
+        columns = [col[0].lower() for col in cursor.description]
+        data = cursor.fetchall()
+    connectionDVHP.close()
+    df = pd.DataFrame(data, columns=columns)
+else: # lokalt
+    import requests
+    logging.info("Kjører lokalt")
+    headers = {'Cookie': f"MRHSession={os.environ['MRHSession']}"} # settes i terminalen før kjøring
+    response = requests.get("https://dvh.adeo.no/ords/dvh/dt_p/mv_ufore_aldersgruppe.json", headers=headers)
+    df = pd.DataFrame(response.json()['items'])
 
-connectionDVHP = oracledb.connect(
-    user=secret.get('DB_USER'),
-    host=secret.get('DB_HOST'),
-    port=secret.get('DB_PORT'),
-    password=secret.get('DB_PASSWORD'),
-    service_name=secret.get('DB_SERVICE_NAME')
-)
-logging.info(f"Koblet til DVHP med bruker: {secret.get('DB_USER')}")
-
-sql = "select * from dt_p.mv_ufore_aldersgruppe order by aar_maaned desc"
-with connectionDVHP.cursor() as cursor:
-    cursor.execute(sql)
-    columns = [col[0].lower() for col in cursor.description]
-    data = cursor.fetchall()
-connectionDVHP.close()
-
-
-df = pd.DataFrame(data, columns=columns)
 logging.info(f'Nyeste data er: {df["periode_dato"].max()}')
 df_alder = df.sort_values(by=['aar_maaned', 'aldersgruppe'], ascending=False).reset_index(drop=True)
 df_alle = df.groupby(['aar_maaned', 'aar', 'periode_dato']).sum(numeric_only=True).reset_index().sort_values(by='aar_maaned', ascending=False).reset_index(drop=True)
@@ -63,22 +68,13 @@ df_alle['netto_mottakere'] = df_alle['antall_tilgang'] - df_alle['antall_avgang'
 ```
 
 ```{python}
-#| include: false 
+#| include: false
 # Figur - Antall per aldersgruppe siden 2009, stacked area plots
 fig_siden_2009 = px.area(df_alder, x='periode_dato', y='antall_ufore', color='aldersgruppe')
 fig_siden_2009.update_layout(
     title='Antall uføremottakere fordelt på aldersgruppe siden 2009',
     xaxis_title='Måned',
     yaxis_title='Antall uføremottakere',
-    # legend=dict(
-    #     orientation='h',
-    #     yanchor='top',
-    #     y=.975,
-    #     xanchor='center',
-    #     x=0.5,
-    #     title='Aldersgruppe:',
-    # ),
-    # hide legend
     hovermode="x unified",
     margin=dict(l=30, r=30, t=50, b=30),
 )
@@ -87,7 +83,7 @@ fig_siden_2009.update_layout(
 ```
 
 ```{python}
-#| include: false 
+#| include: false
 # Figur - antall_ufore siden 2022, zoomet inn x og y
 fig_siden_2022 = go.Figure()
 fig_siden_2022.add_trace(go.Scatter(
@@ -107,55 +103,42 @@ fig_siden_2022.update_layout(
     yaxis_title='Antall uføremottakere',
     margin=dict(l=30, r=30, t=50, b=30),
     hovermode="x unified",
-    
 )
-
 # fig_siden_2022.show()
 ```
 
 ```{python}
-#| include: false 
+#| include: false
 # antall_tilgang og antall_avgang
 fig_tilgang_avgang = go.Figure()
-fig_tilgang_avgang.add_trace(go.Scatter(
+fig_tilgang_avgang.add_trace(go.Bar(
     x=df_alle['periode_dato'],
     y=df_alle['antall_tilgang'],
-    mode='lines',
-    fill='tozeroy',
     name='Tilganger',
-    line=dict(color='#AB63FA')
+    marker_color='#18BA9D',
+    offsetgroup=0
 ))
-fig_tilgang_avgang.add_trace(go.Scatter(
+fig_tilgang_avgang.add_trace(go.Bar(
     x=df_alle['periode_dato'],
-    y=df_alle['antall_avgang'],
-    mode='lines',
-    fill='tozeroy',
+    y=df_alle['antall_avgang']*-1,
     name='Avganger',
-    line=dict(color='#19D3F3')
+    marker_color='#3C96D8',
+    offsetgroup=0
 ))
 fig_tilgang_avgang.add_trace(go.Scatter(
     x=df_alle['periode_dato'],
     y=df_alle['netto_mottakere'],
-    mode='lines+markers',
+    mode='lines',
     name='Netto mottakere',
-    line=dict(color='#BB2E2E')
+    line=dict(color='#F2A032', width=8),
 ))
-
 fig_tilgang_avgang.update_layout(
     title='Antall tilgang og avgang for mottakere av uføretrygd',
-    xaxis=dict(range=['2023-01-01', max(df_alle['periode_dato'])]),
+    xaxis=dict(range=['2021-01-01', max(df_alle['periode_dato'])]),
     xaxis_title='Måned',
     yaxis_title='Antall',
-    # legend=dict(
-    #     orientation='h',
-    #     yanchor='top',
-    #     y=.975,
-    #     xanchor='center',
-    #     x=0.5
-    # ),
     hovermode="x unified",
 )
-
 # fig_tilgang_avgang.show()
 ```
 
@@ -178,17 +161,69 @@ fig_siden_2022.show()
 
 ```
 
-## rad - tabell
+## rad - bokser med nyeste tall
 
 ```{python}
-show(df_alle[['aar_maaned', 'antall_ufore', 'antall_avgang', 'antall_tilgang', 'netto_mottakere']], show_index=False)
+#| include: false
+# siste måned
+df_siste = df_alle[df_alle['aar_maaned'] == df_alle['aar_maaned'].max()].copy()
+tid_siste = datetime.strptime(df_siste['periode_dato'][0], '%Y-%m-%dT%H:%M:%SZ').strftime('%B %Y')
+antall_siste = int(df_siste['antall_ufore'][0])
+tilgang_siste = int(df_siste['antall_tilgang'][0])
+avgang_siste = int(df_siste['antall_avgang'][0])
+```
+
+### col valuebox
+```{python}
+#| content: valuebox
+#| title: "Nyeste offisielle tall er fra"
+#| icon: calendar3
+#| color: primary
+tid_siste
+```
+### col valuebox
+```{python}
+#| content: valuebox
+#| title: "Antall mottakere"
+#| icon: people-fill
+#| color: primary
+antall_siste
+```
+### col valuebox
+```{python}
+#| content: valuebox
+#| title: "Antall tilganger"
+#| icon: arrow-up-right
+#| color: primary
+tilgang_siste
+```
+### col valuebox
+```{python}
+#| content: valuebox
+#| title: "Antall avganger"
+#| icon: arrow-down-right
+#| color: primary
+avgang_siste
+```
+
+
+# Tabell med data
+```{python}
+df_alle_renamed = df_alle.rename(columns={
+    'aar_maaned': 'År-Måned',
+    'antall_ufore': 'Antall mottakere',
+    'antall_avgang': 'Avganger',
+    'antall_tilgang': 'Tilganger',
+    'netto_mottakere': 'Netto mottakere'
+})
+show(df_alle_renamed[['År-Måned', 'Antall mottakere', 'Avganger', 'Tilganger', 'Netto mottakere']], show_index=False)
 ```
 
 
 # Tilgang og avgang
 
-En tilgang (lilla) er en ny mottaker og en avgang (blå) er en som har sluttet å motta uføretrygd.
-Netto mottakere (rød) er tilgang minus avgang. 
+En tilgang (grønn) er en ny mottaker og en avgang (blå) er en som har sluttet å motta uføretrygd.
+Netto mottakere (oransje) er tilgang minus avgang.
 Dobbeltklikk på plottet for å vise data fra og med 2009.
 
 ```{python}
@@ -199,6 +234,8 @@ fig_tilgang_avgang.show()
 
 # Om datafortellingen
 
+```{python}
+print("""
 Datafortellingen er laget med Quarto og ligger tilgjengelig på datamarkedsplassen.
 Dataene er datavarehuset, og er åpne for alle ansatte i Nav.
 
@@ -213,3 +250,6 @@ Hover over figurene for å se legend.
 
 
 Datafortellingen er laget av Brynjar Morka Mæhlum, i team Uføre i PO Pensjon.
+""")
+print(f"Sist oppdatert: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+```

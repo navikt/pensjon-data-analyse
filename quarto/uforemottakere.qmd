@@ -60,6 +60,7 @@ else: # lokalt
     headers = {'Cookie': f"MRHSession={os.environ['MRHSession']}"} # settes i terminalen før kjøring
     response = requests.get("https://dvh.adeo.no/ords/dvh/dt_p/mv_ufore_aldersgruppe.json", headers=headers)
     df = pd.DataFrame(response.json()['items'])
+    df['periode_dato'] = pd.to_datetime(df['periode_dato'], format='%Y-%m-%dT%H:%M:%SZ')
 
 logging.info(f'Nyeste data er: {df["periode_dato"].max()}')
 df_alder = df.sort_values(by=['aar_maaned', 'aldersgruppe'], ascending=False).reset_index(drop=True)
@@ -167,7 +168,7 @@ fig_siden_2022.show()
 #| include: false
 # siste måned
 df_siste = df_alle[df_alle['aar_maaned'] == df_alle['aar_maaned'].max()].copy()
-tid_siste = datetime.strptime(df_siste['periode_dato'][0], '%Y-%m-%dT%H:%M:%SZ').strftime('%B %Y')
+tid_siste = df_siste['periode_dato'].iloc[0].strftime('%B %Y')
 antall_siste = int(df_siste['antall_ufore'][0])
 tilgang_siste = int(df_siste['antall_tilgang'][0])
 avgang_siste = int(df_siste['antall_avgang'][0])

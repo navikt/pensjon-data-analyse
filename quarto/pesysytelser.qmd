@@ -1,0 +1,391 @@
+---
+title: "Pesysytelser"
+jupyter: python3
+execute:
+    echo: false
+    warning: false
+    include: true
+format:
+    dashboard:
+        nav-buttons:
+            - icon: github
+              href: https://github.com/navikt/pensjon-data-analyse
+            - icon: slack
+              href: https://nav-it.slack.com/archives/C06NKNY1399
+        embed-resources: true
+        code-copy: true
+        theme: flatly
+---
+<!-- author: "Brynjar Morka Mæhlum, team Uføre" -->
+
+```{python}
+#| include: false
+import os
+import json
+import logging
+import pandas as pd
+import plotly.express as px
+from datetime import datetime
+import plotly.graph_objects as go
+
+file_path = "../data/mottakere_aldersgruppert.csv"
+df_pesys = pd.read_csv(file_path, sep=";", encoding="utf-8")
+# SSB har raden "105 år og over", men vi dropper alle over 104 år, som er få personer
+df_pesys = df_pesys[df_pesys["mottaker_alder"] <= 105]
+df_befolkning = pd.read_csv("../data/befolkning_aldersgruppert.csv", sep=";", encoding="utf-8")
+map_ytelser = {
+    "afp": "AFP",
+    "uforep": "Uføretrygd",
+    "alder": "Alderspensjon",
+    "gjenlev": "Gjenlevendeytelse",
+    "afp_privat": "Alderspensjon + AFP Privat",
+}
+df_pesys = df_pesys.rename(columns=map_ytelser)
+
+# reduser antallet i "Alderspensjon" med antallet i "Alderspensjon + AFP Privat"
+df_pesys["Alderspensjon"] = df_pesys["Alderspensjon"] - df_pesys["Alderspensjon + AFP Privat"]
+
+df_ufore = pd.merge(
+    df_pesys[["mottaker_alder", "Uføretrygd"]],
+    df_befolkning.rename(columns={"alder": "mottaker_alder", "befolkningsantall": "befolkning"}),
+    on="mottaker_alder",
+    how="outer",
+).fillna(0)
+# df_ufore = df_ufore[df_ufore["mottaker_alder"] <= 67]
+df_ufore["prosent uføre"] = ((df_ufore["Uføretrygd"] / df_ufore["befolkning"]) * 100).round(0).fillna(0).astype(int)
+
+colors = {
+    "Uføretrygd": "#65CF6A",
+    "Gjenlevendeytelse": "#468700",
+    "Alderspensjon": "#65CFE8",
+    "AFP": "#FA766C",
+    "Alderspensjon + AFP Privat": "#C99CDB",
+    "befolkning": "#9FABA2",
+}
+
+```
+
+```{python}
+#| include: false
+fig_ytelser = go.Figure()
+# plot first an invisible line with antall_pesys
+fig_ytelser.add_trace(go.Scatter(
+    x=df_pesys["mottaker_alder"],
+    y=df_pesys["antall_pesys"],
+    name="Sum Pesys-ytelser",
+    opacity=0.0,
+    showlegend=False,
+    customdata=2024-df_pesys["mottaker_alder"],
+    hovertemplate=f"<br>Årskull: %{{customdata}}<br>Sum Pesys-ytelser: %{{y:}}<extra></extra>",
+))
+
+ytelser = ["Uføretrygd", "Gjenlevendeytelse", "Alderspensjon", "Alderspensjon + AFP Privat", "AFP"]
+for ytelse in ytelser:
+    fig_ytelser.add_trace(go.Bar(
+        x=df_pesys["mottaker_alder"],
+        y=df_pesys[ytelse],
+        name=ytelse,
+        hovertemplate=f"{ytelse}: %{{y:}}<extra></extra>",
+        marker_color=colors[ytelse],
+    ))
+fig_ytelser.add_trace(go.Scatter(
+    x=df_befolkning['alder'],
+    y=df_befolkning['befolkningsantall'],
+    name="SSB befolkning",
+    mode='lines', # lines+markers
+    # fill='tozeroy',
+    line=dict(color=colors["befolkning"], width=4),
+    hovertemplate="SSB befolkning: %{y:}<extra></extra>",
+))
+fig_ytelser.update_layout(
+    barmode='stack',
+    bargap=0.1,
+    title="Vedtak om ytelser per januar 2025 og befolkningen (interne tall)",
+    xaxis_title="Alder",
+    yaxis_title="Antall",
+    hovermode="x unified",
+    xaxis=dict(range=[18, 105]),
+)
+```
+
+
+```{python}
+#| include: false
+fig_ufore = go.Figure()
+fig_ufore.add_trace(go.Bar(
+    x=df_ufore['mottaker_alder'],
+    y=df_ufore['befolkning'],
+    name="SSB befolkning",
+    customdata=2024-df_ufore["mottaker_alder"],
+    hovertemplate="%{x} år<br>Årskull: %{customdata}<br>SSB befolkning: %{y:}<extra></extra>",
+    marker_color=colors["befolkning"],
+))
+fig_ufore.add_trace(go.Bar(
+    x=df_ufore["mottaker_alder"],
+    y=df_ufore["Uføretrygd"],
+    name="Uføre",
+    customdata=df_ufore["prosent uføre"],
+    hovertemplate=f"Antall med uførevedtak: %{{y:}}<br>Prosent uføre av %{{x}}-åringer: %{{customdata}} %<extra></extra>",
+    marker_color=colors["Uføretrygd"],
+))
+fig_ufore.update_layout(
+    title="Antall med vedtak om uføretrygd januar 2025, per alder (interne tall)",
+    xaxis_title="Alder",
+    yaxis_title="Antall",
+    hovermode="x", # "x unified"
+    xaxis=dict(range=[17.5, 66.5]),
+    barmode='overlay',
+    bargap=0.1,
+    legend=dict(orientation="h", yanchor="top", y=1, xanchor="center", x=.5,),
+)
+```
+
+
+
+
+
+
+
+
+# Pensjonsytelser
+
+## rad 0 med tekst
+Tallene her gjelder for 1. januar 2025, og er til intern bruk.
+De er rett fra Pesys, og er ikke kvalitetssikret for bruk utenfor området.
+Befolkningstall er fra SSB.
+Antallet som mottar ytelser fra Pesys er i noen tilfeller høyere enn befolkningen, fordi vi har mottakere som er bosatt i utlandet.
+
+
+## rad 2 - tall {height=25%}
+###
+```{python}
+#| title: "Antall Pesys-ytelser"
+#| content: valuebox
+#| icon: people
+#| color: primary
+f"{df_pesys['antall_pesys'].sum():,.0f}".replace(',', ' ')
+```
+### col
+```{python}
+#| title: "Antall befolkningen"
+#| content: valuebox
+#| icon: people
+#| color: primary
+f"{df_befolkning['befolkningsantall'].sum():,.0f}".replace(',', ' ')
+```
+
+## rad 3 plott
+```{python}
+fig_ytelser.show()
+```
+
+
+
+
+
+
+
+
+
+# Uføretrygd
+## rad 0 med tekst
+Tallene her gjelder for 1. januar 2025, og er til intern bruk.
+De er rett fra Pesys, og er ikke kvalitetssikret for bruk utenfor området.
+Befolkningstall er fra SSB.
+
+## rad 2 - tall {height=25%}
+### col
+```{python}
+#| title: "Antall uføretrygdede"
+#| content: valuebox
+#| icon: people
+#| color: primary
+f"{df_ufore['Uføretrygd'].sum():,.0f}".replace(',', ' ')
+```
+### col
+```{python}
+#| title: "Andel av befolkningen som er 18-67 år"
+#| content: valuebox
+#| icon: people
+#| color: primary
+f"{round((df_ufore[df_ufore["mottaker_alder"].between(18, 67)]["Uføretrygd"].sum() / df_ufore[df_ufore["mottaker_alder"].between(18, 66)]["befolkning"].sum())* 100, 1):,.1f} %".replace('.', ',')
+```
+### col
+```{python}
+#| title: "Andel av hele befolkningen"
+#| content: valuebox
+#| icon: people
+#| color: primary
+f"{round((df_ufore["Uføretrygd"].sum() / df_ufore["befolkning"].sum())* 100, 1):,.1f} %".replace('.', ',')
+```
+
+## rad 2 - plott
+```{python}
+fig_ufore.show()
+```
+
+
+
+
+
+
+
+
+# Alderspensjon og AFP
+## rad 0 med tekst
+Tallene her gjelder for 1. januar 2025, og er til intern bruk.
+De er rett fra Pesys, og er ikke kvalitetssikret for bruk utenfor området.
+Befolkningstall er fra SSB.
+
+## rad 2 - tall {height=25%}
+```{python}
+alle_alderspensjonister = df_pesys['Alderspensjon'].sum() + df_pesys['AFP'].sum() + df_pesys['Alderspensjon + AFP Privat'].sum()
+```
+
+### col
+```{python}
+#| title: "Antall alderspensjonister og AFP-mottakere"
+#| content: valuebox
+#| icon: people
+#| color: primary
+f"{alle_alderspensjonister:,.0f}".replace(',', ' ')
+```
+### col
+```{python}
+#| title: "Antall med AFP"
+#| content: valuebox
+#| icon: people
+#| color: primary
+f"{df_pesys['AFP'].sum():,.0f}".replace(',', ' ')
+```
+### col
+```{python}
+#| title: "Antall med AFP Privat"
+#| content: valuebox
+#| icon: people
+#| color: primary
+f"{df_pesys['Alderspensjon + AFP Privat'].sum():,.0f}".replace(',', ' ')
+```
+### col
+```{python}
+#| title: "Andel av hele befolkningen"
+#| content: valuebox
+#| icon: people
+#| color: primary
+f"{round((alle_alderspensjonister / df_ufore["befolkning"].sum())* 100, 1):,.1f} %".replace('.', ',')
+```
+
+## rad 2 - plott
+```{python}
+#| include: false
+fig_alderspensjon = go.Figure(fig_ytelser)
+fig_alderspensjon.update_xaxes(range=[61.5, 105])
+# # hide trace "Uføretrygd"
+# fig_alderspensjon.data[1].visible = False
+fig_alderspensjon.data[1].visible = "legendonly"
+fig_alderspensjon.data[2].visible = "legendonly"
+fig_alderspensjon.update_layout(title="Alderspensjon og AFP per januar 2025 (interne tall)")
+```
+
+
+```{python}
+fig_alderspensjon.show()
+```
+
+
+
+
+
+
+# Tall fra offentlig statistikknotat
+## Rad øverst med tekst
+Dette er tall fra Navs offentlige årsstatistikknotat for uføretrygd i 2024. [Tilgjengelige på nav.no](https://www.nav.no/no/nav-og-samfunn/statistikk/aap-nedsatt-arbeidsevne-og-uforetrygd-statistikk/uforetrygd/uforetrygd-statistikknotater)
+
+## Row 1
+### col
+::: {.valuebox color="primary" icon="people"}
+Antall uføretrygdede i 2024
+
+373000
+:::
+### col
+::: {.valuebox color="primary"  icon="graph-up"}
+Andel av befolkningen i alderen 18-67 år
+
+10,5%
+:::
+
+
+## Row 2
+### col
+::: {.valuebox color="primary" icon="arrow-up-right"}
+Økning i antall mottakere
+
+6400
+
+som tilsvarer en økning på 0,1% i aldersgruppen 18-67 år
+:::
+###
+```{python}
+fig_ufore.show()
+```
+
+<!-- ### col
+::: {.valuebox color="primary"  icon="graph-up"}
+Økning i andel av befolkningen 18-67 år
+
+0,1%
+
+fordi befolkningen i aldersgruppen også økte
+::: -->
+
+
+
+
+
+
+
+
+# Tall fra offentlig statistikknotat-2
+## Rad øverst med tekst
+Dette er tall fra Navs offentlige årsstatistikknotat for uføretrygd i 2024. [Tilgjengelige på nav.no](https://www.nav.no/no/nav-og-samfunn/statistikk/aap-nedsatt-arbeidsevne-og-uforetrygd-statistikk/uforetrygd/uforetrygd-statistikknotater)
+
+## Row 1
+### col
+::: {.valuebox color="primary"  icon="graph-up"}
+Andel med 100% uføretrygd
+
+85%
+:::
+### col
+::: {.valuebox color="primary"  icon="person-workspace"}
+Andel uføre i arbeid
+
+18%
+
+altså rundt 65000 personer
+:::
+
+## Row 2
+### col
+::: {.valuebox color="primary"  icon="flag"}
+Andel uføre bosatt i utlandet
+
+2%
+:::
+### col valuebox
+::: {.valuebox color="primary"  icon="arrow-up-right"}
+I desember 2025 forventer Nav
+
+381300
+
+uføremottakere
+:::
+
+
+
+
+
+
+
+

@@ -1,14 +1,14 @@
 select
     mottaker_alder,
     count(*) as antall_pesys,
-    sum(bosatt_norge) as antall_norge,
+    -- sum(bosatt_norge) as antall_norge,
     count(*) - sum(bosatt_norge) as antall_utland,
-    sum(uforep) as uforep,
-    sum(gjenlev) as gjenlev,
     sum(afp) as afp,
-    sum(afp_privat) as afp_privat, -- alle her har også alder, basically
-    sum(alder) as alder
-    -- basically bare alder+afp_privat som er kombinasjon
+    sum(gjenlev) as gjenlev,
+    sum(afp_privat) as afp_privat_og_alder, -- alle her har også alder, basically
+    sum(case when uforep = 1 and alder = 0 then 1 else 0 end) as uforep,
+    sum(case when alder = 1 and uforep = 0 and afp_privat = 0 then 1 else 0 end) as alder,
+    sum(case when uforep = 1 and alder = 1 then 1 else 0 end) as uforep_og_alder
     -- sum(uforep) + sum(gjenlev) + sum(afp) + sum(afp_privat) + sum(alder) - count(*) as antall_flere_ytelser,
     -- veldig få med krigsp og gam_yrk, så skjuler dem
     -- sum(krigsp) as krigsp,

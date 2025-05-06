@@ -66,18 +66,34 @@ logging.info(f'Nyeste data er: {df["periode_dato"].max()}')
 df_alder = df.sort_values(by=['aar_maaned', 'aldersgruppe'], ascending=False).reset_index(drop=True)
 df_alle = df.groupby(['aar_maaned', 'aar', 'periode_dato']).sum(numeric_only=True).reset_index().sort_values(by='aar_maaned', ascending=False).reset_index(drop=True)
 df_alle['netto_mottakere'] = df_alle['antall_tilgang'] - df_alle['antall_avgang']
+
+colors = {
+    "Antall mottakere": "#6AB5FF",
+    "Tilganger": "#66D0E8",
+    "Avganger": "#66E8B8",
+    "Netto mottakere": "#E8A366",
+    "Aldersgruppe 1": "#2E506F",
+    "Aldersgruppe 2": "#4B80B3",
+    "Aldersgruppe 3": "#6BB8FF",
+}
 ```
 
 ```{python}
 #| include: false
 # Figur - Antall per aldersgruppe siden 2009, stacked area plots
-fig_siden_2009 = px.area(df_alder, x='periode_dato', y='antall_ufore', color='aldersgruppe')
+
+fig_siden_2009 = px.area(df_alder, x='periode_dato', y='antall_ufore', color='aldersgruppe',     color_discrete_sequence=[
+        colors['Aldersgruppe 1'],
+        colors['Aldersgruppe 2'],
+        colors['Aldersgruppe 3'],
+    ],)
 fig_siden_2009.update_layout(
     title='Antall uføremottakere fordelt på aldersgruppe siden 2009',
     xaxis_title='Måned',
     yaxis_title='Antall uføremottakere',
     hovermode="x unified",
     margin=dict(l=30, r=30, t=50, b=30),
+    legend=dict(traceorder="reversed")
 )
 
 # fig_siden_2009.show()
@@ -93,7 +109,7 @@ fig_siden_2022.add_trace(go.Scatter(
     mode='lines+markers',
     fill='tozeroy',
     name='Antall uføremottakere',
-    line=dict(color='#AB63FA'),
+    line=dict(color=colors['Antall mottakere']),
     hoverinfo='x+y'
 ))
 fig_siden_2022.update_layout(
@@ -116,14 +132,14 @@ fig_tilgang_avgang.add_trace(go.Bar(
     x=df_alle['periode_dato'],
     y=df_alle['antall_tilgang'],
     name='Tilganger',
-    marker_color='#18BA9D',
+    marker_color=colors['Tilganger'],
     offsetgroup=0
 ))
 fig_tilgang_avgang.add_trace(go.Bar(
     x=df_alle['periode_dato'],
     y=df_alle['antall_avgang']*-1,
     name='Avganger',
-    marker_color='#3C96D8',
+    marker_color=colors['Avganger'],
     offsetgroup=0
 ))
 fig_tilgang_avgang.add_trace(go.Scatter(
@@ -131,7 +147,7 @@ fig_tilgang_avgang.add_trace(go.Scatter(
     y=df_alle['netto_mottakere'],
     mode='lines',
     name='Netto mottakere',
-    line=dict(color='#F2A032', width=8),
+    line=dict(color=colors['Netto mottakere'], width=8),
 ))
 fig_tilgang_avgang.update_layout(
     title='Antall tilgang og avgang for mottakere av uføretrygd',
@@ -139,6 +155,7 @@ fig_tilgang_avgang.update_layout(
     xaxis_title='Måned',
     yaxis_title='Antall',
     hovermode="x unified",
+    bargap=0.1,
 )
 # fig_tilgang_avgang.show()
 ```

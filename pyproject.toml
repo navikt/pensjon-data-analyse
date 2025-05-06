@@ -1,0 +1,22 @@
+[project]
+name = "pensjon-data-analyse"
+version = "0.1.0"
+description = "Dataanalyse for pensjon og uføretrygd"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pyyaml>=6.0.2",
+    "pandas>=2.2.3",
+    "plotly>=6.0.1",
+    "itables>=2.2.5",
+    "oracledb>=2.5.1",
+    "pyarrow>=19.0.1",
+    "nbclient>=0.10.2",
+    "nbformat>=5.10.4",
+    "db-dtypes>=1.4.2",
+    "jupyterlab>=4.3.5",
+    "pandas-gbq>=0.28.0",
+    "google-cloud-bigquery>=3.29.0",
+    "google-cloud-secret-manager>=2.23.0",
+    "google-cloud-bigquery-storage>=2.30.0",
+]

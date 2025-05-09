@@ -19,6 +19,7 @@ format:
 <!-- author: "Brynjar Morka Mæhlum, team Uføre" -->
 <!-- GCP-team: teampensjon -->
 
+
 ```{python}
 #| include: false
 import os
@@ -176,7 +177,7 @@ fig_ufore.update_layout(
 
 
 
-# Pensjonsytelser
+# Pesysytelser
 
 ## rad 0 med tekst
 Tallene her gjelder for 1. januar 2025, og er til intern bruk.
@@ -227,7 +228,7 @@ fig_ytelser.show()
 
 
 
-# Uføretrygd
+# Uføre
 ## rad 0 med tekst
 Tallene her gjelder for 1. januar 2025, og er til intern bruk.
 De er rett fra Pesys, og er ikke kvalitetssikret for bruk utenfor området.
@@ -279,7 +280,7 @@ fig_ufore.show()
 
 
 
-# Alderspensjon og AFP
+# Alder og AFP
 ## rad 0 med tekst
 Tallene her gjelder for 1. januar 2025, og er til intern bruk.
 De er rett fra Pesys, og er ikke kvalitetssikret for bruk utenfor området.
@@ -306,7 +307,6 @@ f"{alle_alderspensjonister:,.0f}".replace(',', ' ')
 #| color: primary
 f"{round((alle_alderspensjonister / df_ufore["befolkning"].sum())* 100, 1):,.1f} %".replace('.', ',')
 ```
-<!-- ## rad 3 - tall {height=20%} -->
 ### col
 ```{python}
 #| title: "Antall med AFP"
@@ -346,7 +346,7 @@ fig_alderspensjon.show()
 
 
 
-# Tall fra offentlig statistikknotat
+# Uføre statistikknotat
 ## Rad øverst med tekst
 Dette er tall fra Navs offentlige årsstatistikknotat for uføretrygd i 2024. 
 Disse tallene er kvalitetssikret og brukes utad. Tall i offentlig statistikk har i noen tilfeller små avvik fra det vi ser direkte i Pesys, stort sett på grunn av definisjoner.
@@ -403,7 +403,7 @@ hvorav 74% ble alderspensjonister og 16% døde
 
 
 
-# Tall fra offentlig statistikknotat-2
+# Uføre statistikknotat 2
 ## Rad øverst med tekst
 Dette er tall fra Navs offentlige årsstatistikknotat for uføretrygd i 2024. [Tilgjengelige på nav.no](https://www.nav.no/no/nav-og-samfunn/statistikk/aap-nedsatt-arbeidsevne-og-uforetrygd-statistikk/uforetrygd/uforetrygd-statistikknotater)
 
@@ -443,6 +443,107 @@ uføremottakere
 
 
 
+# Seksjonen
+##  {height=50%}
+```{python}
+#| content: valuebox
+#| color: success
+#| icon: people
+'Seksjon for pensjon og uføretrygd'
+```
+
+## rad med tall fra teamkatalogen
+<!-- todo: hente data fra bq-teamkatalogen -->
+### col
+```{python}
+#| content: valuebox
+#| title: "Antall ansatte i seksjonen"
+#| color: success
+#| icon: cup-hot-fill
+134
+```
+### col
+```{python}
+#| content: valuebox
+#| title: "Antall team"
+#| color: success
+#| icon: flower1
+14
+```
+### col
+```{python}
+#| content: valuebox
+#| title: "Gjennomsnittlig fartstid i Nav"
+#| color: success
+#| icon: backpack4-fill
+'11,7 år'
+```
+### col
+```{python}
+#| content: valuebox
+#| title: "Andel interne"
+#| color: success
+#| icon: briefcase-fill
+'67%'
+```
 
 
+# Ambisjon 1
+##  {height=100%}
+```{python}
+#| content: valuebox
+#| title: "Ambisjon 1"
+#| color: success
+#| icon: activity
+'Vi gjennomfører reformer og regelverksendringer bærekraftig og med et tydelig brukerfokus'
+```
+
+# Ambisjon 2
+##  {height=100%}
+```{python}
+#| content: valuebox
+#| title: "Ambisjon 2"
+#| color: success
+#| icon: activity
+'Vi sikrer effektiv forvaltning og stabil drift, med fokus på fart og flyt. Vi tilpasser oss kvalitetskrav og brukerbehov, og proiriterer kontinuerlig utvikling for å være klare for fremtiden'
+```
+
+
+
+# OPM1
+## {height=100%}
+```{python}
+#| content: valuebox
+#| title: "Operativt mål 1"
+#| color: info
+#| icon: bullseye
+'Brukerer kan planlegge og motta pensjonsytelser i trå med målene for pensjonsforliket'
+```
+# OPM2
+## {height=100%}
+```{python}
+#| content: valuebox
+#| title: "Operativt mål 2"
+#| color: info
+#| icon: bullseye
+'Brukere i offentlig sektor født i 1963 og senere kan planlegge og få riktig alderspensjon med AFP'
+```
+# OPM3
+## {height=100%}
+```{python}
+#| content: valuebox
+#| title: "Operativt mål 3"
+#| color: info
+#| icon: bullseye
+'Vi bidrar til økonomisk stabilitet for de etterlatte'
+```
+# OPM4
+## {height=100%}
+```{python}
+#| content: valuebox
+#| title: "Operativt mål 4"
+#| color: info
+#| icon: bullseye
+'Vi reduserer risiko og legger grunnlaget for modernisering'
+```
 

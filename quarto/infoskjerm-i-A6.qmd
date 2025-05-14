@@ -191,7 +191,7 @@ Antallet som mottar ytelser fra Pesys er i noen tilfeller høyere enn befolkning
 ```{python}
 #| title: "Antall Pesys-ytelser"
 #| content: valuebox
-#| icon: people
+#| icon: backpack3-fill
 #| color: primary
 f"{df_pesys['antall_pesys'].sum():,.0f}".replace(',', ' ')
 ```
@@ -247,7 +247,7 @@ f"{df_ufore['Alle uføretrygd'].sum():,.0f}".replace(',', ' ')
 ```{python}
 #| title: "Antall med uføretrygd + alderspensjon"
 #| content: valuebox
-#| icon: people
+#| icon: person-plus
 #| color: primary
 f"{df_ufore['Uføretrygd + alderspensjon'].sum():,.0f}".replace(',', ' ')
 ```
@@ -255,7 +255,7 @@ f"{df_ufore['Uføretrygd + alderspensjon'].sum():,.0f}".replace(',', ' ')
 ```{python}
 #| title: "Andel av befolkningen som er 18-67 år"
 #| content: valuebox
-#| icon: people
+#| icon: pie-chart-fill
 #| color: primary
 f"{round((df_ufore[df_ufore["mottaker_alder"].between(18, 67)]["Alle uføretrygd"].sum() / df_ufore[df_ufore["mottaker_alder"].between(18, 66)]["befolkning"].sum())* 100, 1):,.1f} %".replace('.', ',')
 ```
@@ -263,7 +263,7 @@ f"{round((df_ufore[df_ufore["mottaker_alder"].between(18, 67)]["Alle uføretrygd
 ```{python}
 #| title: "Andel av hele befolkningen"
 #| content: valuebox
-#| icon: people
+#| icon: pie-chart-fill
 #| color: primary
 f"{round((df_ufore["Alle uføretrygd"].sum() / df_ufore["befolkning"].sum())* 100, 1):,.1f} %".replace('.', ',')
 ```
@@ -300,28 +300,20 @@ alle_alderspensjonister = df_pesys['Alderspensjon'].sum() + df_pesys['AFP'].sum(
 f"{alle_alderspensjonister:,.0f}".replace(',', ' ')
 ```
 ### col
-```{python}
-#| title: "Andel av hele befolkningen"
-#| content: valuebox
-#| icon: people
-#| color: primary
-f"{round((alle_alderspensjonister / df_ufore["befolkning"].sum())* 100, 1):,.1f} %".replace('.', ',')
-```
-### col
-```{python}
-#| title: "Antall med AFP"
-#| content: valuebox
-#| icon: people
-#| color: primary
-f"{df_pesys['AFP'].sum():,.0f}".replace(',', ' ')
-```
 ### col
 ```{python}
 #| title: "Antall med AFP Privat og alderspensjon"
 #| content: valuebox
-#| icon: people
+#| icon: balloon
 #| color: primary
 f"{df_pesys['Alderspensjon + AFP Privat'].sum():,.0f}".replace(',', ' ')
+```
+```{python}
+#| title: "Antall med kun AFP"
+#| content: valuebox
+#| icon: balloon-fill
+#| color: primary
+f"{df_pesys['AFP'].sum():,.0f}".replace(',', ' ')
 ```
 
 ## rad 4 - plott
@@ -525,7 +517,7 @@ uføremottakere
 #| content: valuebox
 #| title: "Operativt mål 2"
 #| color: info
-#| icon: bullseye
+#| icon: hurricane
 'Brukere i offentlig sektor født i 1963 og senere kan planlegge og få riktig alderspensjon med AFP'
 ```
 # OPM3
@@ -534,7 +526,7 @@ uføremottakere
 #| content: valuebox
 #| title: "Operativt mål 3"
 #| color: info
-#| icon: bullseye
+#| icon: bandaid
 'Vi bidrar til økonomisk stabilitet for de etterlatte'
 ```
 # OPM4
@@ -543,7 +535,35 @@ uføremottakere
 #| content: valuebox
 #| title: "Operativt mål 4"
 #| color: info
-#| icon: bullseye
+#| icon: bus-front
 'Vi reduserer risiko og legger grunnlaget for modernisering'
 ```
 
+
+
+# how-to
+
+## {height=33%}
+```{python}
+#| content: valuebox
+#| title: "Hvordan få opp andre nettsider her?"
+#| color: light
+#| icon: patch-question
+'Snakk med Brynjar og foreslå tall/plott/nettsider/bilder'
+```
+## {height=33%}
+```{python}
+#| content: valuebox
+#| title: "Eventuelt kan du"
+#| color: light
+#| icon: eyeglasses
+'Legge til endringer i github.com/navikt/infoskjerm-karusell/ i fila nettsider.yaml'
+```
+## {height=33%}
+```{python}
+#| content: valuebox
+#| title: "Hva kan vises?"
+#| color: light
+#| icon: eyeglasses
+'Nettsider, bilder, plott, tall, gøy tekst eller noe annet som kan puttes i en nettside uten innlogging (evt AD-innlogging)'
+```

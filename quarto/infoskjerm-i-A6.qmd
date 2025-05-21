@@ -539,7 +539,11 @@ uføremottakere
 'Vi reduserer risiko og legger grunnlaget for modernisering'
 ```
 
-
+# Ukas oppmerksomhet
+## {height=100%}
+::: {.card title="Ukas oppmerksomhet! Seksjon pensjon og uføretrygd representert fra team Regelverk på trygdeavtaleforhandlinger i Brasil"}
+![](../data/brasil-forhandlinger.JPG)
+:::
 
 # how-to
 

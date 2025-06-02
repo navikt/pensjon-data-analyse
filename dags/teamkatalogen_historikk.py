@@ -8,7 +8,7 @@ with DAG(
     dag_id="teamkatalogen_historikk_dbt",
     schedule_interval="0 7 * * *",
     start_date=datetime(2025, 4, 4, tzinfo=timezone("Europe/Oslo")),
-    doc_md="Kjører daglig dbt snapshot av de fire tabellene fra teamkatalogen.",
+    doc_md="Kjører daglig `dbt snapshot` av de fire tabellene fra teamkatalogen, samt `dbt run`.",
     catchup=False,
 ) as dag:
     dbt_snapshot = python_operator(
@@ -22,4 +22,4 @@ with DAG(
         requirements_path="requirements.txt",
     )
 
-    dbt_snapshot
+    dbt_snapshot # dbt snapshot og dbt run kjøres av `dbt_run_airflow.py`-scriptet

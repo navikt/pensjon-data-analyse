@@ -16,15 +16,20 @@ logging.basicConfig(level=logging.INFO)
 #     lowercase=True,
 # )
 # con.close()
-#%%
+# %%
 
-#leser fra csv midlertidig
+# leser fra csv midlertidig
 import pandas as pd
+
 df_forstegangsvedtak = pd.read_csv("../data/forstegangsvedtak.csv", sep=";")
 
-df_forstegangsvedtak.loc[df_forstegangsvedtak["vedtakstype"] == "FORGANG", "vedtakstype" ] = "Førstegang"
-df_forstegangsvedtak.loc[df_forstegangsvedtak["vedtakstype"] == "AVSL", "vedtakstype" ] = "Avslag"
-df_forstegangsvedtak = df_forstegangsvedtak.sort_values(by=["armaned", "vedtakstype"], ascending=[False, False])
+df_forstegangsvedtak.loc[df_forstegangsvedtak["vedtakstype"] == "FORGANG", "vedtakstype"] = (
+    "Førstegang"
+)
+df_forstegangsvedtak.loc[df_forstegangsvedtak["vedtakstype"] == "AVSL", "vedtakstype"] = "Avslag"
+df_forstegangsvedtak = df_forstegangsvedtak.sort_values(
+    by=["armaned", "vedtakstype"], ascending=[False, False]
+)
 df_forstegangsvedtak["ar"] = df_forstegangsvedtak["ar"].astype(int)
 
 df_alle_vedtak = pd.read_csv("../data/alle_vedtak.csv", sep=";")
@@ -32,7 +37,7 @@ df_alle_vedtak = df_alle_vedtak.sort_values(by=["armaned", "vedtakstype"], ascen
 df_alle_vedtak["ar"] = df_alle_vedtak["ar"].astype(int)
 
 
-#%%
+# %%
 
 # # plotly plot x as armaned, y as antall_vedtak, color as vedtakstype
 # import plotly.express as px

@@ -22,4 +22,4 @@ with DAG(
         requirements_path="requirements.txt",
     )
 
-    dbt_snapshot # dbt snapshot og dbt run kjøres av `dbt_run_airflow.py`-scriptet
+    dbt_snapshot  # dbt snapshot og dbt run kjøres av `dbt_run_airflow.py`-scriptet

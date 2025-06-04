@@ -21,15 +21,13 @@ con.close()
 
 # BPEN090 navn
 df_inntektsendring.loc[
-    (df_inntektsendring["opprettet_av"] == "PPEN011")
-    & (df_inntektsendring["maned"] != 1),
+    (df_inntektsendring["opprettet_av"] == "PPEN011") & (df_inntektsendring["maned"] != 1),
     "opprettet_av",
 ] = "BPEN090"
 
 # BPEN091 navn
 df_inntektsendring.loc[
-    (df_inntektsendring["opprettet_av"] == "PPEN011")
-    & (df_inntektsendring["maned"] == 1),
+    (df_inntektsendring["opprettet_av"] == "PPEN011") & (df_inntektsendring["maned"] == 1),
     "opprettet_av",
 ] = "BPEN091"
 

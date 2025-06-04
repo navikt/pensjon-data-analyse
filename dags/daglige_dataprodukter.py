@@ -12,6 +12,7 @@ from dataverk_airflow import python_operator
 # - kravstatus
 # - kontrollpunkt
 
+
 def python_operator_wrapped(
     *,  # Enforce keyword-only arguments
     dag: DAG,
@@ -31,7 +32,7 @@ def python_operator_wrapped(
         allowlist=[
             "secretmanager.googleapis.com",
             "bigquery.googleapis.com",
-            "dm08db03-vip.adeo.no:1521", # prod lesekopien
+            "dm08db03-vip.adeo.no:1521",  # prod lesekopien
         ],
         resources=resources,
     )

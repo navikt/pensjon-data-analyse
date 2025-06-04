@@ -68,11 +68,9 @@ sql_pensjon_teams = sql_base + """select * from po_pensjon"""
 sql_alle_po = sql_base + """select * from unike_identer_i_po"""
 
 # henter data fra BigQuery
-client = bigquery.Client(project='pensjon-saksbehandli-prod-1f83')
+client = bigquery.Client(project="pensjon-saksbehandli-prod-1f83")
 df_pensjon_teams = client.query(sql_pensjon_teams).to_dataframe()
 df_alle_po = client.query(sql_alle_po).to_dataframe()
-
-
 
 
 # send 1 og 2 inn i en sqlspørring mot oracle  dt_hr.hrres_ressurs_lav, som aggregerer
@@ -85,7 +83,7 @@ df_alle_po = client.query(sql_alle_po).to_dataframe()
 #     --lederniva, -- usikker på om denne er interessant
 #     --fodselsdato, -- for alder
 #     kjonn, -- Mann
-#     case 
+#     case
 #         when floor(months_between(sysdate, fodselsdato) / 12) < 35 then 'under 35'
 #         when floor(months_between(sysdate, fodselsdato) / 12) between 35 and 50 then '35-50'
 #         else 'over 50'

@@ -6,7 +6,7 @@ from lib import pesys_utils
 
 
 logging.basicConfig(level=logging.INFO)
-pesys_utils.set_db_secrets(secret_name='pen-prod-lesekopien-pen_airflow')
+pesys_utils.set_db_secrets(secret_name="pen-prod-lesekopien-pen_airflow")
 
 tuning = 10000
 con = pesys_utils.connect_to_oracle()

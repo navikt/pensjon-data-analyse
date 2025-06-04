@@ -28,7 +28,9 @@ def set_db_secrets(secret_name: str):
     # hvis DB_USER eksisterer som miljøvariabel, bruk den, ellers bruk den fra secret
     os.environ["DB_USER"] = os.environ.get("DB_USER", secret["DB_USER"])
     os.environ["DB_PASSWORD"] = os.environ.get("DB_PASSWORD", secret["DB_PASSWORD"])
-    logging.info(f"Secrets for {os.environ['DB_USER']} mot {os.environ['DB_HOST']}:{os.environ['DB_PORT']}/{os.environ['DB_SERVICE_NAME']}")
+    logging.info(
+        f"Secrets for {os.environ['DB_USER']} mot {os.environ['DB_HOST']}:{os.environ['DB_PORT']}/{os.environ['DB_SERVICE_NAME']}"
+    )
 
 
 def connect_to_oracle():
@@ -66,7 +68,7 @@ def set_pen_secrets_as_env():
     - PENSAK_NADA_TOKEN, usikker på hvor det blir brukt
 
     """
-    name="projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest"
+    name = "projects/193123067890/secrets/pensjon-saksbehandling-nh4b/versions/latest"
     secrets = secretmanager.SecretManagerServiceClient()
     secret = secrets.access_secret_version(name=name)
     secrets = secret.payload.data.decode("UTF-8")

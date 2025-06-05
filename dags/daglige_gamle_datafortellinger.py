@@ -4,9 +4,11 @@ from pendulum import timezone
 from airflow.models import Variable
 from kubernetes import client as k8s
 from dataverk_airflow import quarto_operator
+from images import get_image_name
 
 # DAG for de tre datafortellingene Vebjørn lagde som oppdateres daglig.
 # Bør vurderes om de kan saneres dersom de ikke er i bruk.
+WENDELBOE_IMAGE = get_image_name("wendelboe")
 
 
 def quarto_operator_wrapped(
@@ -26,9 +28,8 @@ def quarto_operator_wrapped(
             "id": quarto_id,
             "token": Variable.get("PENSAK_QUARTO_TOKEN"),
         },
-        use_uv_pip_install=True,
+        image=WENDELBOE_IMAGE,
         repo="navikt/pensjon-data-analyse",
-        requirements_path="requirements.txt",
         slack_channel="#pensak-airflow-alerts",
         allowlist=[
             "secretmanager.googleapis.com",

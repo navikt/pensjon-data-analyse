@@ -13,3 +13,15 @@ updates:
       pip:
         patterns:
           - "*"
+  - package-ecosystem: "docker"
+    registries:
+      - ghcr
+    directories:
+      - "/images/*/*"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+    groups:
+      dag-images:
+        patterns:
+          - '*'

@@ -17,7 +17,9 @@ with DAG(
         dag=dag,
         name="dataproduct-automatisering-v2",
         slack_channel="#pensak-airflow-alerts",
-        image=WENDELBOE_IMAGE,
+        # image=WENDELBOE_IMAGE,
+        requirements_path="requirements.txt",
+        use_uv_pip_install=True,
         repo="navikt/pensjon-data-analyse",
         script_path="scripts/dataproduct_automatisering_v2.py",
         resources=k8s.V1ResourceRequirements(

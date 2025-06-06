@@ -22,9 +22,9 @@ with DAG(
         dag=dag,
         name="oracle_til_bigquery",
         script_path="scripts/eo_oversikt.py",
-        image=WENDELBOE_IMAGE,
-        # requirements_path="requirements.txt",
-        # use_uv_pip_install=True,
+        # image=WENDELBOE_IMAGE,
+        requirements_path="requirements.txt",
+        use_uv_pip_install=True,
         repo="navikt/pensjon-data-analyse",
         slack_channel="#pensak-airflow-alerts",
         allowlist=[

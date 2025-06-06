@@ -28,7 +28,9 @@ def quarto_operator_wrapped(
             "id": quarto_id,
             "token": Variable.get("PENSAK_QUARTO_TOKEN"),
         },
-        image=WENDELBOE_IMAGE,
+        # image=WENDELBOE_IMAGE,
+        requirements_path="requirements.txt",
+        use_uv_pip_install=True,
         repo="navikt/pensjon-data-analyse",
         slack_channel="#pensak-airflow-alerts",
         allowlist=[

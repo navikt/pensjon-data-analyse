@@ -15,7 +15,9 @@ with DAG(
         slack_channel="#pensak-airflow-alerts",
         repo="navikt/pensjon-data-analyse",
         script_path="scripts/aldersovergang.py",
-        image=WENDELBOE_IMAGE,
+        # image=WENDELBOE_IMAGE,
+        requirements_path="requirements.txt",
+        use_uv_pip_install=True,
         allowlist=[
             "secretmanager.googleapis.com",
             "bigquery.googleapis.com",

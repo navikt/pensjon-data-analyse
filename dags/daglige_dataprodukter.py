@@ -28,7 +28,9 @@ def python_operator_wrapped(
         dag=dag,
         name=name,
         script_path=script_path,
-        image=WENDELBOE_IMAGE,
+        # image=WENDELBOE_IMAGE,
+        requirements_path="requirements.txt",
+        use_uv_pip_install=True,
         repo="navikt/pensjon-data-analyse",
         slack_channel="#pensak-airflow-alerts",
         allowlist=[

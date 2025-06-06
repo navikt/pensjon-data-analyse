@@ -16,7 +16,9 @@ with DAG(
 ) as dag:
     dbt_snapshot = python_operator(
         dag=dag,
-        image=WENDELBOE_IMAGE,
+        # image=WENDELBOE_IMAGE,
+        requirements_path="requirements.txt",
+        use_uv_pip_install=True,
         name="historiserer-fire-tabeller",
         repo="navikt/teamkatalogen-historikk",
         script_path="dbt/dbt_run_airflow.py",

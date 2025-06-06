@@ -24,7 +24,9 @@ with DAG(
             "id": "d1e4cefc-2658-4519-a8c0-0f29db301d9d",
             "token": Variable.get("PENSAK_QUARTO_TOKEN"),
         },
-        image=WENDELBOE_IMAGE,
+        # image=WENDELBOE_IMAGE,
+        requirements_path="requirements.txt",
+        use_uv_pip_install=True,
         allowlist=["secretmanager.googleapis.com", "dmv09-scan.adeo.no:1521"],  # DVHP
         # slack_channel="#pensak-airflow-alerts",
         extra_envs={"RUNNING_IN_AIRFLOW": "true"},

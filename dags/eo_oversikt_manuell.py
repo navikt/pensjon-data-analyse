@@ -11,7 +11,7 @@ WENDELBOE_IMAGE = get_image_name("wendelboe")
 
 
 with DAG(
-    dag_id="eo_oversikt",
+    dag_id="eo_oversikt_manuell",
     description="Manuell kjøring for oppdatering av dataprodukter, altså BQ-tabeller",
     schedule_interval=None,
     start_date=datetime(2025, 6, 5, tzinfo=timezone("Europe/Oslo")),

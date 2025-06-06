@@ -17,12 +17,12 @@ from (
         ar,
         case
             when
-                opprettet_av in ('AutomatiskBehandling', 'BPEN092')
-                and endret_av in ('AutomatiskBehandling', 'BPEN092')
+                opprettet_av in ('AutomatiskBehandling', 'BPEN092','srvpensjon', 'srvpen-ejb-adapter')
+                and endret_av in ('AutomatiskBehandling', 'BPEN092', 'srvpensjon', 'srvpen-ejb-adapter')
             then 'Automatisk'
             when
-                opprettet_av not in ('AutomatiskBehandling', 'BPEN092')
-                and endret_av not in ('AutomatiskBehandling', 'BPEN092')
+                opprettet_av not in ('AutomatiskBehandling', 'BPEN092', 'srvpensjon', 'srvpen-ejb-adapter')
+                and endret_av not in ('AutomatiskBehandling', 'BPEN092', 'srvpensjon', 'srvpen-ejb-adapter')
             then 'Manuell'
             else 'Delautomatisk (opprettet/endret manuelt)'
         end as auto_eller_manuell

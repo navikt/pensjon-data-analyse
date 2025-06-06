@@ -18,9 +18,9 @@ with DAG(
     catchup=False,
 ) as dag:
 
-    eo_oversikt = python_operator(
+    oracle_til_bigquery = python_operator(
         dag=dag,
-        name="eo_oversikt",
+        name="oracle_til_bigquery",
         script_path="scripts/eo_oversikt.py",
         image=WENDELBOE_IMAGE,
         repo="navikt/pensjon-data-analyse",
@@ -32,4 +32,4 @@ with DAG(
         ],
     )
 
-    eo_oversikt
+    oracle_til_bigquery

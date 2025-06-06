@@ -2,6 +2,9 @@ from airflow import DAG
 from kubernetes import client as k8s
 from airflow.utils.dates import days_ago
 from dataverk_airflow import python_operator
+from images import get_image_name
+
+WENDELBOE_IMAGE = get_image_name("wendelboe")
 
 
 with DAG(
@@ -14,10 +17,9 @@ with DAG(
         dag=dag,
         name="dataproduct-automatisering-v2",
         slack_channel="#pensak-airflow-alerts",
-        requirements_path="requirements.txt",
+        image=WENDELBOE_IMAGE,
         repo="navikt/pensjon-data-analyse",
         script_path="scripts/dataproduct_automatisering_v2.py",
-        use_uv_pip_install=True,
         resources=k8s.V1ResourceRequirements(
             requests={"memory": "6Gi", "cpu": "1", "ephemeral-storage": "200Mi"},
         ),

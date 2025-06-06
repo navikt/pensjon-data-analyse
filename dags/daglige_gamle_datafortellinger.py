@@ -6,11 +6,11 @@ from kubernetes import client as k8s
 from dataverk_airflow import quarto_operator
 from images import get_image_name
 
-# DAG for de tre datafortellingene Vebjørn lagde som oppdateres daglig.
-# Bør vurderes om de kan saneres dersom de ikke er i bruk.
 WENDELBOE_IMAGE = get_image_name("wendelboe")
 
 
+# DAG for de tre datafortellingene Vebjørn lagde som oppdateres daglig.
+# Bør vurderes om de kan saneres dersom de ikke er i bruk.
 def quarto_operator_wrapped(
     *,  # Enforce keyword-only arguments
     dag: DAG,

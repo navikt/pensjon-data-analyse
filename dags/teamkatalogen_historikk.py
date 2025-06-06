@@ -2,6 +2,9 @@ from airflow import DAG
 from datetime import datetime
 from pendulum import timezone
 from dataverk_airflow import python_operator
+from images import get_image_name
+
+WENDELBOE_IMAGE = get_image_name("wendelboe")
 
 
 with DAG(
@@ -13,13 +16,12 @@ with DAG(
 ) as dag:
     dbt_snapshot = python_operator(
         dag=dag,
-        use_uv_pip_install=True,
+        image=WENDELBOE_IMAGE,
         name="historiserer-fire-tabeller",
         repo="navikt/teamkatalogen-historikk",
         script_path="dbt/dbt_run_airflow.py",
         allowlist=["bigquery.googleapis.com"],
-        # slack_channel="#pensak-airflow-alerts",
-        requirements_path="requirements.txt",
+        slack_channel="#pensak-airflow-alerts",
     )
 
     dbt_snapshot  # dbt snapshot og dbt run kjøres av `dbt_run_airflow.py`-scriptet

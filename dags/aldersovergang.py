@@ -1,6 +1,9 @@
 from airflow import DAG
 from airflow.utils.dates import days_ago
 from dataverk_airflow import python_operator
+from images import get_image_name
+
+WENDELBOE_IMAGE = get_image_name("wendelboe")
 
 
 with DAG(
@@ -12,8 +15,7 @@ with DAG(
         slack_channel="#pensak-airflow-alerts",
         repo="navikt/pensjon-data-analyse",
         script_path="scripts/aldersovergang.py",
-        requirements_path="requirements.txt",
-        use_uv_pip_install=True,
+        image=WENDELBOE_IMAGE,
         allowlist=[
             "secretmanager.googleapis.com",
             "bigquery.googleapis.com",

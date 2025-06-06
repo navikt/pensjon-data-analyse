@@ -3,6 +3,9 @@ from datetime import datetime
 from pendulum import timezone
 from kubernetes import client as k8s
 from dataverk_airflow import python_operator
+from images import get_image_name
+
+WENDELBOE_IMAGE = get_image_name("wendelboe")
 
 # DAG for daglig oppdaterte dataprodukter
 
@@ -25,9 +28,8 @@ def python_operator_wrapped(
         dag=dag,
         name=name,
         script_path=script_path,
-        use_uv_pip_install=True,
+        image=WENDELBOE_IMAGE,
         repo="navikt/pensjon-data-analyse",
-        requirements_path="requirements.txt",
         slack_channel="#pensak-airflow-alerts",
         allowlist=[
             "secretmanager.googleapis.com",

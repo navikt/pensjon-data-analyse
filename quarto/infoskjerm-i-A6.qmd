@@ -541,8 +541,8 @@ uføremottakere
 
 # Ukas oppmerksomhet
 ## {height=100%}
-::: {.card title="Ukas oppmerksomhet! Seksjon pensjon og uføretrygd representert fra team Regelverk på trygdeavtaleforhandlinger i Brasil"}
-![](../data/brasil-forhandlinger.JPG)
+::: {.card }
+![](../bilder/fantasytdf-promo.png)
 :::
 
 # how-to

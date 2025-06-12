@@ -14,7 +14,7 @@ format:
               href: https://nav-it.slack.com/archives/C06NKNY1399
         embed-resources: true
         code-copy: true
-        theme: flatly
+        theme: vapor
 ---
 <!-- author: "Brynjar Morka Mæhlum, team Uføre" -->
 <!-- GCP-team: teampensjon -->
@@ -211,7 +211,7 @@ f"{df_befolkning[df_befolkning["alder"] > 18]["befolkningsantall"].sum():,.0f}".
 #| title: "Andel av befolkningen over 18 år som har et vedtak Pesys"
 #| content: valuebox
 #| icon: people
-#| color: primary
+#| color: secondary
 f"{100 * (df_pesys['antall_pesys'].sum()/df_befolkning[df_befolkning["alder"] > 18]["befolkningsantall"].sum()):,.0f} %".replace(',', ' ')
 ```
 
@@ -256,7 +256,7 @@ f"{df_ufore['Uføretrygd + alderspensjon'].sum():,.0f}".replace(',', ' ')
 #| title: "Andel av befolkningen som er 18-67 år"
 #| content: valuebox
 #| icon: pie-chart-fill
-#| color: primary
+#| color: secondary
 f"{round((df_ufore[df_ufore["mottaker_alder"].between(18, 67)]["Alle uføretrygd"].sum() / df_ufore[df_ufore["mottaker_alder"].between(18, 66)]["befolkning"].sum())* 100, 1):,.1f} %".replace('.', ',')
 ```
 ### col
@@ -296,10 +296,9 @@ alle_alderspensjonister = df_pesys['Alderspensjon'].sum() + df_pesys['AFP'].sum(
 #| title: "Antall alderspensjonister og AFP-mottakere"
 #| content: valuebox
 #| icon: people
-#| color: primary
+#| color: secondary
 f"{alle_alderspensjonister:,.0f}".replace(',', ' ')
 ```
-### col
 ### col
 ```{python}
 #| title: "Antall med AFP Privat og alderspensjon"
@@ -308,6 +307,7 @@ f"{alle_alderspensjonister:,.0f}".replace(',', ' ')
 #| color: primary
 f"{df_pesys['Alderspensjon + AFP Privat'].sum():,.0f}".replace(',', ' ')
 ```
+### colß
 ```{python}
 #| title: "Antall med kun AFP"
 #| content: valuebox
@@ -383,7 +383,7 @@ Antallet som sluttet på uføretrygd var rundt
 hvorav 74% ble alderspensjonister og 16% døde
 :::
 ### col
-::: {.valuebox color="primary"}
+::: {.valuebox color="secondary"}
 ![](../bilder/Trygdebeistet.png)
 :::
 
@@ -407,7 +407,7 @@ Andel med 100% uføretrygd
 85%
 :::
 ### col
-::: {.valuebox color="primary"  icon="person-workspace"}
+::: {.valuebox color="secondary"  icon="person-workspace"}
 Andel uføre i arbeid
 
 18%
@@ -435,51 +435,6 @@ uføremottakere
 
 
 
-# Seksjonen
-##  {height=50%}
-```{python}
-#| content: valuebox
-#| color: success
-#| icon: people
-'Seksjon for pensjon og uføretrygd'
-```
-
-## rad med tall fra teamkatalogen
-<!-- todo: hente data fra bq-teamkatalogen -->
-### col
-```{python}
-#| content: valuebox
-#| title: "Antall ansatte i seksjonen"
-#| color: success
-#| icon: cup-hot-fill
-134
-```
-### col
-```{python}
-#| content: valuebox
-#| title: "Antall team"
-#| color: success
-#| icon: flower1
-14
-```
-### col
-```{python}
-#| content: valuebox
-#| title: "Gjennomsnittlig fartstid i Nav"
-#| color: success
-#| icon: backpack4-fill
-'11,7 år'
-```
-### col
-```{python}
-#| content: valuebox
-#| title: "Andel interne"
-#| color: success
-#| icon: briefcase-fill
-'67%'
-```
-
-
 # Ambisjon 1
 ##  {height=100%}
 ```{python}
@@ -495,7 +450,7 @@ uføremottakere
 ```{python}
 #| content: valuebox
 #| title: "Ambisjon 2"
-#| color: success
+#| color: dark
 #| icon: activity
 'Vi sikrer effektiv forvaltning og stabil drift, med fokus på fart og flyt. Vi tilpasser oss kvalitetskrav og brukerbehov, og proiriterer kontinuerlig utvikling for å være klare for fremtiden'
 ```
@@ -507,7 +462,7 @@ uføremottakere
 ```{python}
 #| content: valuebox
 #| title: "Operativt mål 1"
-#| color: info
+#| color: danger
 #| icon: bullseye
 'Brukerer kan planlegge og motta pensjonsytelser i trå med målene for pensjonsforliket'
 ```
@@ -516,7 +471,7 @@ uføremottakere
 ```{python}
 #| content: valuebox
 #| title: "Operativt mål 2"
-#| color: info
+#| color: warning
 #| icon: hurricane
 'Brukere i offentlig sektor født i 1963 og senere kan planlegge og få riktig alderspensjon med AFP'
 ```
@@ -525,7 +480,7 @@ uføremottakere
 ```{python}
 #| content: valuebox
 #| title: "Operativt mål 3"
-#| color: info
+#| color: secondary
 #| icon: bandaid
 'Vi bidrar til økonomisk stabilitet for de etterlatte'
 ```
@@ -534,7 +489,7 @@ uføremottakere
 ```{python}
 #| content: valuebox
 #| title: "Operativt mål 4"
-#| color: info
+#| color: light
 #| icon: bus-front
 'Vi reduserer risiko og legger grunnlaget for modernisering'
 ```
@@ -551,23 +506,33 @@ uføremottakere
 ```{python}
 #| content: valuebox
 #| title: "Hvordan få opp andre nettsider her?"
-#| color: light
+#| color: dark
 #| icon: patch-question
-'Snakk med Brynjar og foreslå tall/plott/nettsider/bilder'
+'Snakk med Brynjar!'
 ```
 ## {height=33%}
 ```{python}
 #| content: valuebox
-#| title: "Eventuelt kan du"
-#| color: light
+#| title: "Eventuelt kan du sjekke ut github-repoet"
+#| color: dark
 #| icon: eyeglasses
-'Legge til endringer i github.com/navikt/infoskjerm-karusell/ i fila nettsider.yaml'
+'navikt/infoskjerm-karusell og fila nettsider.yaml'
 ```
 ## {height=33%}
 ```{python}
 #| content: valuebox
 #| title: "Hva kan vises?"
-#| color: light
+#| color: dark
 #| icon: eyeglasses
-'Nettsider, bilder, plott, tall, gøy tekst eller noe annet som kan puttes i en nettside uten innlogging (evt AD-innlogging)'
+'Nettsider, bilder, plott, tall, gøy tekst og andre internett-ting'
+```
+
+# Pride
+## {height=100%}
+```{python}
+#| content: valuebox
+#| title: "Meld deg på via delta.nav.no"
+#| color: secondary
+#| icon: rainbow
+'Husk pride-frokost torsdag 19. juni!'
 ```

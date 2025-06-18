@@ -12,11 +12,11 @@ varselbrevmottakere as (
     where 1=1
         and kh.k_krav_gjelder = 'UT_VURDERING_EO' -- kun ett varselbrev per sakid per år
         and kh.dato_mottatt_krav in ( -- hovedkjøringene
-            '22/10/24',
-            '24/10/23',
-            '18/10/22',
-            '19/10/21',
-            '21/10/20'
+            to_date('22/10/24', 'DD/MM/YY'),
+            to_date('24/10/23', 'DD/MM/YY'),
+            to_date('18/10/22', 'DD/MM/YY'),
+            to_date('19/10/21', 'DD/MM/YY'),
+            to_date('21/10/20', 'DD/MM/YY')
         )
 ),
 

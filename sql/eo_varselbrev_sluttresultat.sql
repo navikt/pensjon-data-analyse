@@ -30,7 +30,7 @@ eo_historikk as (
             when
                 opprettet_av in ('AutomatiskBehandling', 'BPEN092','srvpensjon', 'srvpen-ejb-adapter')
                 and endret_av in ('AutomatiskBehandling', 'BPEN092', 'srvpensjon', 'srvpen-ejb-adapter')
-            then 'Auto'
+            then 'Automatisk'
             when
                 opprettet_av not in ('AutomatiskBehandling', 'BPEN092', 'srvpensjon', 'srvpen-ejb-adapter')
                 and endret_av not in ('AutomatiskBehandling', 'BPEN092', 'srvpensjon', 'srvpen-ejb-adapter')

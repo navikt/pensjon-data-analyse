@@ -80,7 +80,7 @@ from sammensmeltet_brevmottaker_historikk
 where varselbrev is not null -- har bare med de som får varselbrev om tilbakekreving
 group by 
     ar,
-    k_ut_eo_resultat
+    k_ut_eo_resultat,
     auto_eller_manuell,
     k_hendelse_t,
     -- antall_eo,

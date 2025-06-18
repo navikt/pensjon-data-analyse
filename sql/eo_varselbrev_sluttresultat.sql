@@ -1,0 +1,91 @@
+-- ser på de som får 4-ukers varselbrev om tilbakekreving
+
+with
+
+varselbrevmottakere as (
+    select
+        sak_id,
+        extract(year from dato_mottatt_krav) - 1 as eo_ar,
+        concat('Varselbrev om tilbakekreving fra ', to_char(dato_mottatt_krav, 'DD/MM/YYYY')) as varselbrev,
+        dato_mottatt_krav
+    from pen.t_kravhode kh
+    where 1=1
+        and kh.k_krav_gjelder = 'UT_VURDERING_EO' -- kun ett varselbrev per sakid per år
+        and kh.dato_mottatt_krav in ( -- hovedkjøringene
+            '22/10/24',
+            '24/10/23',
+            '18/10/22',
+            '19/10/21',
+            '21/10/20'
+        )
+),
+
+eo_historikk as (
+    select
+        sak_id,
+        ar,
+        k_ut_eo_resultat,
+        k_hendelse_t,
+        case
+            when
+                opprettet_av in ('AutomatiskBehandling', 'BPEN092','srvpensjon', 'srvpen-ejb-adapter')
+                and endret_av in ('AutomatiskBehandling', 'BPEN092', 'srvpensjon', 'srvpen-ejb-adapter')
+            then 'Auto'
+            when
+                opprettet_av not in ('AutomatiskBehandling', 'BPEN092', 'srvpensjon', 'srvpen-ejb-adapter')
+                and endret_av not in ('AutomatiskBehandling', 'BPEN092', 'srvpensjon', 'srvpen-ejb-adapter')
+            then 'Manuell'
+        end as auto_eller_manuell
+        -- count(*) as antall_eo -- for å sjekke de som har flere EO-rader samme år
+    from pen.t_eo_ut_historik
+    where er_gyldig = 1 -- velger siste rad, altså den som er gyldig
+    -- dvs der hvor det er kommet en nyere EO rad på samme sak_id
+    -- group by
+    --     sak_id,
+    --     ar,
+    --     k_ut_eo_resultat,
+    --     k_hendelse_t,
+    --     auto_eller_manuell
+),
+
+-- eo_resultat as (...) kan brukes for å se endringer i avviksbelop
+
+sammensmeltet_brevmottaker_historikk as (
+    select
+        eoh.sak_id,
+        ar,
+        k_ut_eo_resultat,
+        auto_eller_manuell,
+        k_hendelse_t,
+        -- antall_eo,
+        varselbrev,
+        dato_mottatt_krav
+    from eo_historikk eoh
+    left join varselbrevmottakere vbm
+        on
+            eoh.sak_id = vbm.sak_id
+            and eoh.ar = vbm.eo_ar
+)
+
+select
+    ar,
+    k_ut_eo_resultat,
+    k_hendelse_t,
+    auto_eller_manuell,
+    -- antall_eo,
+    varselbrev,
+    dato_mottatt_krav,
+    count(*) as antall
+from sammensmeltet_brevmottaker_historikk
+where varselbrev is not null -- har bare med de som får varselbrev om tilbakekreving
+group by 
+    ar,
+    k_ut_eo_resultat,
+    auto_eller_manuell,
+    k_hendelse_t,
+    -- antall_eo,
+    varselbrev,
+    dato_mottatt_krav
+order by
+    ar desc,
+    count(*) desc

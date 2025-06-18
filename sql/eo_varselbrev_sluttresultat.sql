@@ -24,8 +24,8 @@ eo_historikk as (
     select
         sak_id,
         ar,
-        k_ut_eo_resultat,
-        k_hendelse_t,
+        lower(k_ut_eo_resultat) as k_ut_eo_resultat,
+        lower(k_hendelse_t) as k_hendelse_t,
         case
             when
                 opprettet_av in ('AutomatiskBehandling', 'BPEN092','srvpensjon', 'srvpen-ejb-adapter')

@@ -68,9 +68,9 @@ sammensmeltet_brevmottaker_historikk as (
 )
 
 select
-    ar,
-    k_ut_eo_resultat,
-    k_hendelse_t,
+    to_char(ar) as ar,
+    k_ut_eo_resultat as resultat_eo,
+    k_hendelse_t as hendelse,
     auto_eller_manuell,
     -- antall_eo,
     varselbrev,
@@ -80,7 +80,7 @@ from sammensmeltet_brevmottaker_historikk
 where varselbrev is not null -- har bare med de som får varselbrev om tilbakekreving
 group by 
     ar,
-    k_ut_eo_resultat,
+    k_ut_eo_resultat
     auto_eller_manuell,
     k_hendelse_t,
     -- antall_eo,

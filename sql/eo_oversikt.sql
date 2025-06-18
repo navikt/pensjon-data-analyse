@@ -1,7 +1,7 @@
 -- gir en oversikt over utfall og hendelser for EO årlig
 -- dataprodukt som blir visualisert i Metabase
 select
-    ar,
+    to_char(ar) as ar,
     auto_eller_manuell,
     k_ut_eo_resultat as resultat_eo,
     k_hendelse_t as hendelse,

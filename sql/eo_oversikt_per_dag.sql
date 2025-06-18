@@ -1,7 +1,7 @@
 -- gir også oversikt over EO som eo_oversikt, men med dato_endret
 -- gir altså mulighet til å se batch-kjøringene og saksbehandlingene per dag
 select
-    ar,
+    to_char(ar) as ar,
     dato_endret,
     auto_eller_manuell,
     k_ut_eo_resultat as resultat_eo,

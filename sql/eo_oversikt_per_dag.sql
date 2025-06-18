@@ -6,14 +6,12 @@ select
     auto_eller_manuell,
     k_ut_eo_resultat as resultat_eo,
     k_hendelse_t as hendelse,
-    er_gyldig,
     count(*) as antall
 from (
     select
         lower(k_ut_eo_resultat) as k_ut_eo_resultat,
         lower(k_hendelse_t) as k_hendelse_t,
         trunc(dato_endret) as dato_endret,
-        er_gyldig,
         ar,
         case
             when
@@ -24,13 +22,12 @@ from (
                 opprettet_av not in ('AutomatiskBehandling', 'BPEN092', 'srvpensjon', 'srvpen-ejb-adapter')
                 and endret_av not in ('AutomatiskBehandling', 'BPEN092', 'srvpensjon', 'srvpen-ejb-adapter')
             then 'Manuell'
-            else 'Delautomatisk (opprettet/endret manuelt)'
         end as auto_eller_manuell
     from pen.t_eo_ut_historik
+    where er_gyldig = 1 -- velger siste rad, altså den som er gyldig
 )
 group by
     ar,
-    er_gyldig,
     dato_endret,
     k_hendelse_t,
     k_ut_eo_resultat,

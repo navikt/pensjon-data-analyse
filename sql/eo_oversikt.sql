@@ -20,9 +20,9 @@ from (
                 opprettet_av not in ('AutomatiskBehandling', 'BPEN092', 'srvpensjon', 'srvpen-ejb-adapter')
                 and endret_av not in ('AutomatiskBehandling', 'BPEN092', 'srvpensjon', 'srvpen-ejb-adapter')
             then 'Manuell'
-            else 'Delautomatisk (opprettet/endret manuelt)'
         end as auto_eller_manuell
     from pen.t_eo_ut_historik
+    where er_gyldig = 1 -- velger siste rad, altså den som er gyldig
 )
 group by
     ar,

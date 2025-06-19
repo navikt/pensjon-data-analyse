@@ -4,9 +4,11 @@ from google.cloud.bigquery import Client, LoadJobConfig, SchemaField, enums
 
 from lib import pesys_utils
 
+# OBS! Dette kjøres som en append i BQ, så ved dobbeltkjøring vil det bli duplikater
+# Det betyr også at endring på tabellen vil fjerne historikk
 
 logging.basicConfig(level=logging.INFO)
-pesys_utils.set_db_secrets(secret_name="pen-prod-lesekopien-pen_airflow")
+pesys_utils.set_db_secrets(secret_name="pen-prod-lesekopien-pen_dataprodukt")
 
 tuning = 10000
 con = pesys_utils.connect_to_oracle()
@@ -51,7 +53,6 @@ job2_config = LoadJobConfig(
         SchemaField("dato", enums.SqlTypeNames.TIMESTAMP),
     ],
     write_disposition="WRITE_APPEND",
-    create_disposition="CREATE_IF_NEEDED",
 )
 
 client = Client(project="pensjon-saksbehandli-prod-1f83")

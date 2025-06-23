@@ -3,6 +3,7 @@
 with
 
 varselbrevmottakere as (
+    -- todo: mulig det er bedre å bruke dato_onsket_virk enn dato_mottatt_krav
     select
         sak_id,
         extract(year from dato_mottatt_krav) - 1 as eo_ar,

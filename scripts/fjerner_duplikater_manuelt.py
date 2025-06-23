@@ -76,19 +76,14 @@ fig_cleaned = px.bar(
 fig_cleaned.show()
 # %%
 
-# Slett duplikater i BQ
-bekreft = input("Er du sikker på at du vil slette duplikater i BQ? (j/n): ")
-if bekreft.lower() == "j":
-    if dato_to_drop:
-        dato_list_str = ", ".join([f"'{dato}'" for dato in dato_to_drop])
-        delete_sql = f"""
-        DELETE FROM `{tabell_kravstatus}`
-        WHERE dato IN ({dato_list_str})
-        """
-        bq_client.query(delete_sql)
-    else:
-        print("Ingen duplikater å slette.")
-    print("Duplikater slettet i BQ.")
+# Foreslår SQL for sletting av duplikater, som må kjøres manuelt i BQ
+if dato_to_drop:
+    dato_list_str = ", ".join([f"'{dato}'" for dato in dato_to_drop])
+    print(
+        f"""Foreslått SQL for sletting av duplikater:\n\n
+    delete from `{tabell_kravstatus}`
+    where dato in ({dato_list_str})
+    \n\n"""
+    )
 else:
-    print("Ingen duplikater slettet i BQ.")
-# %%
+    print("Ingen SQL generert.")

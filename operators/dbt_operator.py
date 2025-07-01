@@ -29,7 +29,6 @@ def dbt_operator(
 
     env_vars = {
         "DBT_COMMAND": dbt_command,
-        "TEAM_GCP_PROJECT": Variable.get("TEAM_GCP_PROJECT"),
         "DBT_DB_TARGET": db_environment,
         "TEAM_GCP_SECRET_PATH": f"projects/{Variable.get('TEAM_GCP_PROJECT')}/secrets/{dbt_secret_name}/versions/latest",
     }

@@ -15,7 +15,6 @@ with DAG(
     start_date=datetime(2025, 6, 30, tzinfo=pendulum.timezone("Europe/Oslo")),
     schedule_interval="0 6 * * 1",  # “6 AM monday every week”
     catchup=False,
-    depends_on_past=False,
 ) as dag:
     pen_dataprodukt = dbt_operator(
         dag=dag,

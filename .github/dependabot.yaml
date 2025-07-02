@@ -4,6 +4,14 @@
 # https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
 
 version: 2
+
+registries:
+  ghcr:
+    type: docker-registry
+    url: ghcr.io
+    username: user
+    password: ${{ secrets.READER_TOKEN }}
+
 updates:
   - package-ecosystem: "uv"
     directory: "/"

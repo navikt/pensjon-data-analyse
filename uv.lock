@@ -1704,16 +1704,16 @@ wheels = [
 
 [[package]]
 name = "itables"
-version = "2.4.2"
+version = "2.4.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ipython" },
     { name = "numpy" },
     { name = "pandas" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ea/4e/ea1f7278b219c83bb57bf9befd9a56c32e3cfc32282d984813dcfbe453c5/itables-2.4.2.tar.gz", hash = "sha256:d506f0d1235379aea44d2a04fc1678ea764bdbae8cabc38141bf3ea5d80b2ba2", size = 2230700, upload-time = "2025-06-11T22:04:35.852Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/94/12/95112286b0f2931124ebed1264b47ad54ffee473b17812647e1f49b41b95/itables-2.4.3.tar.gz", hash = "sha256:96ff86748ea31eccdd6ec3c6d3d40318c6851a9e460f5fd23ddae0b2f865a9f5", size = 2230703, upload-time = "2025-07-01T22:24:34.816Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f1/94/7c80978c77b90912cad1a4bfaf0a6982e1d1563befd6d4923b428517c64b/itables-2.4.2-py3-none-any.whl", hash = "sha256:d81821114cfd2cbcfe79379c694b77bd0af748d814e6e1d1bdfb5406cce01214", size = 2261004, upload-time = "2025-06-11T22:04:34.009Z" },
+    { url = "https://files.pythonhosted.org/packages/38/04/af1b3fe99370e792a70f885f5680098f13d9f360b34b54e2d2e1ce9d9775/itables-2.4.3-py3-none-any.whl", hash = "sha256:002d3c75d0c5b66a7b5a9c0821b892f8a92f318bfa77884bd6ded083557cecfd", size = 2261006, upload-time = "2025-07-01T22:24:32.616Z" },
 ]
 
 [[package]]

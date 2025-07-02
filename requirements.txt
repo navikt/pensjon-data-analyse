@@ -9,7 +9,7 @@ attrs==25.3.0
 babel==2.17.0
 beautifulsoup4==4.13.4
 bleach==6.2.0
-cachetools==5.5.2
+cachetools==6.1.0
 certifi==2025.6.15
 cffi==1.17.1
 charset-normalizer==3.4.2
@@ -34,7 +34,7 @@ google-resumable-media==2.7.2
 googleapis-common-protos==1.70.0
 grpc-google-iam-v1==0.14.2
 grpcio==1.73.1
-grpcio-status==1.71.2
+grpcio-status==1.73.1
 h11==0.16.0
 httpcore==1.0.9
 httpx==0.28.1
@@ -43,7 +43,7 @@ ipykernel==6.29.5
 ipython==9.4.0
 ipython-pygments-lexers==1.1.1
 isoduration==20.11.0
-itables==2.4.2
+itables==2.4.3
 jedi==0.19.2
 jinja2==3.1.6
 json5==0.12.0
@@ -83,7 +83,7 @@ plotly==6.2.0
 prometheus-client==0.22.1
 prompt-toolkit==3.0.51
 proto-plus==1.26.1
-protobuf==5.29.5
+protobuf==6.31.1
 psutil==7.0.0
 ptyprocess==0.7.0
 pure-eval==0.2.3
@@ -103,7 +103,7 @@ requests==2.32.4
 requests-oauthlib==2.0.0
 rfc3339-validator==0.1.4
 rfc3986-validator==0.1.1
-rpds-py==0.25.1
+rpds-py==0.26.0
 rsa==4.9.1
 send2trash==1.8.3
 setuptools==80.9.0

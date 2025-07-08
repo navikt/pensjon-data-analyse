@@ -24,9 +24,8 @@ def dbt_operator(
     do_xcom_push: bool = False,
     allowlist: list = [],
     slack_channel: str = Variable.get("SLACK_OPS_CHANNEL"),
-    db_environment: str = "Q2",  # Q2, Q1, PEN
+    db_environment: str = "pen_q2",  # pen_q2, pen_q1, pen_prod_lesekopi, pen_prod
 ):
-
     env_vars = {
         "DBT_COMMAND": dbt_command,
         "DBT_DB_TARGET": db_environment,

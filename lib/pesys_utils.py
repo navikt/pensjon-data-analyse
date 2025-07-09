@@ -87,7 +87,7 @@ def pandas_from_sql(sqlfile, con, tuning=None, lowercase=False):
             cursor.execute(sql.read())
         df = pd.DataFrame(cursor.fetchall())
         end = time()
-        print(f"{len(df)} rader ble returnert etter {end-start} sekunder.")
+        logging.info(f"{len(df)} rader ble returnert etter {end-start} sekunder.")
         if len(df) > 0:
             if lowercase:
                 df.columns = [x[0].lower() for x in cursor.description]
@@ -106,7 +106,7 @@ def open_pen_connection():
         user=os.environ["PEN_USER"],
         password=os.environ["PEN_PASSWORD"],
     )
-    print(f"""Connected with user: {os.environ["PEN_USER"]}""")
+    logging.info(f"""Connected with user: {os.environ["PEN_USER"]}""")
     return con
 
 

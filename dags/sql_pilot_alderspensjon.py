@@ -13,7 +13,7 @@ from operators.dbt_operator import dbt_operator
 with DAG(
     dag_id="sql_pilot_alderspensjon",
     start_date=datetime(2025, 6, 30, tzinfo=pendulum.timezone("Europe/Oslo")),
-    schedule_interval="0 6 * * 1",  # “6 AM monday every week”
+    schedule_interval="0 7 1 * *",  # “7 AM on the 1st day of every month”
     catchup=False,
 ) as dag:
     sql_pilot_q2 = dbt_operator(

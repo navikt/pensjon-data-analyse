@@ -46,5 +46,4 @@ with DAG(
         db_environment="pen_prod",
     )
 
-    sql_pilot_q2
-    sql_pilot_prod
+    sql_pilot_q2 >> sql_pilot_prod

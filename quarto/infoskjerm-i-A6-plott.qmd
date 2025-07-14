@@ -14,7 +14,7 @@ format:
               href: https://nav-it.slack.com/archives/C06NKNY1399
         embed-resources: true
         code-copy: true
-        theme: vapor
+        theme: superhero
 ---
 <!-- author: "Brynjar Morka Mæhlum, team Uføre" -->
 <!-- GCP-team: teampensjon -->

@@ -220,3 +220,11 @@ I desember 2025 forventer Nav
 
 uføremottakere
 :::
+
+
+
+# Beistet
+## {height=100%}
+::: {.card }
+![](../bilder/Trygdebeistet.png)
+:::

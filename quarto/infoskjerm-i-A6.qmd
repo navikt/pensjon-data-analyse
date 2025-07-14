@@ -19,102 +19,11 @@ format:
 <!-- author: "Brynjar Morka Mæhlum, team Uføre" -->
 <!-- GCP-team: teampensjon -->
 
-
-
-# Uføre statistikk-notat
-## Rad øverst med tekst
-Dette er tall fra Navs offentlige årsstatistikknotat for uføretrygd i 2024. 
-Disse tallene er kvalitetssikret og brukes utad. Tall i offentlig statistikk har i noen tilfeller små avvik fra det vi ser direkte i Pesys, stort sett på grunn av definisjoner.
-[Tilgjengelige på nav.no](https://www.nav.no/no/nav-og-samfunn/statistikk/aap-nedsatt-arbeidsevne-og-uforetrygd-statistikk/uforetrygd/uforetrygd-statistikknotater)
-
-## Row 1
-### col
-::: {.valuebox color="primary" icon="people"}
-Antall uføretrygdede i 2024
-
-373000
+# Ukas oppmerksomhet
+## {height=100%}
+::: {.card }
+![](../bilder/fantasytdf-promo.png)
 :::
-### col
-::: {.valuebox color="primary"  icon="graph-up"}
-Andel av befolkningen i alderen 18-67 år
-
-10,5%
-:::
-### col
-::: {.valuebox color="primary" icon="arrow-up-right"}
-Økning i antall mottakere
-
-6400
-
-som tilsvarer en økning på 0,1% i aldersgruppen 18-67 år
-:::
-## Row 2
-### col
-::: {.valuebox color="primary" icon="play-circle"}
-Totalt var det rundt 
-
-30800
-
-nye uføremottakre, hvorav 79% kom fra AAP
-:::
-### col
-::: {.valuebox color="primary" icon="stop-circle"}
-Antallet som sluttet på uføretrygd var rundt
-
-24400
-
-hvorav 74% ble alderspensjonister og 16% døde
-:::
-### col
-::: {.valuebox color="secondary"}
-![](../bilder/Trygdebeistet.png)
-:::
-
-
-
-
-
-
-
-
-
-# Uføre statistikknotat 2
-## Rad øverst med tekst
-Dette er tall fra Navs offentlige årsstatistikknotat for uføretrygd i 2024. [Tilgjengelige på nav.no](https://www.nav.no/no/nav-og-samfunn/statistikk/aap-nedsatt-arbeidsevne-og-uforetrygd-statistikk/uforetrygd/uforetrygd-statistikknotater)
-
-## Row 1
-### col
-::: {.valuebox color="primary"  icon="graph-up"}
-Andel med 100% uføretrygd
-
-85%
-:::
-### col
-::: {.valuebox color="secondary"  icon="person-workspace"}
-Andel uføre i arbeid
-
-18%
-
-altså rundt 65000 personer
-:::
-
-## Row 2
-### col
-::: {.valuebox color="primary"  icon="flag"}
-Andel uføre bosatt i utlandet
-
-2%
-:::
-### col valuebox
-::: {.valuebox color="primary"  icon="arrow-up-right"}
-I desember 2025 forventer Nav
-
-381300
-
-uføremottakere
-:::
-
-
 
 
 
@@ -177,12 +86,6 @@ uføremottakere
 'Vi reduserer risiko og legger grunnlaget for modernisering'
 ```
 
-# Ukas oppmerksomhet
-## {height=100%}
-::: {.card }
-![](../bilder/fantasytdf-promo.png)
-:::
-
 # how-to
 
 ## {height=33%}
@@ -214,8 +117,106 @@ uføremottakere
 ## {height=100%}
 ```{python}
 #| content: valuebox
-#| title: "Meld deg på via delta.nav.no"
+#| title: ""
 #| color: secondary
 #| icon: rainbow
-'Husk pride-frokost torsdag 19. juni!'
+'Har du sjekket ut #pride på slack?'
 ```
+
+
+
+
+
+
+# Uføre statistikk-notat
+## Rad øverst med tekst
+Dette er tall fra Navs offentlige årsstatistikknotat for uføretrygd i 2024. 
+Disse tallene er kvalitetssikret og brukes utad. Tall i offentlig statistikk har i noen tilfeller små avvik fra det vi ser direkte i Pesys, stort sett på grunn av definisjoner.
+[Tilgjengelige på nav.no](https://www.nav.no/no/nav-og-samfunn/statistikk/aap-nedsatt-arbeidsevne-og-uforetrygd-statistikk/uforetrygd/uforetrygd-statistikknotater)
+
+## Row 1
+### col
+::: {.valuebox color="primary" icon="people"}
+Antall uføretrygdede i 2024
+
+373000
+:::
+### col
+::: {.valuebox color="primary"  icon="graph-up"}
+Andel av befolkningen i alderen 18-67 år
+
+10,5%
+:::
+### col
+::: {.valuebox color="primary" icon="arrow-up-right"}
+Økning i antall mottakere
+
+6400
+
+som tilsvarer en økning på 0,1% i aldersgruppen 18-67 år
+:::
+## Row 2
+### col
+::: {.valuebox color="primary" icon="play-circle"}
+Totalt var det rundt 
+
+30800
+
+nye uføremottakre, hvorav 79% kom fra AAP
+:::
+### col
+::: {.valuebox color="primary" icon="stop-circle"}
+Antallet som sluttet på uføretrygd var rundt
+
+24400
+
+hvorav 74% ble alderspensjonister og 16% døde
+:::
+### col
+::: {.valuebox color="secondary"}
+![](../bilder/Trygdebeistet.png)
+:::
+
+
+
+
+
+
+
+
+
+# Uføre statistikk-notat 2
+## Rad øverst med tekst
+Dette er tall fra Navs offentlige årsstatistikknotat for uføretrygd i 2024. [Tilgjengelige på nav.no](https://www.nav.no/no/nav-og-samfunn/statistikk/aap-nedsatt-arbeidsevne-og-uforetrygd-statistikk/uforetrygd/uforetrygd-statistikknotater)
+
+## Row 1
+### col
+::: {.valuebox color="primary"  icon="graph-up"}
+Andel med 100% uføretrygd
+
+85%
+:::
+### col
+::: {.valuebox color="secondary"  icon="person-workspace"}
+Andel uføre i arbeid
+
+18%
+
+altså rundt 65000 personer
+:::
+
+## Row 2
+### col
+::: {.valuebox color="primary"  icon="flag"}
+Andel uføre bosatt i utlandet
+
+2%
+:::
+### col valuebox
+::: {.valuebox color="primary"  icon="arrow-up-right"}
+I desember 2025 forventer Nav
+
+381300
+
+uføremottakere
+:::

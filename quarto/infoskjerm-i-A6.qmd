@@ -22,7 +22,7 @@ format:
 # Ukas oppmerksomhet
 ## {height=100%}
 ::: {.card }
-![](../bilder/fantasytdf-promo.png)
+![](../bilder/fantasytdf-underveis.png)
 :::
 
 

@@ -29,13 +29,14 @@ import pandas as pd
 import plotly.express as px
 from datetime import datetime
 import plotly.graph_objects as go
+from quarto.ssb import get_df_befolkning
 
 # data ligger lokalt etter kjøring av: sql/ytelser_i_pesys_per_alderskull.sql
 file_path = "../data/mottakere_aldersgruppert.csv"
 df_pesys = pd.read_csv(file_path, sep=";", encoding="utf-8")
 # SSB har raden "105 år og over", men vi dropper alle over 104 år, som er få personer
 df_pesys = df_pesys[df_pesys["mottaker_alder"] <= 105]
-df_befolkning = pd.read_csv("../data/befolkning_aldersgruppert.csv", sep=";", encoding="utf-8")
+df_befolkning = get_df_befolkning(year=2025)
 map_ytelser = {
     "afp": "AFP",
     "uforep": "Uføretrygd",

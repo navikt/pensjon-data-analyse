@@ -3,7 +3,7 @@ from datetime import datetime
 from pendulum import timezone
 from airflow.models import Variable
 from kubernetes import client as k8s
-from dataverk_airflow import quarto_operator
+from dataverk_airflow import python_operator, quarto_operator
 from images import get_image_name
 
 WENDELBOE_IMAGE = get_image_name("wendelboe")
@@ -52,6 +52,21 @@ with DAG(
     start_date=datetime(2025, 6, 14, tzinfo=timezone("Europe/Oslo")),
     doc_md="Oppdarer quarto datafortellinger for infoskjermer",
 ) as dag:
+    oracle_til_bigquery_ytelser = python_operator(
+        dag=dag,
+        name="oracle_til_bigquery_ytelser",
+        script_path="scripts/infoskjerm_ytelser.py",
+        requirements_path="requirements.txt",
+        use_uv_pip_install=True,
+        repo="navikt/pensjon-data-analyse",
+        slack_channel="#pensak-airflow-alerts",
+        allowlist=[
+            "secretmanager.googleapis.com",
+            "bigquery.googleapis.com",
+            "dm08db03-vip.adeo.no:1521",  # prod lesekopien
+        ],
+    )
+
     infoskjerm = quarto_operator_wrapped(
         dag=dag,
         name="infoskjerm",
@@ -66,5 +81,5 @@ with DAG(
         quarto_id="3c7de1ff-2a5b-4a0b-91f8-d2e68a60bb0d",
     )
 
+    oracle_til_bigquery_ytelser >> infoskjerm_plot
     infoskjerm
-    infoskjerm_plot

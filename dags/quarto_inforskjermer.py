@@ -13,7 +13,7 @@ def quarto_operator_wrapped(
     *,  # Enforce keyword-only arguments
     dag: DAG,
     name: str,
-    quarto_path: str,
+    quarto_folder_path: str,
     quarto_id: str,
 ):
     """Wrapper dataverk_airflow.quarto_operator with default arguments."""
@@ -21,7 +21,7 @@ def quarto_operator_wrapped(
         dag=dag,
         name=name,
         quarto={
-            "path": quarto_path,
+            "folder": quarto_folder_path,
             "env": "prod",
             "id": quarto_id,
             "token": Variable.get("WENDELBOE_QUARTO_TOKEN"),
@@ -61,7 +61,6 @@ with DAG(
         repo="navikt/pensjon-data-analyse",
         slack_channel="#pensak-airflow-alerts",
         allowlist=[
-            "secretmanager.googleapis.com",
             "bigquery.googleapis.com",
             "dm08db03-vip.adeo.no:1521",  # prod lesekopien
         ],
@@ -70,14 +69,14 @@ with DAG(
     infoskjerm = quarto_operator_wrapped(
         dag=dag,
         name="infoskjerm",
-        quarto_path="quarto/infoskjerm-i-A6.qmd",
+        quarto_folder_path="quarto/infoskjerm-i-A6/",
         quarto_id="672bf0f0-15f4-482e-8136-5b3c6096502a",
     )
 
     infoskjerm_plot = quarto_operator_wrapped(
         dag=dag,
         name="infoskjerm_plot",
-        quarto_path="quarto/infoskjerm-i-A6-plott.qmd",
+        quarto_folder_path="quarto/infoskjerm-i-A6-plott/",
         quarto_id="3c7de1ff-2a5b-4a0b-91f8-d2e68a60bb0d",
     )
 

@@ -42,6 +42,7 @@ def quarto_operator_wrapped(
                 "ephemeral-storage": "700Mi",
             }
         ),
+        python_version="3.13",
     )
 
 
@@ -64,6 +65,7 @@ with DAG(
             "bigquery.googleapis.com",
             "dm08db03-vip.adeo.no:1521",  # prod lesekopien
         ],
+        python_version="3.13",
     )
 
     infoskjerm = quarto_operator_wrapped(

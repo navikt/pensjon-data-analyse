@@ -28,3 +28,7 @@ dev = [
     "pytest>=8.4.0",
     "ruff>=0.12.3",
 ]
+
+[tool.ruff]
+include = ["*.py", "*.ipynb"]
+line-length = 120

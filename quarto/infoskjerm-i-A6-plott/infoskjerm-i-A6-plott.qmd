@@ -26,45 +26,63 @@ import os
 import json
 import logging
 import pandas as pd
+from itables import show
 import plotly.express as px
 from datetime import datetime
 import plotly.graph_objects as go
-from quarto.ssb import get_df_befolkning
+from google.cloud.bigquery import Client
+from google.auth import impersonated_credentials, default
 
-# data ligger lokalt etter kjøring av: sql/ytelser_i_pesys_per_alderskull.sql
-file_path = "../data/mottakere_aldersgruppert.csv"
-df_pesys = pd.read_csv(file_path, sep=";", encoding="utf-8")
-# SSB har raden "105 år og over", men vi dropper alle over 104 år, som er få personer
-df_pesys = df_pesys[df_pesys["mottaker_alder"] <= 105]
+import sys
+sys.path.append('../ssb')
+from ssb import get_df_befolkning
+
+
+
+default_creds, _ = default()
+target_credentials = impersonated_credentials.Credentials(
+    source_credentials=default_creds,
+    target_principal="bq-airflow@wendelboe-prod-801c.iam.gserviceaccount.com",
+    target_scopes=["https://www.googleapis.com/auth/cloud-platform"],
+)
+client = Client(project="wendelboe-prod-801c", credentials=target_credentials)
+
+job1 = client.query("select * from `wendelboe-prod-801c.infoskjerm.ytelser_per_alderskull`")
+df_pesys = job1.to_dataframe()
+# job2 = client.query("select * from `wendelboe-prod-801c.infoskjerm.ytelser_antall_kombinasjoner`")
+# df_alle_kombinasjoner = job2.to_dataframe()
+
+
 df_befolkning = get_df_befolkning(year=2025)
 map_ytelser = {
     "afp": "AFP",
-    "uforep": "Uføretrygd",
-    "alder": "Alderspensjon",
-    "gjenlev": "Gjenlevendeytelse",
-    "afp_privat_og_alder": "Alderspensjon + AFP Privat",
-    "uforep_og_alder": "Uføretrygd + alderspensjon",
+    "ufore": "Uføretrygd (alle)",
+    "alder": "Alderspensjon (alle)",
+    "gjenlevende": "Gjenlevendeytelse",
+    "afp_privat": "AFP Privat + Alderspensjon",
+    "ufore_og_alder": "Uføretrygd + alderspensjon",
+    "kun_ufore": "Kun uføretrygd",
+    "kun_alder": "Kun alderspensjon",
+    "antall_personer_pesys": "Alle ytelser i Pesys",
 }
 df_pesys = df_pesys.rename(columns=map_ytelser)
 
 
 df_ufore = pd.merge(
-    df_pesys[["mottaker_alder", "Uføretrygd", "Uføretrygd + alderspensjon"]],
+    df_pesys[["mottaker_alder","Uføretrygd (alle)", "Kun uføretrygd", "Uføretrygd + alderspensjon"]],
     df_befolkning.rename(columns={"alder": "mottaker_alder", "befolkningsantall": "befolkning"}),
     on="mottaker_alder",
     how="outer",
 ).fillna(0)
-# df_ufore = df_ufore[df_ufore["mottaker_alder"] <= 67]
-df_ufore["Alle uføretrygd"] = df_ufore["Uføretrygd"] + df_ufore["Uføretrygd + alderspensjon"]
-df_ufore["prosent uføre"] = ((df_ufore["Alle uføretrygd"] / df_ufore["befolkning"]) * 100).round(0).fillna(0).astype(int)
+df_ufore["prosent uføre"] = ((df_ufore["Uføretrygd (alle)"] / df_ufore["befolkning"]) * 100).round(0).fillna(0).astype(int)
 
 colors = {
-    "Uføretrygd": "#65CF6A",
+    "Kun uføretrygd": "#65CF6A",
     "Uføretrygd + alderspensjon": "#B7B655",
     "Gjenlevendeytelse": "#468700",
-    "Alderspensjon": "#65CFE8",
+    "Kun alderspensjon": "#65CFE8",
     "AFP": "#FA766C",
-    "Alderspensjon + AFP Privat": "#C99CDB",
+    "AFP Privat + Alderspensjon": "#C99CDB",
     "befolkning": "#9FABA2",
 }
 
@@ -73,10 +91,10 @@ colors = {
 ```{python}
 #| include: false
 fig_ytelser = go.Figure()
-# plot first an invisible line with antall_pesys
+# plot first an invisible line with Alle ytelser i Pesys
 fig_ytelser.add_trace(go.Scatter(
     x=df_pesys["mottaker_alder"],
-    y=df_pesys["antall_pesys"],
+    y=df_pesys["Alle ytelser i Pesys"],
     name="Sum Pesys-ytelser",
     opacity=0.0,
     showlegend=False,
@@ -84,7 +102,7 @@ fig_ytelser.add_trace(go.Scatter(
     hovertemplate=f"<br>Årskull: %{{customdata}}<br>Sum Pesys-ytelser: %{{y:}}<extra></extra>",
 ))
 
-ytelser = ["Uføretrygd", "Uføretrygd + alderspensjon", "Gjenlevendeytelse", "Alderspensjon", "Alderspensjon + AFP Privat", "AFP"]
+ytelser = ["Kun uføretrygd", "Uføretrygd + alderspensjon", "Gjenlevendeytelse", "Kun alderspensjon", "AFP Privat + Alderspensjon", "AFP"]
 for ytelse in ytelser:
     fig_ytelser.add_trace(go.Bar(
         x=df_pesys["mottaker_alder"],
@@ -103,6 +121,7 @@ fig_ytelser.add_trace(go.Scatter(
     hovertemplate="SSB befolkning: %{y:}<extra></extra>",
 ))
 fig_ytelser.update_layout(
+    template="plotly_dark",
     barmode='stack',
     bargap=0.1,
     title="Vedtak om ytelser per januar 2025 og befolkningen (interne tall)",
@@ -125,15 +144,15 @@ fig_ufore = go.Figure()
 #     hovertemplate="%{x} år<br>Årskull: %{customdata}<br>SSB befolkning: %{y:}<extra></extra>",
 #     marker_color=colors["befolkning"],
 # ))
-# invisible line with Alle uføretrygd
+# invisible line with Uføretrygd (alle)
 fig_ufore.add_trace(go.Scatter(
     x=df_ufore["mottaker_alder"],
-    y=df_ufore["Alle uføretrygd"],
+    y=df_ufore["Uføretrygd (alle)"],
     name="Sum uføretrygd",
     opacity=0.0,
     showlegend=False,
-    customdata=df_ufore[["prosent uføre", "Alle uføretrygd"]],
-    hovertemplate=f"<br>Alle uføretrygd: %{{y:}}<br>Prosent uføre av %{{x}}-åringer: %{{customdata[0]}} %<extra></extra>",
+    customdata=df_ufore[["prosent uføre", "Uføretrygd (alle)"]],
+    hovertemplate=f"<br>Uføretrygd (alle): %{{y:}}<br>Prosent uføre av %{{x}}-åringer: %{{customdata[0]}} %<extra></extra>",
 ))
 fig_ufore.add_trace(go.Scatter(
     x=df_ufore["mottaker_alder"],
@@ -146,10 +165,10 @@ fig_ufore.add_trace(go.Scatter(
 ))
 fig_ufore.add_trace(go.Bar(
     x=df_ufore["mottaker_alder"],
-    y=df_ufore["Uføretrygd"],
+    y=df_ufore["Kun uføretrygd"],
     name="Uføre",
     hovertemplate=f"Uføre: %{{y:}}<extra></extra>",
-    marker_color=colors["Uføretrygd"],
+    marker_color=colors["Kun uføretrygd"],
 ))
 fig_ufore.add_trace(go.Bar(
     x=df_ufore["mottaker_alder"],
@@ -159,6 +178,7 @@ fig_ufore.add_trace(go.Bar(
     marker_color=colors["Uføretrygd + alderspensjon"],
 ))
 fig_ufore.update_layout(
+    template="plotly_dark",
     title="Antall med vedtak om uføretrygd januar 2025, per alder (interne tall)",
     xaxis_title="Alder",
     yaxis_title="Antall",
@@ -194,7 +214,7 @@ Antallet som mottar ytelser fra Pesys er i noen tilfeller høyere enn befolkning
 #| content: valuebox
 #| icon: backpack3-fill
 #| color: primary
-f"{df_pesys['antall_pesys'].sum():,.0f}".replace(',', ' ')
+f"{df_pesys['Alle ytelser i Pesys'].sum():,.0f}".replace(',', ' ')
 ```
 ### col
 
@@ -213,7 +233,7 @@ f"{df_befolkning[df_befolkning["alder"] > 18]["befolkningsantall"].sum():,.0f}".
 #| content: valuebox
 #| icon: people
 #| color: secondary
-f"{100 * (df_pesys['antall_pesys'].sum()/df_befolkning[df_befolkning["alder"] > 18]["befolkningsantall"].sum()):,.0f} %".replace(',', ' ')
+f"{100 * (df_pesys['Alle ytelser i Pesys'].sum()/df_befolkning[df_befolkning["alder"] > 18]["befolkningsantall"].sum()):,.0f} %".replace(',', ' ')
 ```
 
 ## rad 3 plott
@@ -242,7 +262,7 @@ Befolkningstall er fra SSB.
 #| content: valuebox
 #| icon: people
 #| color: primary
-f"{df_ufore['Alle uføretrygd'].sum():,.0f}".replace(',', ' ')
+f"{df_ufore['Uføretrygd (alle)'].sum():,.0f}".replace(',', ' ')
 ```
 ### col
 ```{python}
@@ -258,7 +278,7 @@ f"{df_ufore['Uføretrygd + alderspensjon'].sum():,.0f}".replace(',', ' ')
 #| content: valuebox
 #| icon: pie-chart-fill
 #| color: secondary
-f"{round((df_ufore[df_ufore["mottaker_alder"].between(18, 67)]["Alle uføretrygd"].sum() / df_ufore[df_ufore["mottaker_alder"].between(18, 66)]["befolkning"].sum())* 100, 1):,.1f} %".replace('.', ',')
+f"{round((df_ufore[df_ufore["mottaker_alder"].between(18, 67)]["Uføretrygd (alle)"].sum() / df_ufore[df_ufore["mottaker_alder"].between(18, 66)]["befolkning"].sum())* 100, 1):,.1f} %".replace('.', ',')
 ```
 ### col
 ```{python}
@@ -266,7 +286,7 @@ f"{round((df_ufore[df_ufore["mottaker_alder"].between(18, 67)]["Alle uføretrygd
 #| content: valuebox
 #| icon: pie-chart-fill
 #| color: primary
-f"{round((df_ufore["Alle uføretrygd"].sum() / df_ufore["befolkning"].sum())* 100, 1):,.1f} %".replace('.', ',')
+f"{round((df_ufore["Uføretrygd (alle)"].sum() / df_ufore["befolkning"].sum())* 100, 1):,.1f} %".replace('.', ',')
 ```
 
 ## rad 2 - plott
@@ -289,7 +309,7 @@ Befolkningstall er fra SSB.
 
 ## rad 2 - tall {height=25%}
 ```{python}
-alle_alderspensjonister = df_pesys['Alderspensjon'].sum() + df_pesys['AFP'].sum() + df_pesys['Alderspensjon + AFP Privat'].sum()
+alle_alderspensjonister = df_pesys['Kun alderspensjon'].sum() + df_pesys['AFP'].sum() + df_pesys['AFP Privat + Alderspensjon'].sum()
 ```
 
 ### col
@@ -306,7 +326,7 @@ f"{alle_alderspensjonister:,.0f}".replace(',', ' ')
 #| content: valuebox
 #| icon: balloon
 #| color: primary
-f"{df_pesys['Alderspensjon + AFP Privat'].sum():,.0f}".replace(',', ' ')
+f"{df_pesys['AFP Privat + Alderspensjon'].sum():,.0f}".replace(',', ' ')
 ```
 ### colß
 ```{python}
@@ -322,11 +342,11 @@ f"{df_pesys['AFP'].sum():,.0f}".replace(',', ' ')
 #| include: false
 fig_alderspensjon = go.Figure(fig_ytelser)
 fig_alderspensjon.update_xaxes(range=[61.5, 105])
-# # hide trace "Uføretrygd"
+# # hide trace "Kun uføretrygd"
 # fig_alderspensjon.data[1].visible = False
 fig_alderspensjon.data[1].visible = "legendonly"
 fig_alderspensjon.data[3].visible = "legendonly"
-fig_alderspensjon.update_layout(title="Alderspensjon og AFP per januar 2025 (interne tall)")
+fig_alderspensjon.update_layout(title="Alderspensjon og AFP per januar 2025 (interne tall)", template="plotly_dark",)
 ```
 
 
@@ -334,3 +354,4 @@ fig_alderspensjon.update_layout(title="Alderspensjon og AFP per januar 2025 (int
 fig_alderspensjon.show()
 ```
 
+<!-- Todo: legge til Ytelsekombinasjoner, show(df_alle_kombinasjoner) -->

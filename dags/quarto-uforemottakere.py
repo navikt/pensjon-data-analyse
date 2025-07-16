@@ -30,6 +30,7 @@ with DAG(
         allowlist=["secretmanager.googleapis.com", "dmv09-scan.adeo.no:1521"],  # DVHP
         # slack_channel="#pensak-airflow-alerts",
         extra_envs={"RUNNING_IN_AIRFLOW": "true"},
+        python_version="3.12",
     )
 
     update_quarto

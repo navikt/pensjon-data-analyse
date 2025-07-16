@@ -39,6 +39,7 @@ def python_operator_wrapped(
             "dm08db03-vip.adeo.no:1521",  # prod lesekopien
         ],
         resources=resources,
+        python_version="3.12",
     )
 
 

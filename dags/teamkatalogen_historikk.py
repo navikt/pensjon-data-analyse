@@ -24,6 +24,7 @@ with DAG(
         script_path="dbt/dbt_run_airflow.py",
         allowlist=["bigquery.googleapis.com"],
         slack_channel="#pensak-airflow-alerts",
+        python_version="3.12",
     )
 
     dbt_snapshot  # dbt snapshot og dbt run kjøres av `dbt_run_airflow.py`-scriptet

@@ -1,6 +1,7 @@
 import logging
 from lib import pesys_utils
 from google.cloud.bigquery import Client, LoadJobConfig
+from google.auth import impersonated_credentials, default
 
 # ytelser_antall_kombinasjoner.sql
 # ytelser_per_alderskull.sql
@@ -24,7 +25,14 @@ con.close()
 
 
 # bigquery
-client = Client(project="wendelboe-prod-801c")
+default_creds, _ = default()
+target_credentials = impersonated_credentials.Credentials(
+    source_credentials=default_creds,
+    target_principal="bq-airflow@wendelboe-prod-801c.iam.gserviceaccount.com",
+    target_scopes=["https://www.googleapis.com/auth/cloud-platform"],
+)
+
+client = Client(project="wendelboe-prod-801c", credentials=target_credentials)
 job_config = LoadJobConfig(
     write_disposition="WRITE_TRUNCATE",
     create_disposition="CREATE_IF_NEEDED",
@@ -41,9 +49,7 @@ job1 = client.load_table_from_dataframe(
     job_config=job_config,
 )
 job1.result()
-logging.info(
-    f"{len(df_ytelser_antall_kombinasjoner)} rader lastet opp til {bq_ytelser_antall_kombinasjoner}."
-)
+logging.info(f"{len(df_ytelser_antall_kombinasjoner)} rader lastet opp til {bq_ytelser_antall_kombinasjoner}.")
 
 job2 = client.load_table_from_dataframe(
     df_ytelser_per_alderskull,
@@ -51,8 +57,6 @@ job2 = client.load_table_from_dataframe(
     job_config=job_config,
 )
 job2.result()
-logging.info(
-    f"{len(df_ytelser_per_alderskull)} rader lastet opp til {bq_ytelser_per_alderskull}."
-)
+logging.info(f"{len(df_ytelser_per_alderskull)} rader lastet opp til {bq_ytelser_per_alderskull}.")
 
 logging.info("Ferdig med datalasting til BigQuery")

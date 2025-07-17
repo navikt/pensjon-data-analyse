@@ -49,7 +49,7 @@ def quarto_operator_wrapped(
 with DAG(
     dag_id="quarto_inforskjermer",
     description="Oppdatere quarto datafortellinger for infoskjermer",
-    schedule_interval=None,
+    schedule_interval="0 6 * * 1",  # 06:00 hver mandag
     start_date=datetime(2025, 6, 14, tzinfo=timezone("Europe/Oslo")),
     doc_md="Oppdarer quarto datafortellinger for infoskjermer",
 ) as dag:

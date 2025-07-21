@@ -61,8 +61,6 @@ job = client.load_table_from_dataframe(df_kravstatus, table_id, job_config=job_c
 job.result()
 print(f"Table {table_id} successfully updated")
 
-job2 = client.load_table_from_dataframe(
-    df_kravstatus_med_kravarsak, table_id_med_kravarsak, job_config=job2_config
-)
+job2 = client.load_table_from_dataframe(df_kravstatus_med_kravarsak, table_id_med_kravarsak, job_config=job2_config)
 job2.result()
 print(f"Table {table_id_med_kravarsak} successfully updated")

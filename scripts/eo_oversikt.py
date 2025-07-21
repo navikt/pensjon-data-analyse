@@ -47,9 +47,7 @@ bq_eo_varselbrev_sluttresultat = f"{bq_datasett}.eo_varselbrev_sluttresultat"
 run_job = client.load_table_from_dataframe(df_eo_oversikt, bq_eo_oversikt, job_config=job_config)
 run_job.result()
 
-run_job2 = client.load_table_from_dataframe(
-    df_eo_oversikt_per_dag, bq_eo_oversikt_per_dag, job_config=job_config
-)
+run_job2 = client.load_table_from_dataframe(df_eo_oversikt_per_dag, bq_eo_oversikt_per_dag, job_config=job_config)
 run_job2.result()
 
 run_job3 = client.load_table_from_dataframe(

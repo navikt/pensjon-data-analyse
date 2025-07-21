@@ -87,7 +87,7 @@ def pandas_from_sql(sqlfile, con, tuning=None, lowercase=False):
             cursor.execute(sql.read())
         df = pd.DataFrame(cursor.fetchall())
         end = time()
-        logging.info(f"{len(df)} rader ble returnert etter {end-start} sekunder.")
+        logging.info(f"{len(df)} rader ble returnert etter {end - start} sekunder.")
         if len(df) > 0:
             if lowercase:
                 df.columns = [x[0].lower() for x in cursor.description]

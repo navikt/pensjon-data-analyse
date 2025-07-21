@@ -43,10 +43,9 @@ def overwrite_vedtak(N, years):
         cursor.arraysize = tuning
 
         for i in range(1, N):
-
             start = time()
 
-            print(f"Henter vedtaksdata fra perioden {years[i]}-{years[i-1]}.")
+            print(f"Henter vedtaksdata fra perioden {years[i]}-{years[i - 1]}.")
 
             cursor.execute(query.replace("x_year", years[i]).replace("y_year", years[i - 1]))
 
@@ -55,7 +54,7 @@ def overwrite_vedtak(N, years):
             end = time()
 
             print(
-                f"{len(df_one_year)} rad(er) ble returnert etter {end-start} sekunder for perioden {years[i]}-{years[i-1]}."
+                f"{len(df_one_year)} rad(er) ble returnert etter {end - start} sekunder for perioden {years[i]}-{years[i - 1]}."
             )
 
             start = time()
@@ -66,9 +65,7 @@ def overwrite_vedtak(N, years):
                 continue
 
             df_one_year["dato_virk_fom"] = df_one_year["dato_virk_fom"].dt.floor("D")
-            df_one_year["tertial"] = df_one_year.dato_virk_fom.apply(
-                lambda date: date_to_tertial(date)
-            )
+            df_one_year["tertial"] = df_one_year.dato_virk_fom.apply(lambda date: date_to_tertial(date))
 
             job = client.load_table_from_dataframe(df_one_year, table_id, job_config=job_config)
             job.result()
@@ -76,7 +73,7 @@ def overwrite_vedtak(N, years):
             end = time()
 
             print(
-                f"{len(df_one_year)} rad(er) ble skrevet til bigquery etter {end-start} sekunder for perioden {years[i]}-{years[i-1]}."
+                f"{len(df_one_year)} rad(er) ble skrevet til bigquery etter {end - start} sekunder for perioden {years[i]}-{years[i - 1]}."
             )
 
             job_config = LoadJobConfig(
@@ -106,10 +103,9 @@ def overwrite_krav(N, years):
         cursor.arraysize = tuning
 
         for i in range(1, N):
-
             start = time()
 
-            print(f"Henter kravdata fra perioden {years[i]}-{years[i-1]}.")
+            print(f"Henter kravdata fra perioden {years[i]}-{years[i - 1]}.")
 
             cursor.execute(query.replace("x_year", years[i]).replace("y_year", years[i - 1]))
 
@@ -118,7 +114,7 @@ def overwrite_krav(N, years):
             end = time()
 
             print(
-                f"{len(df_one_year)} rad(er) ble returnert etter {end-start} sekunder for perioden {years[i]}-{years[i-1]}."
+                f"{len(df_one_year)} rad(er) ble returnert etter {end - start} sekunder for perioden {years[i]}-{years[i - 1]}."
             )
 
             if len(df_one_year) > 0:
@@ -127,9 +123,7 @@ def overwrite_krav(N, years):
                 continue
 
             df_one_year["dato_opprettet"] = df_one_year["dato_opprettet"].dt.floor("D")
-            df_one_year["tertial"] = df_one_year.dato_opprettet.apply(
-                lambda date: date_to_tertial(date)
-            )
+            df_one_year["tertial"] = df_one_year.dato_opprettet.apply(lambda date: date_to_tertial(date))
 
             job = client.load_table_from_dataframe(df_one_year, table_id, job_config=job_config)
             job.result()

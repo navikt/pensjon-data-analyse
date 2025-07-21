@@ -71,9 +71,7 @@ with DAG(
         dag=dag,
         name="kontrollpunkt",
         script_path="scripts/dataproduct_kontrollpunkt.py",
-        resources=k8s.V1ResourceRequirements(
-            requests={"memory": "2Gi", "cpu": "0.5", "ephemeral-storage": "1Gi"}
-        ),
+        resources=k8s.V1ResourceRequirements(requests={"memory": "2Gi", "cpu": "0.5", "ephemeral-storage": "1Gi"}),
     )
 
     inntektsendring_og_autobrev

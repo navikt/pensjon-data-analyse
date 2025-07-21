@@ -17,7 +17,6 @@ with DAG(
     start_date=datetime(2025, 6, 5, tzinfo=timezone("Europe/Oslo")),
     catchup=False,
 ) as dag:
-
     oracle_til_bigquery = python_operator(
         dag=dag,
         name="oracle_til_bigquery",

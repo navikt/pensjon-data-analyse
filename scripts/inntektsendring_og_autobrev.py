@@ -51,7 +51,5 @@ bq_datasett = "pensjon-saksbehandli-prod-1f83.brev"
 bq_inntektsendring = f"{bq_datasett}.autobrev_inntektsendring"
 
 
-run_job = client.load_table_from_dataframe(
-    df_inntektsendring, bq_inntektsendring, job_config=job_config
-)
+run_job = client.load_table_from_dataframe(df_inntektsendring, bq_inntektsendring, job_config=job_config)
 run_job.result()

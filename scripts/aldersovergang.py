@@ -35,7 +35,5 @@ job1 = client.load_table_from_dataframe(
 )
 job1.result()
 
-job2 = client.load_table_from_dataframe(
-    df_aldersovergang_brev, bq_aldersovergang_brev, job_config=job_config
-)
+job2 = client.load_table_from_dataframe(df_aldersovergang_brev, bq_aldersovergang_brev, job_config=job_config)
 job2.result()

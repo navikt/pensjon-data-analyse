@@ -23,13 +23,9 @@ import pandas as pd
 
 df_forstegangsvedtak = pd.read_csv("../data/forstegangsvedtak.csv", sep=";")
 
-df_forstegangsvedtak.loc[df_forstegangsvedtak["vedtakstype"] == "FORGANG", "vedtakstype"] = (
-    "Førstegang"
-)
+df_forstegangsvedtak.loc[df_forstegangsvedtak["vedtakstype"] == "FORGANG", "vedtakstype"] = "Førstegang"
 df_forstegangsvedtak.loc[df_forstegangsvedtak["vedtakstype"] == "AVSL", "vedtakstype"] = "Avslag"
-df_forstegangsvedtak = df_forstegangsvedtak.sort_values(
-    by=["armaned", "vedtakstype"], ascending=[False, False]
-)
+df_forstegangsvedtak = df_forstegangsvedtak.sort_values(by=["armaned", "vedtakstype"], ascending=[False, False])
 df_forstegangsvedtak["ar"] = df_forstegangsvedtak["ar"].astype(int)
 
 df_alle_vedtak = pd.read_csv("../data/alle_vedtak.csv", sep=";")
@@ -72,12 +68,8 @@ bq_target_forstegangsvedtak = f"{bq_datasett}.vedtak"
 bq_target_alle_vedtak = f"{bq_datasett}.alle_vedtak"
 
 
-run_job = client.load_table_from_dataframe(
-    df_forstegangsvedtak, bq_target_forstegangsvedtak, job_config=job_config
-)
+run_job = client.load_table_from_dataframe(df_forstegangsvedtak, bq_target_forstegangsvedtak, job_config=job_config)
 run_job.result()
 
-run_job2 = client.load_table_from_dataframe(
-    df_alle_vedtak, bq_target_alle_vedtak, job_config=job_config
-)
+run_job2 = client.load_table_from_dataframe(df_alle_vedtak, bq_target_alle_vedtak, job_config=job_config)
 run_job2.result()

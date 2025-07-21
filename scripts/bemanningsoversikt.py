@@ -124,7 +124,7 @@ pensjon_teams as (
         rolle,
         rolle2
     from (
-        { ' UNION ALL '.join([f"SELECT '{row.nav_id}' AS nav_id, '{row.team}' AS team, '{row.po_navn}' AS po_navn, '{row.rolle}' AS rolle, '{row.rolle2}' AS rolle2 from dual" for row in df_pensjon_teams.itertuples(index=False)]) }
+        {" UNION ALL ".join([f"SELECT '{row.nav_id}' AS nav_id, '{row.team}' AS team, '{row.po_navn}' AS po_navn, '{row.rolle}' AS rolle, '{row.rolle2}' AS rolle2 from dual" for row in df_pensjon_teams.itertuples(index=False)])}
     )
 ),
 
@@ -206,7 +206,7 @@ alle_po as (
         po_navn,
         rolle
     from (
-        { ' UNION ALL '.join([f"SELECT '{row.nav_id}' AS nav_id, '{row.po_navn}' AS po_navn, '{row.rolle}' AS rolle from dual" for row in df_alle_po.itertuples(index=False)]) }
+        {" UNION ALL ".join([f"SELECT '{row.nav_id}' AS nav_id, '{row.po_navn}' AS po_navn, '{row.rolle}' AS rolle from dual" for row in df_alle_po.itertuples(index=False)])}
     )
 ),
 

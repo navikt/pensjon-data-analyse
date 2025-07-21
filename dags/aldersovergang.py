@@ -6,9 +6,7 @@ from images import get_image_name
 WENDELBOE_IMAGE = get_image_name("wendelboe")
 
 
-with DAG(
-    "aldersovergang", start_date=days_ago(1), schedule_interval="0 1 2-8 * 2", catchup=False
-) as dag:
+with DAG("aldersovergang", start_date=days_ago(1), schedule_interval="0 1 2-8 * 2", catchup=False) as dag:
     t1 = python_operator(
         dag=dag,
         name="dataproduct-aldersovergang",

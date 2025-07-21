@@ -27,4 +27,4 @@ job = client.load_table_from_dataframe(df_kontrollpunkt, table_id, job_config=jo
 job.result()
 end = time()
 
-print(f"{len(df_kontrollpunkt)} rad(er) ble skrevet til bigquery etter {end-start} sekunder.")
+print(f"{len(df_kontrollpunkt)} rad(er) ble skrevet til bigquery etter {end - start} sekunder.")

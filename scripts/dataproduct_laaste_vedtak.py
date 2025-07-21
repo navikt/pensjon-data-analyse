@@ -4,6 +4,9 @@ from google.cloud.bigquery import Client, LoadJobConfig
 
 from lib import pesys_utils
 
+full_table_id = "pensjon-saksbehandli-prod-1f83.vedtak.laast_data_handling"
+# Metabase, se https://metabase.ansatt.nav.no/reference/databases/370/tables/3462/questions
+
 
 logging.basicConfig(level=logging.INFO)
 pesys_utils.set_db_secrets(secret_name="pen-prod-lesekopien-pen_airflow")
@@ -18,7 +21,6 @@ df_bq = pesys_utils.pandas_from_sql(
 )
 con.close()
 
-full_table_id = "pensjon-saksbehandli-prod-1f83.vedtak.laast_data_handling"
 client = Client(project="pensjon-saksbehandli-prod-1f83")
 job_config = LoadJobConfig(write_disposition="WRITE_TRUNCATE")
 

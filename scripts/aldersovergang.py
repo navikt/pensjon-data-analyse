@@ -5,6 +5,10 @@ from lib import pesys_utils
 
 logging.basicConfig(level=logging.INFO)
 
+bq_aldersovergang_behandle_bruker = "pensjon-saksbehandli-prod-1f83.aldersovergang.aldersovergang_behandle_bruker"
+bq_aldersovergang_brev = "pensjon-saksbehandli-prod-1f83.aldersovergang.aldersovergang_brev"
+# Metabase for team Alder, se https://metabase.ansatt.nav.no/dashboard/665-aldersovergang-dashbord
+
 # oracle PEN
 tuning = 10000
 pesys_utils.set_db_secrets(secret_name="pen-prod-lesekopien-pen_dataprodukt")
@@ -25,9 +29,6 @@ job_config = LoadJobConfig(
     create_disposition="CREATE_IF_NEEDED",
 )
 
-bq_datasett = "pensjon-saksbehandli-prod-1f83.aldersovergang"
-bq_aldersovergang_behandle_bruker = f"{bq_datasett}.aldersovergang_behandle_bruker"
-bq_aldersovergang_brev = f"{bq_datasett}.aldersovergang_brev"
 
 
 job1 = client.load_table_from_dataframe(

@@ -4,6 +4,9 @@ from google.cloud.bigquery import Client, LoadJobConfig
 
 from lib import pesys_utils
 
+table_id = "pensjon-saksbehandli-prod-1f83.kontrollpunkt.kontrollpunkt_daglig"
+# Metabase, se https://metabase.ansatt.nav.no/reference/databases/353/tables/3320/questions
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -19,7 +22,6 @@ df_kontrollpunkt = pesys_utils.pandas_from_sql(
 con.close()
 
 client = Client(project="pensjon-saksbehandli-prod-1f83")
-table_id = "pensjon-saksbehandli-prod-1f83.kontrollpunkt.kontrollpunkt_daglig"
 job_config = LoadJobConfig(write_disposition="WRITE_TRUNCATE")
 
 start = time()

@@ -3,6 +3,9 @@ from lib import pesys_utils
 from google.cloud.bigquery import Client, LoadJobConfig
 from google.auth import impersonated_credentials, default
 
+bq_ytelser_antall_kombinasjoner = "wendelboe-prod-801c.infoskjerm.ytelser_antall_kombinasjoner"
+bq_ytelser_per_alderskull = "wendelboe-prod-801c.infoskjerm.ytelser_per_alderskull"
+# Blir brukt direkte fra BiqQuery til infoskjerm-i-A6-plott.qmd
 # ytelser_antall_kombinasjoner.sql
 # ytelser_per_alderskull.sql
 
@@ -37,10 +40,6 @@ job_config = LoadJobConfig(
     write_disposition="WRITE_TRUNCATE",
     create_disposition="CREATE_IF_NEEDED",
 )
-
-bq_datasett = "wendelboe-prod-801c.infoskjerm"
-bq_ytelser_antall_kombinasjoner = f"{bq_datasett}.ytelser_antall_kombinasjoner"
-bq_ytelser_per_alderskull = f"{bq_datasett}.ytelser_per_alderskull"
 
 
 job1 = client.load_table_from_dataframe(

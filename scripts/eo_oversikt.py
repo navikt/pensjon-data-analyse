@@ -2,9 +2,10 @@ import logging
 from google.cloud.bigquery import Client, LoadJobConfig
 from lib import pesys_utils
 
-# eo_oversikt.sql
-# eo_oversikt_per_dag.sql
-# eo_varselbrev_sluttresultat.sql
+# Metabase, se https://metabase.ansatt.nav.no/dashboard/737-etteroppgjoret?tab=468-tidslinje
+bq_eo_oversikt = "pensjon-saksbehandli-prod-1f83.etteroppgjoret.eo_oversikt"
+bq_eo_oversikt_per_dag = "pensjon-saksbehandli-prod-1f83.etteroppgjoret.eo_oversikt_per_dag"
+bq_eo_varselbrev_sluttresultat = "pensjon-saksbehandli-prod-1f83.etteroppgjoret.eo_varselbrev_sluttresultat"
 
 logging.basicConfig(level=logging.INFO)
 
@@ -39,10 +40,6 @@ job_config = LoadJobConfig(
     write_disposition="WRITE_TRUNCATE",
     create_disposition="CREATE_IF_NEEDED",
 )
-bq_datasett = "pensjon-saksbehandli-prod-1f83.etteroppgjoret"
-bq_eo_oversikt = f"{bq_datasett}.eo_oversikt"
-bq_eo_oversikt_per_dag = f"{bq_datasett}.eo_oversikt_per_dag"
-bq_eo_varselbrev_sluttresultat = f"{bq_datasett}.eo_varselbrev_sluttresultat"
 
 run_job = client.load_table_from_dataframe(df_eo_oversikt, bq_eo_oversikt, job_config=job_config)
 run_job.result()

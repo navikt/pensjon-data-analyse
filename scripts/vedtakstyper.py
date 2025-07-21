@@ -5,6 +5,11 @@ from lib import pesys_utils
 
 logging.basicConfig(level=logging.INFO)
 
+bq_target = "pensjon-saksbehandli-prod-1f83.vedtak.vedtakstyper"
+# Metabase, se https://metabase.ansatt.nav.no/reference/databases/1416/tables/22180/questions
+# Datamarkedsplassen / Krav og vedtak i Pesys / Månedlig antall uførevedtak
+
+
 # oracle
 pesys_utils.set_db_secrets(secret_name="pen-prod-lesekopien-pen_dataprodukt")
 tuning = 10000
@@ -22,12 +27,10 @@ df_vedtakstyper["ar"] = df_vedtakstyper["ar"].astype(int)
 
 
 # bigquery
-bq_prosjekt = "pensjon-saksbehandli-prod-1f83"
-client = Client(project=bq_prosjekt)
+client = Client(project="pensjon-saksbehandli-prod-1f83")
 job_config = LoadJobConfig(
     write_disposition="WRITE_TRUNCATE",
     create_disposition="CREATE_IF_NEEDED",
 )
-bq_target = f"{bq_prosjekt}.vedtak.vedtakstyper"
 run_job = client.load_table_from_dataframe(df_vedtakstyper, bq_target, job_config=job_config)
 run_job.result()

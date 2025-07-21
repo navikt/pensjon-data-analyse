@@ -7,6 +7,11 @@ from lib import pesys_utils
 # OBS! Dette kjøres som en append i BQ, så ved dobbeltkjøring vil det bli duplikater
 # Det betyr også at endring på tabellen vil fjerne historikk
 
+table_id = "pensjon-saksbehandli-prod-1f83.saksstatistikk.kravstatus"
+table_id_med_kravarsak = "pensjon-saksbehandli-prod-1f83.saksstatistikk.kravstatus_med_kravarsak"
+# Metabase, se https://metabase.ansatt.nav.no/reference/databases/1394/tables/21738/questions
+# Metabase, se https://metabase.ansatt.nav.no/reference/databases/212/tables/1701/questions
+
 logging.basicConfig(level=logging.INFO)
 pesys_utils.set_db_secrets(secret_name="pen-prod-lesekopien-pen_dataprodukt")
 
@@ -30,8 +35,6 @@ df_kravstatus["dato"] = datetime.now()
 df_kravstatus_med_kravarsak.columns = map(str.lower, df_kravstatus_med_kravarsak.columns)
 df_kravstatus_med_kravarsak["dato"] = datetime.now()
 
-table_id = f"pensjon-saksbehandli-prod-1f83.saksstatistikk.kravstatus"
-table_id_med_kravarsak = f"pensjon-saksbehandli-prod-1f83.saksstatistikk.kravstatus_med_kravarsak"
 job_config = LoadJobConfig(
     schema=[
         SchemaField("sakstype", enums.SqlTypeNames.STRING),

@@ -1,3 +1,6 @@
+-- kontrollpunkt.py (Metabase)
+-- pensjon-saksbehandli-prod-1f83.kontrollpunkt.kontrollpunkt_daglig
+
 select
     trunc(kp.dato_opprettet) as dato,
     dkh.dekode as kravtype,

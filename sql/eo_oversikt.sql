@@ -1,3 +1,6 @@
+-- o_oversikt.py (Metabase)
+-- pensjon-saksbehandli-prod-1f83.etteroppgjoret.eo_oversikt
+
 -- gir en oversikt over utfall og hendelser for EO årlig
 -- dataprodukt som blir visualisert i Metabase
 select

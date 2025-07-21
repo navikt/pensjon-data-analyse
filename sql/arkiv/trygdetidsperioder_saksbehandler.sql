@@ -1,3 +1,5 @@
+-- trydgetid_utland.qmd (arkivert datafortelling)
+
 SELECT
     count(*) as antall_grunnlag,
     count(distinct person_id) as antall_personer,

@@ -1,3 +1,6 @@
+-- kravstatus.py (Metabase)
+-- pensjon-saksbehandli-prod-1f83.saksstatistikk.kravstatus
+
 select
     dim_sak_t.dekode sakstype,
     dim_krav_gjelder.dekode kravtype,

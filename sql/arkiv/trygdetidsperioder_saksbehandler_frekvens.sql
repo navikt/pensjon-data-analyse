@@ -1,3 +1,5 @@
+-- trydgetid_utland.qmd (arkivert datafortelling)
+
 with a as (
     SELECT
         count(*) as antall_grunnlag,

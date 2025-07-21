@@ -1,3 +1,6 @@
+-- eo_oversikt.py (Metabase)
+-- pensjon-saksbehandli-prod-1f83.etteroppgjoret.eo_oversikt_per_dag
+
 -- gir også oversikt over EO som eo_oversikt, men med dato_endret
 -- gir altså mulighet til å se batch-kjøringene og saksbehandlingene per dag
 select

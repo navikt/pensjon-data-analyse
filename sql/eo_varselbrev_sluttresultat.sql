@@ -1,3 +1,6 @@
+-- eo_oversikt.py (Metabase)
+-- pensjon-saksbehandli-prod-1f83.etteroppgjoret.eo_varselbrev_sluttresultat
+
 -- ser på de som får 4-ukers varselbrev om tilbakekreving
 
 with

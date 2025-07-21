@@ -1,6 +1,10 @@
+-- infoskjerm_ytelser.py, og så fra BQ til infoskjerm-i-A6-plott.qmd
+-- wendelboe-prod-801c.infoskjerm.ytelser_per_alderskull
+
 -- henter status nå på ytelser i PESYS per aldersgruppe
 -- skjuler de små ytelsene. Skiller også på de som bor i Norge og i utlandet
 -- noen personer har kombinasjon av ytelser, feks alder og uføre
+
 with
 
 ytelse_per_person_med_alder as (

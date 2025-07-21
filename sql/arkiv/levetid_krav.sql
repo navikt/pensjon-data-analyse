@@ -1,3 +1,6 @@
+-- glemte_krav.qmd (arkivert datafortelling)
+-- oversikt over krav og vedtak som har blitt "låst opp" ved å endre status eller behandlingstype
+
 select dim_sak_t.dekode sakstype, 
 case
     when v.k_vedtak_t = 'REGULERING' then 'Regulering'

@@ -1,1 +1,0 @@
-Dette er en samling av sql-spørringer som brukes eller har blitt brukt til innsikt i pensjonsområdet. Ikke alle er av like god kvalitet, så det anbefales å ikke stole blindt på at de gir deg det svaret du er ute etter.

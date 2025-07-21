@@ -1,3 +1,6 @@
+-- aldersovergang.py (Metabase for team Alder)
+-- pensjon-saksbehandli-prod-1f83.aldersovergang.aldersovergang_brev
+
 select
     opp.behandlingsmaned as behandlingsmaned,
     brev.kategori_kode as kategori_kode,

@@ -1,3 +1,5 @@
+-- brukt som engangsanalyse med export til Excel våren 2025
+-- ga innsikt i kombinasjoner av vilkår for førstegangsvurderinger for brevarbeid
 
 select
     ar_vedtak as ar,

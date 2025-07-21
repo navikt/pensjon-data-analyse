@@ -1,3 +1,6 @@
+-- aldersovergang.py (Metabase for team Alder)
+-- pensjon-saksbehandli-prod-1f83.aldersovergang.aldersovergang_behandle_bruker
+
 select
     opp.behandlingsmaned as behandlingsmaned,
     beh.hovedytelse as hovedytelse,

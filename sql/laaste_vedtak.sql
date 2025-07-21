@@ -1,3 +1,8 @@
+-- dataproduct_laaste_vedtak.py
+-- pensjon-saksbehandli-prod-1f83.vedtak.laast_data_handling
+
+-- oversikt over krav og vedtak som har blitt "låst opp" ved å endre status eller behandlingstype
+
 select l.dato_opprettet, d_s.dekode as sakstype, d_k.dekode as kravtype, d_l.dekode as handling, le.elementtype, le.gammel_verdi, le.ny_verdi
 from pen.t_laast_data_logg l
 inner join pen.t_laast_data_logg_element le on le.laast_data_logg_id = l.laast_data_logg_id

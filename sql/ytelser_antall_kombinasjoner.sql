@@ -1,4 +1,8 @@
+-- infoskjerm_ytelser.py, og så fra BQ til infoskjerm-i-A6-plott.qmd
+-- wendelboe-prod-801c.infoskjerm.ytelser_antall_kombinasjoner
+
 -- viser antall kombinasjoner av ytelsene i Pesys ved kjøretidspunkt, og skjuler alle antall under 10
+
 select 
     count(*) as antall,
     afp,

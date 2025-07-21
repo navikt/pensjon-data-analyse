@@ -1,5 +1,4 @@
 # %%
-import pandas as pd
 import plotly.express as px
 from google.cloud.bigquery import Client
 

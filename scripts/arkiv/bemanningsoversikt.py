@@ -1,6 +1,4 @@
-import pandas as pd
 from google.cloud import bigquery
-
 
 # hent ut to tabeller fra BiqQuery:
 # 1. identer, team, område, rolle, rolle2, (kun PO pensjon)

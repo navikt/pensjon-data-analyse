@@ -1,3 +1,6 @@
+-- brukt i autobrev_inntektsendring.py (Metabase)
+-- pensjon-saksbehandli-prod-1f83.brev.autobrev_inntektsendring
+
 select
     extract(year from kh.dato_onsket_virk) as ar,
     extract(month from kh.dato_onsket_virk) as maned,

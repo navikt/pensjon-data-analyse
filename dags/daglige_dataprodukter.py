@@ -50,10 +50,10 @@ with DAG(
     start_date=datetime(2025, 3, 12, tzinfo=timezone("Europe/Oslo")),
     catchup=False,
 ) as dag:
-    inntektsendring_og_autobrev = python_operator_wrapped(
+    autobrev_inntektsendring = python_operator_wrapped(
         dag=dag,
-        name="inntektsendring_og_autobrev",
-        script_path="scripts/inntektsendring_og_autobrev.py",
+        name="autobrev_inntektsendring",
+        script_path="scripts/autobrev_inntektsendring.py",
     )
     laaste_vedtak = python_operator_wrapped(
         dag=dag,
@@ -81,7 +81,7 @@ with DAG(
     )
 
     vedtakstyper
-    inntektsendring_og_autobrev
+    autobrev_inntektsendring
     laaste_vedtak
     kravstatus
     kontrollpunkt

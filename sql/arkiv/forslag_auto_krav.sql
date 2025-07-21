@@ -1,3 +1,5 @@
+-- brukt i dataproduct_automatisering_v2.py (arkivert dataprodukt)
+
 select sakstype, behandler, selvbetjening, k_behandling_t as automatisering, kravtype, dato_opprettet, batch, bodd_arb_utl
 from (
 select

@@ -1,3 +1,5 @@
+-- brukt i dataproduct_automatisering_v2.py (arkivert dataprodukt)
+
 select sakstype, behandler, k_behandling_t as automatisering, kravtype, dato_virk_fom, batch
 --, bodd_Arb_utl
 --, count(1) antall

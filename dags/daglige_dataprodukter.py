@@ -74,6 +74,13 @@ with DAG(
         resources=k8s.V1ResourceRequirements(requests={"memory": "2Gi", "cpu": "0.5", "ephemeral-storage": "1Gi"}),
     )
 
+    vedtakstyper = python_operator_wrapped(
+        dag=dag,
+        name="vedtakstyper",
+        script_path="scripts/vedtakstyper.py",
+    )
+
+    vedtakstyper
     inntektsendring_og_autobrev
     laaste_vedtak
     kravstatus

@@ -37,7 +37,7 @@ pesys_utils.set_db_secrets(secret_name='pen-prod-lesekopien-pen_airflow')
 ```{python}
 def make_df():
     con = pesys_utils.connect_to_oracle()
-    df = pesys_utils.pandas_from_sql('../sql/afp_priv_res.sql', con, tuning=1000)
+    df = pesys_utils.pandas_from_sql('../sql/afp_privat_resultater.sql', con, tuning=1000)
     con.close()
 
     df.columns = map(str.lower, df.columns)

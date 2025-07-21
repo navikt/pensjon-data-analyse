@@ -27,6 +27,7 @@ dev = [
     "pendulum>=3.1.0",
     "pytest>=8.4.0",
     "ruff>=0.12.3",
+    "sqlfluff>=3.4.2",
 ]
 
 [tool.ruff]

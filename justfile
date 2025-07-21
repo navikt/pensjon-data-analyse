@@ -26,6 +26,7 @@ lint:
 format:
     @printf "Formaterer kode\n"
     @uv run ruff format .
+    @uv run sqlfluff fix sql --rules CV03 --dialect ansi  
 
 # Generer requirements.txt
 requirements:

@@ -29,7 +29,6 @@ from (
         p.person_id,
         floor(months_between(sysdate, p.dato_fodsel) / 12)
     )
-having count(*) > 9
 group by
     afp,
     alder,
@@ -38,4 +37,5 @@ group by
     gam_yrk,
     afp_privat,
     gjenlevende
+having count(*) > 9
 order by count(*)

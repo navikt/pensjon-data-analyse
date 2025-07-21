@@ -78,7 +78,7 @@ inner join pen.t_krav_arsak ka on ka.kravhode_id = kh.kravhode_id
 
 --left outer join pen.t_vilkar vi on vi.vilkar_vedtak_id = vv.vilkar_vedtak_id
 left outer join pen.t_vilkar vi_HENSI on vi_HENSI.vilkar_vedtak_id = vv.vilkar_vedtak_id and vi_HENSI.k_vilkar_t = 'HENSIKTSMESSIG_BEH'
-left outer join pen.t_vilkar vi_HENS  on vi_HENS. vilkar_vedtak_id = vv.vilkar_vedtak_id and vi_HENS. k_vilkar_t = 'HENS_ARBRETT_TILTAK'
+left outer join pen.t_vilkar vi_HENS  on vi_HENS.vilkar_vedtak_id = vv.vilkar_vedtak_id and vi_HENS.k_vilkar_t = 'HENS_ARBRETT_TILTAK'
 left outer join pen.t_vilkar vi_SYKDO on vi_SYKDO.vilkar_vedtak_id = vv.vilkar_vedtak_id and vi_SYKDO.k_vilkar_t = 'SYKDOM_SKADE_LYTE'
 left outer join pen.t_vilkar vi_ALDER on vi_ALDER.vilkar_vedtak_id = vv.vilkar_vedtak_id and vi_ALDER.k_vilkar_t = 'ALDER'
 left outer join pen.t_vilkar vi_GARAN on vi_GARAN.vilkar_vedtak_id = vv.vilkar_vedtak_id and vi_GARAN.k_vilkar_t = 'GARANTERTUNGUFOR'

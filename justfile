@@ -24,7 +24,7 @@ lint:
 
 # Formaterer koden
 format:
-    @printf "Formaterer kode\n"
+    @printf "Formaterer kode med ruff og sqlfluff\n"
     @uv run ruff format .
     @uv run sqlfluff fix sql --rules CV03 --dialect ansi  
 

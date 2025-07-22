@@ -16,7 +16,7 @@ def dbt_operator(
     script_path: str,
     dbt_secret_name: str,
     branch: str = "main",
-    retries: int = 2,
+    retries: int = 3,
     startup_timeout_seconds: int = 60 * 10,
     dbt_command: str = "build",
     dbt_image: str = DBT_IMAGE,

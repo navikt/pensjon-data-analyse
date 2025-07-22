@@ -4,7 +4,7 @@ from google.cloud.bigquery import Client, LoadJobConfig
 import sys
 from pathlib import Path
 
-sys.path.append(str(Path(__file__).resolve().parent.parent.parent / "libs"))
+sys.path.append(str(Path(__file__).parent.parent / "libs"))
 from utils import pesys_utils
 
 table_id = "pensjon-saksbehandli-prod-1f83.kontrollpunkt.kontrollpunkt_daglig"

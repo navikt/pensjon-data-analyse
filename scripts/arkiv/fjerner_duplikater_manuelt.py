@@ -31,18 +31,7 @@ order by dato"""
 
 bq_client = Client(project="pensjon-saksbehandli-prod-1f83")
 df = bq_client.query(sql_kravstatus).to_dataframe()
-
 # %%
-# Plotting antall krav per dag for datoer > 2025
-fig = px.bar(
-    df,
-    x="dag",
-    y="antall",
-    hover_data=["dato"],
-)
-fig.show()
-# %%
-
 # Finn datoer med duplikater
 duplikater = df[df.duplicated(subset=["dag"], keep=False)]
 print(f"Antall duplikater: {len(duplikater)}")
@@ -65,14 +54,16 @@ for dato in dato_to_drop:
 df_cleaned = df[~df["dato"].isin(dato_to_drop)]
 
 # %%
-# Plotting antall krav per dag for datoer etter fjerning av duplikater
-fig_cleaned = px.bar(
-    df_cleaned,
-    x="dag",
-    y="antall",
-    hover_data=["dato"],
+# Plotting antall krav per dag for datoer før og etter fjerning av duplikater
+fig = px.bar(df, x="dag", y="antall")
+fig.update_traces(name="med evt duplikater", showlegend=True)
+fig.add_bar(
+    x=df_cleaned["dag"],
+    y=df_cleaned["antall"],
+    name="etter duplikatfjerning",
 )
-fig_cleaned.show()
+fig.update_layout(title="med evt duplikater og etter duplikatfjerning")
+fig.show()
 # %%
 
 # Foreslår SQL for sletting av duplikater, som må kjøres manuelt i BQ

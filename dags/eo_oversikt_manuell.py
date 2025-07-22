@@ -1,7 +1,6 @@
 from airflow import DAG
 from datetime import datetime
 from pendulum import timezone
-from kubernetes import client as k8s
 from dataverk_airflow import python_operator
 from images import get_image_name
 

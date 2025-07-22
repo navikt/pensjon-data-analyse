@@ -1,13 +1,8 @@
 import pendulum
 from datetime import datetime
 from airflow import DAG
-from airflow.models import Variable
 
 from operators.dbt_operator import dbt_operator
-
-
-# db_adresse = "dmv36db01.adeo.no:1521"
-# docs_adresse = "dbt.intern.nav.no"
 
 
 with DAG(

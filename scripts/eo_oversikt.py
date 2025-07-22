@@ -1,6 +1,11 @@
 import logging
 from google.cloud.bigquery import Client, LoadJobConfig
-from lib import pesys_utils
+
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).parent.parent / "libs"))
+from utils import pesys_utils
 
 # Metabase, se https://metabase.ansatt.nav.no/dashboard/737-etteroppgjoret?tab=468-tidslinje
 bq_eo_oversikt = "pensjon-saksbehandli-prod-1f83.etteroppgjoret.eo_oversikt"

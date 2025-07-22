@@ -1,7 +1,10 @@
+import sys
+from pathlib import Path
 import logging
 from google.cloud.bigquery import Client, LoadJobConfig
 
-from lib import pesys_utils
+sys.path.append(str(Path(__file__).parent.parent / "libs"))
+from utils import pesys_utils
 
 logging.basicConfig(level=logging.INFO)
 
@@ -49,7 +52,6 @@ job_config = LoadJobConfig(
     write_disposition="WRITE_TRUNCATE",
     create_disposition="CREATE_IF_NEEDED",
 )
-
 
 
 run_job = client.load_table_from_dataframe(df_inntektsendring, bq_inntektsendring, job_config=job_config)

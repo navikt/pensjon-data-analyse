@@ -2,7 +2,11 @@ import logging
 from time import time
 from google.cloud.bigquery import Client, LoadJobConfig
 
-from lib import pesys_utils
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).parent.parent / "libs"))
+from utils import pesys_utils
 
 full_table_id = "pensjon-saksbehandli-prod-1f83.vedtak.laast_data_handling"
 # Metabase, se https://metabase.ansatt.nav.no/reference/databases/370/tables/3462/questions

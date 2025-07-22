@@ -34,7 +34,7 @@ from google.cloud.bigquery import Client
 from google.auth import impersonated_credentials, default
 
 import sys
-sys.path.append('../ssb')
+sys.path.append("../../libs")
 from ssb import get_df_befolkning
 
 

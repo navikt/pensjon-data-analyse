@@ -1,12 +1,12 @@
 import logging
 from datetime import datetime
-from google.cloud.bigquery import Client, LoadJobConfig, SchemaField, enums
+from google.cloud.bigquery import LoadJobConfig, SchemaField, enums
 
 import sys
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent / "libs"))
-from utils import pesys_utils
+from utils import pesys_utils, gcp_utils
 
 # OBS! Dette kjøres som en append i BQ, så ved dobbeltkjøring vil det bli duplikater
 # Det betyr også at endring på tabellen vil fjerne historikk
@@ -62,7 +62,9 @@ job2_config = LoadJobConfig(
     write_disposition="WRITE_APPEND",
 )
 
-client = Client(project="pensjon-saksbehandli-prod-1f83")
+client = gcp_utils.get_bigquery_client(
+    project="pensjon-saksbehandli-prod-1f83", target_principal="bq-airflow@wendelboe-prod-801c.iam.gserviceaccount.com"
+)
 
 job = client.load_table_from_dataframe(df_kravstatus, table_id, job_config=job_config)
 job.result()

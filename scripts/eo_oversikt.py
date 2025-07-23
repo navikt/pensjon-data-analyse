@@ -1,11 +1,11 @@
 import logging
-from google.cloud.bigquery import Client, LoadJobConfig
+from google.cloud.bigquery import LoadJobConfig
 
 import sys
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent / "libs"))
-from utils import pesys_utils
+from utils import pesys_utils, gcp_utils
 
 # Metabase, se https://metabase.ansatt.nav.no/dashboard/737-etteroppgjoret?tab=468-tidslinje
 bq_eo_oversikt = "pensjon-saksbehandli-prod-1f83.etteroppgjoret.eo_oversikt"
@@ -40,7 +40,9 @@ con.close()
 
 
 # bigquery
-client = Client(project="pensjon-saksbehandli-prod-1f83")
+client = gcp_utils.get_bigquery_client(
+    project="pensjon-saksbehandli-prod-1f83", target_principal="bq-airflow@wendelboe-prod-801c.iam.gserviceaccount.com"
+)
 job_config = LoadJobConfig(
     write_disposition="WRITE_TRUNCATE",
     create_disposition="CREATE_IF_NEEDED",

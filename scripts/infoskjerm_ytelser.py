@@ -1,12 +1,11 @@
 import logging
-from google.cloud.bigquery import Client, LoadJobConfig
-from google.auth import impersonated_credentials, default
+from google.cloud.bigquery import LoadJobConfig
 
 import sys
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent / "libs"))
-from utils import pesys_utils
+from utils import pesys_utils, gcp_utils
 
 
 bq_ytelser_antall_kombinasjoner = "wendelboe-prod-801c.infoskjerm.ytelser_antall_kombinasjoner"
@@ -34,14 +33,10 @@ con.close()
 
 
 # bigquery
-default_creds, _ = default()
-target_credentials = impersonated_credentials.Credentials(
-    source_credentials=default_creds,
-    target_principal="bq-airflow@wendelboe-prod-801c.iam.gserviceaccount.com",
-    target_scopes=["https://www.googleapis.com/auth/cloud-platform"],
-)
 
-client = Client(project="wendelboe-prod-801c", credentials=target_credentials)
+client = gcp_utils.get_bigquery_client(
+    project="wendelboe-prod-801c", target_principal="bq-airflow@wendelboe-prod-801c.iam.gserviceaccount.com"
+)
 job_config = LoadJobConfig(
     write_disposition="WRITE_TRUNCATE",
     create_disposition="CREATE_IF_NEEDED",

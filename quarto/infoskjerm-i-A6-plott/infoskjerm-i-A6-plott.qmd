@@ -30,22 +30,13 @@ from itables import show
 import plotly.express as px
 from datetime import datetime
 import plotly.graph_objects as go
-from google.cloud.bigquery import Client
-from google.auth import impersonated_credentials, default
 
 import sys
 sys.path.append("../../libs")
 from ssb import get_df_befolkning
+from utils import gcp_utils
 
-
-
-default_creds, _ = default()
-target_credentials = impersonated_credentials.Credentials(
-    source_credentials=default_creds,
-    target_principal="bq-airflow@wendelboe-prod-801c.iam.gserviceaccount.com",
-    target_scopes=["https://www.googleapis.com/auth/cloud-platform"],
-)
-client = Client(project="wendelboe-prod-801c", credentials=target_credentials)
+client = gcp_utils.get_bigquery_client(project="wendelboe-prod-801c", target_principal="bq-airflow@wendelboe-prod-801c.iam.gserviceaccount.com")
 
 job1 = client.query("select * from `wendelboe-prod-801c.infoskjerm.ytelser_per_alderskull`")
 df_pesys = job1.to_dataframe()

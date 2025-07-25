@@ -19,14 +19,17 @@ update-dependencies: bootstrap
 
 # Kjører linting
 lint:
-    @printf "Linter kode\n"
+    @printf "Linter Python-kode med Ruff\n"
     @uv run ruff check .
+    @printf "Linter SQL-kode med sqlfluff\n"
+    @uv run sqlfluff lint
 
 # Formaterer koden
 format:
-    @printf "Formaterer kode med ruff og sqlfluff\n"
+    @printf "Formaterer Python-kode med Ruff\n"
     @uv run ruff format .
-    @uv run sqlfluff fix sql --rules CV03 --dialect ansi  
+    @printf "Formaterer SQL-kode med sqlfluff\n"
+    @uv run sqlfluff fix --check
 
 # Generer requirements.txt
 requirements:

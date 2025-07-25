@@ -33,3 +33,23 @@ dev = [
 [tool.ruff]
 include = ["*.py", "*.ipynb"]
 line-length = 120
+
+[tool.sqlfluff.core]
+dialect = "ansi"
+templater = "jinja"
+max_line_length = 0
+ignore_paths = [ ".venv/" ]
+exclude_rules = [ # regler som kan/vil knekke noe
+    # "all",
+    "ambiguous.join",
+    "aliasing.table",
+    "structure.column_order",
+    "references.qualification",
+    "structure.join_condition_order",
+]
+[tool.sqlfluff.rules.capitalisation]
+keywords.capitalisation_policy = "lower"
+literals.capitalisation_policy = "lower"
+types.extended_capitalisation_policy = "lower"
+functions.extended_capitalisation_policy = "lower"
+identifiers.extended_capitalisation_policy = "lower"

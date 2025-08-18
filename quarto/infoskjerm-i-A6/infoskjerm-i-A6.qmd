@@ -22,7 +22,7 @@ format:
 # Ukas oppmerksomhet
 ## {height=100%}
 ::: {.card }
-![](../bilder/fantasytdf-underveis.png)
+![](https://i.redd.it/the-work-is-mysterious-and-important-template-v0-qargwgtdrfi91.jpg?width=2022&format=pjpg&auto=webp&s=d5bc51c666d67d6097b3de3d315bcec5b130bdf8)
 :::
 
 
@@ -174,7 +174,7 @@ hvorav 74% ble alderspensjonister og 16% døde
 :::
 ### col
 ::: {.valuebox color="secondary"}
-![](../bilder/Trygdebeistet.png)
+![](../../bilder/Trygdebeistet.png)
 :::
 
 
@@ -226,5 +226,5 @@ uføremottakere
 # Beistet
 ## {height=100%}
 ::: {.card }
-![](../bilder/Trygdebeistet.png)
+![](../../bilder/Trygdebeistet.png)
 :::

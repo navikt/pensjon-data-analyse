@@ -72,9 +72,9 @@ colors = {
     "Tilganger": "#66D0E8",
     "Avganger": "#66E8B8",
     "Netto mottakere": "#E8A366",
-    "Aldersgruppe 1": "#2E506F",
-    "Aldersgruppe 2": "#4B80B3",
-    "Aldersgruppe 3": "#6BB8FF",
+    "Aldersgruppe 1": "#2E506F", # 56 år og eldre
+    "Aldersgruppe 2": "#4B80B3", # 30-55 år
+    "Aldersgruppe 3": "#6BB8FF", # 29 år og yngre
 }
 ```
 
@@ -97,6 +97,43 @@ fig_siden_2009.update_layout(
 )
 
 # fig_siden_2009.show()
+```
+
+```{python}
+# | include: false
+# Figur hver enkelt aldersgruppe siden 2024 i tre separate plots
+
+fig_per_aldersgruppe = px.line(
+    df_alder,
+    x="periode_dato",
+    y="antall_ufore",
+    color="aldersgruppe",
+    color_discrete_sequence=[
+        colors["Aldersgruppe 1"],
+        colors["Aldersgruppe 2"],
+        colors["Aldersgruppe 3"],
+    ],
+)
+fig_per_aldersgruppe.update_layout(
+    xaxis_title=None,
+    yaxis_title=None,
+    margin=dict(l=30, r=30, t=40, b=20),
+    xaxis=dict(range=["2015-01-01", max(df_alle["periode_dato"])]),
+    # legend=dict(traceorder="reversed"),
+    showlegend=False,
+)
+fig_per_aldersgruppe.data[0].visible = "legendonly"
+fig_per_aldersgruppe.data[1].visible = "legendonly"
+fig_per_aldersgruppe.data[2].visible = "legendonly"
+fig_per_aldersgruppe_1 = go.Figure(fig_per_aldersgruppe)
+fig_per_aldersgruppe_1.data[0].visible = True
+fig_per_aldersgruppe_1.update_layout(title="56 år og eldre")
+fig_per_aldersgruppe_2 = go.Figure(fig_per_aldersgruppe)
+fig_per_aldersgruppe_2.data[1].visible = True
+fig_per_aldersgruppe_2.update_layout(title="30-55 år")
+fig_per_aldersgruppe_3 = go.Figure(fig_per_aldersgruppe)
+fig_per_aldersgruppe_3.data[2].visible = True
+fig_per_aldersgruppe_3.update_layout(title="29 år og yngre")
 ```
 
 ```{python}
@@ -249,6 +286,22 @@ fig_tilgang_avgang.show()
 
 ```
 
+
+# Aldersgrupper
+## rad
+
+### col 1 - plott
+```{python}
+fig_per_aldersgruppe_1.show()
+```
+### col 2 - plott
+```{python}
+fig_per_aldersgruppe_2.show()
+```
+### col 3 - plott
+```{python}
+fig_per_aldersgruppe_3.show()
+```
 
 # Om datafortellingen
 

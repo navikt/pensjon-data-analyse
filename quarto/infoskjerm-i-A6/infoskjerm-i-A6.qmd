@@ -26,6 +26,15 @@ format:
 :::
 
 
+# Visjon
+## {height=100%}
+```{python}
+#| content: valuebox
+#| title: "Visjon for uføretrygd"
+#| color: success
+#| icon: stars
+'En trygg og bærekraftig uføretrygd'
+```
 
 # Ambisjon 1
 ##  {height=100%}

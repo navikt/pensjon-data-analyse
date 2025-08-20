@@ -34,11 +34,11 @@ df = bq_client.query(sql_kravstatus).to_dataframe()
 # %%
 # Finn datoer med duplikater
 duplikater = df[df.duplicated(subset=["dag"], keep=False)]
-print(f"Antall duplikater: {len(duplikater)}")
 
 # %%
 # Finn datoer (timestamp) som skal droppes (eldste for hver dag med duplikat)
 dupe_dager = df[df.duplicated(subset=["dag"], keep=False)]["dag"].unique()
+print(f"Antall duplikater: {len(dupe_dager)}")
 dato_to_drop = []
 
 for dag in dupe_dager:
@@ -68,12 +68,14 @@ fig.show()
 
 # Foreslår SQL for sletting av duplikater, som må kjøres manuelt i BQ
 if dato_to_drop:
-    dato_list_str = ", ".join([f"'{dato}'" for dato in dato_to_drop])
-    print(
-        f"""Foreslått SQL for sletting av duplikater:\n\n
-    delete from `{tabell_kravstatus}`
-    where dato in ({dato_list_str})
-    \n\n"""
-    )
+    dato_list_str: str = ", ".join([f"'{dato}'" for dato in dato_to_drop])
+    sql_query = f"""
+        Foreslått SQL for sletting av duplikater:\n
+        delete from `{tabell_kravstatus}`
+        where dato in ({dato_list_str})
+        \n"""
+    print(sql_query)
+    if input("Vil du kjøre denne SQL-spørringen (j/n)? ") == "j":
+        bq_client.query(query=sql_query)
 else:
-    print("Ingen SQL generert.")
+    print("Ingen duplikater å slette.")

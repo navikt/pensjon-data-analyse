@@ -18,7 +18,9 @@ logging.basicConfig(level=logging.INFO)
 
 # oracle PEN lesekopien
 tuning = 10000
-pesys_utils.set_db_secrets(secret_name="pen-prod-lesekopien-pen_dataprodukt")
+pesys_utils.set_db_secrets(
+    secret_name="pen-prod-pen_dataprodukt"
+)  # TODO: bytt tilbake til lesekopien etter brannmuråpning
 con = pesys_utils.connect_to_oracle()
 df_ytelser_antall_kombinasjoner = pesys_utils.pandas_from_sql(
     "../sql/ytelser_antall_kombinasjoner.sql",

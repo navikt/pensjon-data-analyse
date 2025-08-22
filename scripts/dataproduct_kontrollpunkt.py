@@ -13,9 +13,7 @@ table_id = "pensjon-saksbehandli-prod-1f83.kontrollpunkt.kontrollpunkt_daglig"
 
 logging.basicConfig(level=logging.INFO)
 
-pesys_utils.set_db_secrets(
-    secret_name="pen-prod-pen_dataprodukt"
-)  # TODO: bytt tilbake til lesekopien etter brannmuråpning
+pesys_utils.set_db_secrets(secret_name="pen-prod-lesekopien-pen_dataprodukt")
 tuning = 10000
 con = pesys_utils.connect_to_oracle()
 df_kontrollpunkt = pesys_utils.pandas_from_sql(

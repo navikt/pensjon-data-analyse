@@ -17,9 +17,7 @@ table_id_med_kravarsak = "pensjon-saksbehandli-prod-1f83.saksstatistikk.kravstat
 # Metabase, se https://metabase.ansatt.nav.no/reference/databases/212/tables/1701/questions
 
 logging.basicConfig(level=logging.INFO)
-pesys_utils.set_db_secrets(
-    secret_name="pen-prod-pen_dataprodukt"
-)  # TODO: bytt tilbake til lesekopien etter brannmuråpning
+pesys_utils.set_db_secrets(secret_name="pen-prod-lesekopien-pen_dataprodukt")
 
 tuning = 10000
 con = pesys_utils.connect_to_oracle()

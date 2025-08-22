@@ -15,9 +15,7 @@ bq_aldersovergang_brev = "pensjon-saksbehandli-prod-1f83.aldersovergang.aldersov
 
 # oracle PEN
 tuning = 10000
-pesys_utils.set_db_secrets(
-    secret_name="pen-prod-pen_dataprodukt"
-)  # TODO: bytt tilbake til lesekopien etter brannmuråpning
+pesys_utils.set_db_secrets(secret_name="pen-prod-lesekopien-pen_dataprodukt")
 con = pesys_utils.connect_to_oracle()
 df_aldersovergang_behandle_bruker = pesys_utils.pandas_from_sql(
     "../sql/aldersovergang_behandle_bruker.sql", con=con, tuning=tuning, lowercase=True

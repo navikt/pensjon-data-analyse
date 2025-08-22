@@ -97,8 +97,6 @@ def pandas_from_sql(sqlfile, con, tuning=None, lowercase=False):
 
 
 def open_pen_connection():
-    # lesekopien: host='dm08db03-vip.adeo.no', service_name=pen
-    # prod:       host='dm09-scan.adeo.no',    service_name=pen_ha
     con = oracledb.connect(
         port=1521,
         service_name="pen_ha",

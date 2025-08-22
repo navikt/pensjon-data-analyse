@@ -63,7 +63,7 @@ with DAG(
         slack_channel="#pensak-airflow-alerts",
         allowlist=[
             "bigquery.googleapis.com",
-            "dm08db03-vip.adeo.no:1521",  # prod lesekopien
+            "dmv14-scan.adeo.no:1521",  # prod lesekopien
         ],
         python_version="3.12",
     )

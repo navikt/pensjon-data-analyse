@@ -13,7 +13,7 @@ full_table_id = "pensjon-saksbehandli-prod-1f83.vedtak.laast_data_handling"
 
 
 logging.basicConfig(level=logging.INFO)
-pesys_utils.set_db_secrets(secret_name="pen-prod-lesekopien-pen_airflow")
+pesys_utils.set_db_secrets(secret_name="pen-prod-lesekopien-pen_dataprodukt")
 
 tuning = 1000
 con = pesys_utils.connect_to_oracle()

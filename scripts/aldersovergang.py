@@ -11,6 +11,7 @@ logging.basicConfig(level=logging.INFO)
 
 bq_aldersovergang_behandle_bruker = "pensjon-saksbehandli-prod-1f83.aldersovergang.aldersovergang_behandle_bruker"
 bq_aldersovergang_brev = "pensjon-saksbehandli-prod-1f83.aldersovergang.aldersovergang_brev"
+bq_aldersovergang_automatisering = "pensjon-saksbehandli-prod-1f83.aldersovergang.aldersovergang_automatisering"
 # Metabase for team Alder, se https://metabase.ansatt.nav.no/dashboard/665-aldersovergang-dashbord
 
 # oracle PEN
@@ -22,6 +23,9 @@ df_aldersovergang_behandle_bruker = pesys_utils.pandas_from_sql(
 )
 df_aldersovergang_brev = pesys_utils.pandas_from_sql(
     "../sql/aldersovergang_brev.sql", con=con, tuning=tuning, lowercase=True
+)
+df_aldersovergang_automatisering = pesys_utils.pandas_from_sql(
+    "../sql/aldersovergang_automatisering.sql", con=con, tuning=tuning, lowercase=True
 )
 con.close()
 
@@ -43,3 +47,8 @@ job1.result()
 
 job2 = client.load_table_from_dataframe(df_aldersovergang_brev, bq_aldersovergang_brev, job_config=job_config)
 job2.result()
+
+job3 = client.load_table_from_dataframe(
+    df_aldersovergang_automatisering, bq_aldersovergang_automatisering, job_config=job_config
+)
+job3.result()

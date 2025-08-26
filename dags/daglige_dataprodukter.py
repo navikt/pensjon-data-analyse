@@ -50,11 +50,18 @@ with DAG(
     start_date=datetime(2025, 3, 12, tzinfo=timezone("Europe/Oslo")),
     catchup=False,
 ) as dag:
+    aldersovergang = python_operator_wrapped(
+        dag=dag,
+        name="aldersovergang",
+        script_path="scripts/aldersovergang.py",
+    )
+
     autobrev_inntektsendring = python_operator_wrapped(
         dag=dag,
         name="autobrev_inntektsendring",
         script_path="scripts/autobrev_inntektsendring.py",
     )
+
     laaste_vedtak = python_operator_wrapped(
         dag=dag,
         name="laaste-vedtak",
@@ -80,6 +87,7 @@ with DAG(
         script_path="scripts/vedtakstyper.py",
     )
 
+    aldersovergang
     vedtakstyper
     autobrev_inntektsendring
     laaste_vedtak

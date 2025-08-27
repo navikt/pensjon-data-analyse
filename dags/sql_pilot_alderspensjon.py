@@ -8,7 +8,7 @@ from operators.dbt_operator import dbt_operator
 with DAG(
     dag_id="sql_pilot_alderspensjon",
     start_date=datetime(2025, 6, 30, tzinfo=pendulum.timezone("Europe/Oslo")),
-    schedule_interval="0 7 1-3 * *",  # “7 AM on the 1st-3rd day of every month”
+    schedule_interval="0 1 * * *",  # “1 AM every day”
     catchup=False,
 ) as dag:
     sql_pilot_q2 = dbt_operator(
@@ -17,7 +17,7 @@ with DAG(
         startup_timeout_seconds=60 * 10,
         repo="navikt/pensjon-pen-dataprodukt",
         script_path="dbt/dbt_run.py",
-        dbt_command="run",
+        dbt_command="build --exclude sql_pilot_original",
         allowlist=[
             "dmv36-scan.adeo.no:1521",
             "hub.getdbt.com",
@@ -32,7 +32,7 @@ with DAG(
         startup_timeout_seconds=60 * 10,
         repo="navikt/pensjon-pen-dataprodukt",
         script_path="dbt/dbt_run.py",
-        dbt_command="run",
+        dbt_command="build --exclude sql_pilot_original",
         allowlist=[
             "dmv18-scan.adeo.no:1521",
             "hub.getdbt.com",

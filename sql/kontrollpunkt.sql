@@ -11,6 +11,7 @@ select
     dks.dekode as kravstatus,
     dkb.dekode as behandlingstype,
     kp.k_kontrollpnkt_t as kontrollpunkt,
+    dim_kravarsak.dekode as kravarsak,
     dkp.dekode_tekst as kontrollpunkt_forklaring,
     count(*) as antall
 
@@ -22,6 +23,8 @@ inner join pen.t_k_sak_t ds on ds.k_sak_t = s.k_sak_t
 inner join pen.t_k_kontrollpnkt_t dkp on dkp.k_kontrollpnkt_t = kp.k_kontrollpnkt_t
 inner join pen.t_k_krav_s dks on dks.k_krav_s = kh.k_krav_s
 inner join pen.t_k_behandling_t dkb on dkb.k_behandling_t = kh.k_behandling_t
+inner join pen.t_krav_arsak arsak on arsak.kravhode_id = kh.kravhode_id
+inner join pen.t_k_krav_arsak_t dim_kravarsak on dim_kravarsak.k_krav_arsak_t = arsak.k_krav_arsak_t
 
 where trunc(kp.dato_opprettet) < trunc(current_date)
 
@@ -35,4 +38,5 @@ group by
     dks.dekode,
     dkb.dekode,
     kp.k_kontrollpnkt_t,
+    dim_kravarsak.dekode,
     dkp.dekode_tekst

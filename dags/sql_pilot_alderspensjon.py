@@ -17,7 +17,7 @@ with DAG(
         startup_timeout_seconds=60 * 10,
         repo="navikt/pensjon-pen-dataprodukt",
         script_path="dbt/dbt_run.py",
-        dbt_command="build --exclude sql_pilot_original",
+        dbt_command="build --exclude sql_pilot_original --exclude tag:work-in-progress",
         allowlist=[
             "dmv36-scan.adeo.no:1521",
             "hub.getdbt.com",

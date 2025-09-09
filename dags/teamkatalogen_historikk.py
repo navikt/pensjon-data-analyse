@@ -2,9 +2,6 @@ from airflow import DAG
 from datetime import datetime
 from pendulum import timezone
 from dataverk_airflow import python_operator
-from images import get_image_name
-
-WENDELBOE_IMAGE = get_image_name("wendelboe")
 
 
 with DAG(
@@ -16,7 +13,6 @@ with DAG(
 ) as dag:
     dbt_snapshot = python_operator(
         dag=dag,
-        # image=WENDELBOE_IMAGE,
         requirements_path="requirements.txt",
         use_uv_pip_install=True,
         name="historiserer-fire-tabeller",

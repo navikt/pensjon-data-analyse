@@ -4,9 +4,6 @@ from pendulum import timezone
 from airflow.models import Variable
 from kubernetes import client as k8s
 from dataverk_airflow import python_operator, quarto_operator
-from images import get_image_name
-
-WENDELBOE_IMAGE = get_image_name("wendelboe")
 
 
 def quarto_operator_wrapped(
@@ -26,7 +23,6 @@ def quarto_operator_wrapped(
             "id": quarto_id,
             "token": Variable.get("WENDELBOE_QUARTO_TOKEN"),
         },
-        # image=WENDELBOE_IMAGE,
         requirements_path="requirements.txt",
         use_uv_pip_install=True,
         repo="navikt/pensjon-data-analyse",

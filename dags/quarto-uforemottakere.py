@@ -3,9 +3,6 @@ from datetime import datetime
 from pendulum import timezone
 from airflow.models import Variable
 from dataverk_airflow import quarto_operator
-from images import get_image_name
-
-WENDELBOE_IMAGE = get_image_name("wendelboe")
 
 with DAG(
     dag_id="quarto-uforemottakere",
@@ -24,7 +21,6 @@ with DAG(
             "id": "d1e4cefc-2658-4519-a8c0-0f29db301d9d",
             "token": Variable.get("PENSAK_QUARTO_TOKEN"),
         },
-        # image=WENDELBOE_IMAGE,
         requirements_path="requirements.txt",
         use_uv_pip_install=True,
         allowlist=["secretmanager.googleapis.com", "dmv09-scan.adeo.no:1521"],  # DVHP

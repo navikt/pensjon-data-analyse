@@ -21,8 +21,10 @@ format:
 
 # Ukas oppmerksomhet
 ## {height=100%}
-::: {.valuebox color="#038387" }
-<img src="../../bilder/seksjonssamling_18_19_sept.png" style="width:90%;"/>
+<!-- ::: {.valuebox color="#038387" } -->
+<!-- <img src="../../bilder/seksjonssamling_18_19_sept.png" style="width:90%;"/> -->
+::: {.card}
+![](https://i.redd.it/the-work-is-mysterious-and-important-template-v0-qargwgtdrfi91.jpg?width=2022&format=pjpg&auto=webp&s=d5bc51c666d67d6097b3de3d315bcec5b130bdf8)
 :::
 
 

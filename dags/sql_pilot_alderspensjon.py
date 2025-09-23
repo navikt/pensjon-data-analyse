@@ -32,7 +32,7 @@ with DAG(
         startup_timeout_seconds=60 * 10,
         repo="navikt/pensjon-pen-dataprodukt",
         script_path="dbt/dbt_run.py",
-        dbt_command="build --exclude sql_pilot_original",
+        dbt_command="build --exclude sql_pilot_original --exclude tag:work-in-progress",
         allowlist=[
             "dmv18-scan.adeo.no:1521",
             "hub.getdbt.com",
@@ -41,4 +41,5 @@ with DAG(
         db_environment="pen_prod",
     )
 
-    sql_pilot_q2 >> sql_pilot_prod
+    sql_pilot_q2
+    sql_pilot_prod

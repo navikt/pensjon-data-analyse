@@ -8,7 +8,7 @@ from operators.dbt_operator import dbt_operator
 with DAG(
     dag_id="dbt_snapshot_analyse",
     start_date=datetime(2025, 9, 23, tzinfo=pendulum.timezone("Europe/Oslo")),
-    schedule_interval="0 0,1,21,22,23 * * *",  # 9, 10, 11 PM and 0, 1 AM every day
+    schedule_interval="1 0 * * *",  # 00:01 every day
     catchup=False,
 ) as dag:
     snapshot_q2 = dbt_operator(

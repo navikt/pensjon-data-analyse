@@ -14,15 +14,16 @@ format:
               href: https://nav-it.slack.com/archives/C06NKNY1399
         embed-resources: true
         code-copy: true
-        theme: vapor
+        theme: superhero
+
 ---
 <!-- author: "Brynjar Morka Mæhlum, team Uføre" -->
 <!-- GCP-team: teampensjon -->
 
 # Ukas oppmerksomhet
 ## {height=100%}
-::: {.valuebox color="#038387" }
-<img src="../../bilder/seksjonssamling_18_19_sept.png" style="width:90%;"/>
+::: {.valuebox}
+<img src="https://i.imgflip.com/a886x2.jpg" style="width:90%;"/>
 <!-- ::: {.card}
 ![](https://i.redd.it/the-work-is-mysterious-and-important-template-v0-qargwgtdrfi91.jpg?width=2022&format=pjpg&auto=webp&s=d5bc51c666d67d6097b3de3d315bcec5b130bdf8) -->
 :::
@@ -58,44 +59,16 @@ format:
 'Vi sikrer effektiv forvaltning og stabil drift, med fokus på fart og flyt. Vi tilpasser oss kvalitetskrav og brukerbehov, og proiriterer kontinuerlig utvikling for å være klare for fremtiden'
 ```
 
+# Ambisjon 3
+##  {height=100%}
+```{python}
+#| content: valuebox
+#| title: "Ambisjon 3"
+#| color: dark
+#| icon: activity
+'Vi skal bli klar til teknisk modernisering'
+```
 
-
-# OPM1
-## {height=100%}
-```{python}
-#| content: valuebox
-#| title: "Operativt mål 1"
-#| color: danger
-#| icon: bullseye
-'Brukerer kan planlegge og motta pensjonsytelser i trå med målene for pensjonsforliket'
-```
-# OPM2
-## {height=100%}
-```{python}
-#| content: valuebox
-#| title: "Operativt mål 2"
-#| color: warning
-#| icon: hurricane
-'Brukere i offentlig sektor født i 1963 og senere kan planlegge og få riktig alderspensjon med AFP'
-```
-# OPM3
-## {height=100%}
-```{python}
-#| content: valuebox
-#| title: "Operativt mål 3"
-#| color: secondary
-#| icon: bandaid
-'Vi bidrar til økonomisk stabilitet for de etterlatte'
-```
-# OPM4
-## {height=100%}
-```{python}
-#| content: valuebox
-#| title: "Operativt mål 4"
-#| color: light
-#| icon: bus-front
-'Vi reduserer risiko og legger grunnlaget for modernisering'
-```
 
 # how-to
 

@@ -1,0 +1,239 @@
+---
+title: "Analyse av feilutbetalinger til døde alderspensjonister"
+jupyter: python3
+execute:
+    echo: false
+    warning: false
+    include: true
+format:
+    dashboard:
+        embed-resources: true
+        code-copy: true
+        theme: flatly
+---
+
+```{python}
+#| include: false
+import os
+import json
+import oracledb
+import pandas as pd
+from itables import show
+import plotly.express as px
+from datetime import datetime
+import plotly.graph_objects as go
+from google.cloud import secretmanager
+```
+
+# Plott
+
+
+```{python}
+kjoretidspunkt = datetime.now().strftime("%d.%m.%Y")
+print(f"""
+Denne datafortellingen viser en initiell analyse av feilutbetalinger til døde alderspensjonister. 
+Dataene her er hentet {kjoretidspunkt} og vil utvikle seg over tid med flere registrerte dødsfall tilbake i tid.
+I fanen sql kan du se sql-spørringen som er kjørt mot pen. Denne er aggregert på litt ulik vis for å få til plottene under.
+
+Her er er dataene mer usikre, fordi det ikke er filter på:
+- ansv_saksbh = 'DødsfallBehandling'
+- dato_vedtak >= to_date('01.01.2024', 'DD.MM.YYYY')
+
+Fordi det er noe annerledes i databasen før behandlingen for dødsfall kom på plass
+""")
+```
+
+
+```{python}
+#| include: false
+
+base_sql = """
+-- feilutbetalinger_per_mnd
+-- finner antall måneder med feilutbetalinger for saker
+-- ser på diff mellom dato_vedtak og dato_virk_fom i vedtak om opphør
+
+with
+
+vedtak as (
+    select
+        p.dato_dod,
+        case when (p.bostedsland = 161 or p.bostedsland is null) then 'nor' else 'utl' end as bosatt_norge,
+        v.sak_id,
+        v.vedtak_id,
+        v.dato_vedtak,
+        v.dato_virk_fom
+        -- v.basert_pa_vedtak, -- vedtaket som var løpende
+    from pen.t_vedtak v
+    inner join pen.t_person p on p.person_id = v.person_id
+    where
+        1 = 1
+        and v.k_sak_t = 'ALDER'
+        and v.k_vedtak_t = 'OPPHOR'
+        --and v.ansv_saksbh = 'DødsfallBehandling' -- todo: 'BPEN002' for før 2023??? noe skjedde i 2021/2022 med BPEN002
+        and v.basert_pa_vedtak in (select vedtak_id from pen.t_vedtak where dato_lopende_tom is not null) --noqa
+        -- filteret over fjerner saker som aldri har hatt et løpende vedtak, feks planlagte pensjoner
+        and p.dato_dod <= v.dato_vedtak -- dødsfallet må ha skjedd før vedtaket. dette fjerner 12 vedtak fra 2024-2025
+        and p.dato_dod is not null
+        -- and v.dato_vedtak >= to_date('01.01.2024', 'DD.MM.YYYY')
+),
+
+finner_antall_mnd as (
+    select
+        months_between(trunc(dato_vedtak, 'MM'), dato_virk_fom) + 1 as diff_vedtak_virk,
+        bosatt_norge,
+        dato_dod,
+        to_char(dato_dod, 'YYYY') as dod_ar,
+        sak_id,
+        vedtak_id,
+        dato_vedtak,
+        dato_virk_fom
+    from vedtak
+)
+
+select
+    diff_vedtak_virk,
+    bosatt_norge,
+    dato_dod,
+    dod_ar,
+    -- sak_id,
+    -- vedtak_id,
+    dato_vedtak,
+    dato_virk_fom
+from finner_antall_mnd
+order by
+    diff_vedtak_virk desc,
+    bosatt_norge desc
+"""
+```
+```{python}
+#| include: false
+
+# henter data
+hemmelighet = "pen-prod-lesekopien-pen_dataprodukt"
+secret_name = f"projects/230094999443/secrets/{hemmelighet}/versions/latest"
+client = secretmanager.SecretManagerServiceClient()
+response = client.access_secret_version(request={"name": secret_name})
+secret = json.loads(response.payload.data.decode("UTF-8"))
+connectionDVHP = oracledb.connect(
+    user=secret.get('DB_USER'),
+    host=secret.get('DB_HOST'),
+    port=secret.get('DB_PORT'),
+    password=secret.get('DB_PASSWORD'),
+    service_name=secret.get('DB_SERVICE_NAME')
+)
+
+with connectionDVHP.cursor() as cursor:
+    cursor.execute(base_sql)
+    columns = [col[0].lower() for col in cursor.description]
+    data = cursor.fetchall()
+connectionDVHP.close()
+df = pd.DataFrame(data, columns=columns)
+
+```
+
+
+```{python}
+#| include: false
+
+# dummy-df
+# diff_vedtak_virk	bosatt_norge	dato_dod	dod_ar	dato_vedtak	   dato_virk_fom
+# 	1	                nor	       2024-09-30	 2024	 2024-10-21	    2024-10-01
+# 	4	                nor	       2024-06-19	 2024	 2024-07-01	    2024-07-01
+# 	1	                utl	       2024-02-20	 2024	 2024-02-20	    2024-03-01
+# 	0	                utl	       2024-11-04	 2024	 2024-11-06	    2024-12-01
+# 	23	                nor	       2025-05-05	 2025	 2025-05-19	    2025-06-01
+
+agg_df = df.groupby(['diff_vedtak_virk', 'bosatt_norge', 'dod_ar']).size().reset_index(name='antall_saker')
+agg_df['sum_feilutbetaling'] = agg_df['antall_saker'] * agg_df['diff_vedtak_virk']
+agg_df['dod_ar+bosatt'] = agg_df['dod_ar'].astype(str) + ' - ' + agg_df['bosatt_norge']
+totalt_mnd_feilutbetaling = agg_df['sum_feilutbetaling'].sum()
+totalt_saker_uten_feilutbetaling = agg_df[agg_df['diff_vedtak_virk'] <= 0]['antall_saker'].sum()
+
+agg_df = agg_df.sort_values(by='dod_ar+bosatt', ascending=False)
+fig_feilutbetalinger_sum = px.bar(
+    agg_df.groupby(['bosatt_norge', 'diff_vedtak_virk']).sum().reset_index(),
+
+
+    x="diff_vedtak_virk",
+    y="sum_feilutbetaling",
+    # color="dod_ar+bosatt",
+    color = "bosatt_norge",
+    barmode='group',
+    text='sum_feilutbetaling',
+
+    labels={"diff_vedtak_virk": "Antall måneder med feilutbetaling", "sum_feilutbetaling": "Sum feilutbetalte måneder"},
+)
+
+fig_feilutbetalinger_sum.show()
+
+```
+```{python}
+
+fig_feilutbetalinger_sum.show()
+```
+
+
+
+```{python}
+#| include: false
+
+# new table:
+# dod_ar, bosatt_norge, antall_saker_uten_feil, sum_feilutbetaling_mnd
+summary_df = agg_df.groupby(['dod_ar', 'bosatt_norge']).agg(
+    sum_feilutbetaling_mnd=('sum_feilutbetaling', 'sum'),
+    antall_saker_med_1_feil=('antall_saker', lambda x: x[agg_df['diff_vedtak_virk'] == 1].sum()),
+    antall_saker_med_flere_feil=('antall_saker', lambda x: x[agg_df['diff_vedtak_virk'] > 1].sum()),
+    antall_saker_uten_feil=('antall_saker', lambda x: x[agg_df['diff_vedtak_virk'] == 0].sum())
+).reset_index()
+summary_df = summary_df.sort_values(by=['dod_ar', 'bosatt_norge'], ascending=[False, False])
+show(summary_df)
+# Add a total row to summary_df
+# Add total rows per 'nor', 'utl', and overall total
+totals = []
+for bosatt in ['nor', 'utl']:
+    df_bosatt = summary_df[summary_df['bosatt_norge'] == bosatt]
+    totals.append({
+        'dod_ar': 'Totalt',
+        'bosatt_norge': bosatt,
+        'antall_saker_uten_feil': df_bosatt['antall_saker_uten_feil'].sum(),
+        'antall_saker_med_1_feil': df_bosatt['antall_saker_med_1_feil'].sum(),
+        'antall_saker_med_flere_feil': df_bosatt['antall_saker_med_flere_feil'].sum(),
+        'sum_feilutbetaling_mnd': df_bosatt['sum_feilutbetaling_mnd'].sum()
+    })
+total_rows = pd.DataFrame(totals)
+summary_df_total = pd.concat([summary_df, total_rows], ignore_index=True)
+
+```
+
+```{python}
+show(summary_df_total, paging=False)
+```
+
+```{python}
+#| include: false
+
+# new plot: dod_ar on x, bosatt_norge as color, sum of feilutbetaling on y
+fig_feilutbetalinger_dod_ar = px.bar(
+    summary_df,
+    x="dod_ar",
+    y="sum_feilutbetaling_mnd",
+    color="bosatt_norge",
+    barmode='group',
+    labels={"dod_ar": "Dødsår", "sum_feilutbetaling_mnd": "Sum feilutbetalte måneder"},
+)
+fig_feilutbetalinger_dod_ar.update_layout(title_text="Feilutbetalinger per dødsår og bosted")
+
+
+```
+
+
+```{python}
+fig_feilutbetalinger_dod_ar.show()
+```
+
+
+# sql
+
+```{python}
+print(base_sql)
+```

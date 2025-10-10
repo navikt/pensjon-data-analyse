@@ -19,6 +19,7 @@ import json
 import oracledb
 import pandas as pd
 from itables import show
+from pathlib import Path
 import plotly.express as px
 from datetime import datetime
 import plotly.graph_objects as go
@@ -27,108 +28,14 @@ from google.cloud import secretmanager
 
 # Plott
 
-
 ```{python}
-kjoretidspunkt = datetime.now().strftime("%d.%m.%Y")
 print(f"""
 Denne datafortellingen viser en initiell analyse av feilutbetalinger til døde alderspensjonister. 
-Dataene her er hentet {kjoretidspunkt} og vil utvikle seg over tid med flere registrerte dødsfall tilbake i tid.
-I fanen sql kan du se sql-spørringen som er kjørt mot pen. Denne er aggregert på litt ulik vis for å få til plottene under.
-
-Her er er dataene mer usikre, fordi det ikke er filter på:
-- ansv_saksbh = 'DødsfallBehandling'
-- dato_vedtak >= to_date('01.01.2024', 'DD.MM.YYYY')
-
-Fordi det er noe annerledes i databasen før behandlingen for dødsfall kom på plass
+Dataene her er hentet {datetime.now().strftime("%d.%m.%Y")} og vil utvikle seg over tid med flere registrerte dødsfall tilbake i tid.
+I fanen "sql" kan du se sql-spørringen som er kjørt mot pen. Denne er aggregert på litt ulik vis for å få til plottene under.
 """)
 ```
 
-
-```{python}
-#| include: false
-
-base_sql = """
--- feilutbetalinger_per_mnd
--- finner antall måneder med feilutbetalinger for saker
--- ser på diff mellom dato_vedtak og dato_virk_fom i vedtak om opphør
-
-with
-
-vedtak as (
-    select
-        p.dato_dod,
-        case when (p.bostedsland = 161 or p.bostedsland is null) then 'nor' else 'utl' end as bosatt_norge,
-        v.sak_id,
-        v.vedtak_id,
-        v.dato_vedtak,
-        v.dato_virk_fom
-        -- v.basert_pa_vedtak, -- vedtaket som var løpende
-    from pen.t_vedtak v
-    inner join pen.t_person p on p.person_id = v.person_id
-    where
-        1 = 1
-        and v.k_sak_t = 'ALDER'
-        and v.k_vedtak_t = 'OPPHOR'
-        --and v.ansv_saksbh = 'DødsfallBehandling' -- todo: 'BPEN002' for før 2023??? noe skjedde i 2021/2022 med BPEN002
-        and v.basert_pa_vedtak in (select vedtak_id from pen.t_vedtak where dato_lopende_tom is not null) --noqa
-        -- filteret over fjerner saker som aldri har hatt et løpende vedtak, feks planlagte pensjoner
-        and p.dato_dod <= v.dato_vedtak -- dødsfallet må ha skjedd før vedtaket. dette fjerner 12 vedtak fra 2024-2025
-        and p.dato_dod is not null
-        -- and v.dato_vedtak >= to_date('01.01.2024', 'DD.MM.YYYY')
-),
-
-finner_antall_mnd as (
-    select
-        months_between(trunc(dato_vedtak, 'MM'), dato_virk_fom) + 1 as mnd_feilutbet,
-        bosatt_norge,
-        dato_dod,
-        to_char(dato_dod, 'YYYY') as dod_ar,
-        sak_id,
-        vedtak_id,
-        dato_vedtak,
-        dato_virk_fom
-    from vedtak
-),
-
-finner_eventuell_tilbakekreving as (
-    select
-        finner_antall_mnd.*,
-        v.vedtak_id as tilbakekreving_vedtak_id,
-        v.k_sak_t as tilbakekreving_k_sak_t,
-        v.dato_virk_fom as tilbakekreving_dato_virk_fom,
-        v.dato_virk_tom as tilbakekreving_dato_virk_tom,
-
-        months_between(v.dato_virk_tom + 1, v.dato_virk_fom) as mnd_tilbakekrevd
-    from finner_antall_mnd
-    left join pen.t_vedtak v
-        on
-            v.sak_id = finner_antall_mnd.sak_id
-            and v.k_vedtak_t = 'TILBAKEKR'
-            and v.k_vedtak_s = 'IVERKS'
-            and v.k_sak_t = 'ALDER'
-            and trunc(v.dato_virk_fom) >= finner_antall_mnd.dato_dod
-)
-
-select
-    mnd_feilutbet,
-    mnd_feilutbet - coalesce(mnd_tilbakekrevd, 0) as mnd_feil_etter_tilbkr,
-    mnd_tilbakekrevd,
-    -- tilbakekreving_dato_virk_fom,
-    -- tilbakekreving_dato_virk_tom,
-    dato_virk_fom,
-    bosatt_norge,
-    dato_dod,
-    dod_ar,
-    dato_vedtak
-    -- sak_id,
-    -- vedtak_id,
-    -- tilbakekreving_vedtak_id,
-from finner_eventuell_tilbakekreving
-order by
-    mnd_feilutbet desc,
-    bosatt_norge desc
-"""
-```
 
 ```{python}
 #| include: false
@@ -147,28 +54,43 @@ connectionDVHP = oracledb.connect(
     service_name=secret.get('DB_SERVICE_NAME')
 )
 
+def find_git_root(start_path):
+    current_path = Path(start_path).resolve()
+    while current_path != current_path.parent:
+        if (current_path / '.git').is_dir():
+            return current_path
+        current_path = current_path.parent
+    return None
+
+git_root = find_git_root(Path(__file__).parent)
+sql_path = git_root / "sql" / "feilutbetalinger_per_mnd.sql"
+with open(sql_path, "r", encoding="utf-8") as f:
+    base_sql = f.read()
+
 with connectionDVHP.cursor() as cursor:
     cursor.execute(base_sql)
     columns = [col[0].lower() for col in cursor.description]
     data = cursor.fetchall()
 connectionDVHP.close()
 df = pd.DataFrame(data, columns=columns)
-
+print("Kolonner i df:\n" + "\n".join(f"- {col}" for col in df.columns))
 ```
 
 ```{python}
 #| include: false
 
-# dummy-df
-# mnd_feilutbet	bosatt_norge	dato_dod	dod_ar	dato_vedtak	   dato_virk_fom
+# eks på df med dummydata
+# mnd_feilutbet	bosatt	dato_dod	dod_ar	dato_vedtak	   dato_virk_fom
 # 	    4               nor	       2024-06-19	 2023	 2024-07-01	    2024-07-01
 # 	    1               utl	       2024-02-20	 2024	 2024-02-20	    2024-03-01
 # 	    0               utl	       2024-11-04	 2024	 2024-11-06	    2024-12-01
 # 	    12              nor	       2025-05-05	 2025	 2025-05-19	    2025-06-01
 
-agg_df = df.groupby(['mnd_feilutbet', 'bosatt_norge', 'dod_ar']).size().reset_index(name='antall_saker')
+df['mnd_feil_etter_tilbkr'] = df['mnd_feilutbet'] - df['mnd_tilbakekrevd'].fillna(0)
+
+agg_df = df.groupby(['mnd_feilutbet', 'bosatt', 'dod_ar']).size().reset_index(name='antall_saker')
 agg_df['sum_feilutbetaling'] = agg_df['antall_saker'] * agg_df['mnd_feilutbet']
-agg_df['dod_ar+bosatt'] = agg_df['dod_ar'].astype(str) + ' - ' + agg_df['bosatt_norge']
+agg_df['dod_ar+bosatt'] = agg_df['dod_ar'].astype(str) + ' - ' + agg_df['bosatt']
 agg_df = agg_df.sort_values(by='dod_ar+bosatt', ascending=False)
 totalt_mnd_feilutbetaling = agg_df['sum_feilutbetaling'].sum()
 totalt_saker_uten_feilutbetaling = agg_df[agg_df['mnd_feilutbet'] <= 0]['antall_saker'].sum()
@@ -178,22 +100,22 @@ totalt_saker_uten_feilutbetaling = agg_df[agg_df['mnd_feilutbet'] <= 0]['antall_
 #| include: false
 
 # new table:
-# dod_ar, bosatt_norge, antall_saker_uten_feil, sum_feilutbetaling_mnd
-summary_df = agg_df.groupby(['dod_ar', 'bosatt_norge']).agg(
+# dod_ar, bosatt, antall_saker_uten_feil, sum_feilutbetaling_mnd
+summary_df = agg_df.groupby(['dod_ar', 'bosatt']).agg(
     sum_feilutbetaling_mnd=('sum_feilutbetaling', 'sum'),
     antall_saker_med_1_feil=('antall_saker', lambda x: x[agg_df['mnd_feilutbet'] == 1].sum()),
     antall_saker_med_flere_feil=('antall_saker', lambda x: x[agg_df['mnd_feilutbet'] > 1].sum()),
     antall_saker_uten_feil=('antall_saker', lambda x: x[agg_df['mnd_feilutbet'] == 0].sum())
 ).reset_index()
-summary_df = summary_df.sort_values(by=['dod_ar', 'bosatt_norge'], ascending=[False, False])
+summary_df = summary_df.sort_values(by=['dod_ar', 'bosatt'], ascending=[False, False])
 # Add a total row to summary_df
 # Add total rows per 'nor', 'utl', and overall total
 totals = []
 for bosatt in ['nor', 'utl']:
-    df_bosatt = summary_df[summary_df['bosatt_norge'] == bosatt]
+    df_bosatt = summary_df[summary_df['bosatt'] == bosatt]
     totals.append({
         'dod_ar': 'Totalt',
-        'bosatt_norge': bosatt,
+        'bosatt': bosatt,
         'antall_saker_uten_feil': df_bosatt['antall_saker_uten_feil'].sum(),
         'antall_saker_med_1_feil': df_bosatt['antall_saker_med_1_feil'].sum(),
         'antall_saker_med_flere_feil': df_bosatt['antall_saker_med_flere_feil'].sum(),
@@ -211,12 +133,12 @@ show(summary_df_total, paging=False)
 ```{python}
 #| include: false
 
-# new plot: dod_ar on x, bosatt_norge as color, sum of feilutbetaling on y
+# new plot: dod_ar on x, bosatt as color, sum of feilutbetaling on y
 fig_feilutbetalinger_dod_ar = px.bar(
     summary_df,
     x="dod_ar",
     y="sum_feilutbetaling_mnd",
-    color="bosatt_norge",
+    color="bosatt",
     barmode='group',
     labels={"dod_ar": "Dødsår", "sum_feilutbetaling_mnd": "Sum feilutbetalte måneder"},
 )
@@ -225,8 +147,8 @@ uten_feil = summary_df[summary_df['antall_saker_uten_feil'] > 0]
 med_1_feil = summary_df[summary_df['antall_saker_med_1_feil'] > 0]
 med_flere_feil = summary_df[summary_df['antall_saker_med_flere_feil'] > 0]
 
-for bosatt in uten_feil['bosatt_norge'].unique():
-    bosatt_data = uten_feil[uten_feil['bosatt_norge'] == bosatt]
+for bosatt in uten_feil['bosatt'].unique():
+    bosatt_data = uten_feil[uten_feil['bosatt'] == bosatt]
     fig_feilutbetalinger_dod_ar.add_bar(
         x=bosatt_data['dod_ar'],
         y=bosatt_data['antall_saker_uten_feil'],
@@ -236,7 +158,7 @@ for bosatt in uten_feil['bosatt_norge'].unique():
         visible='legendonly'
     )
     # Legg til antall saker med 1 feilutbetaling
-    med_1_feil_data = med_1_feil[med_1_feil['bosatt_norge'] == bosatt]
+    med_1_feil_data = med_1_feil[med_1_feil['bosatt'] == bosatt]
     fig_feilutbetalinger_dod_ar.add_bar(
         x=med_1_feil_data['dod_ar'],
         y=med_1_feil_data['antall_saker_med_1_feil'],
@@ -246,7 +168,7 @@ for bosatt in uten_feil['bosatt_norge'].unique():
         visible='legendonly'
     )
     # Legg til antall saker med flere feilutbetalinger
-    med_flere_feil_data = med_flere_feil[med_flere_feil['bosatt_norge'] == bosatt]
+    med_flere_feil_data = med_flere_feil[med_flere_feil['bosatt'] == bosatt]
     fig_feilutbetalinger_dod_ar.add_bar(
         x=med_flere_feil_data['dod_ar'],
         y=med_flere_feil_data['antall_saker_med_flere_feil'],
@@ -266,8 +188,8 @@ fig_feilutbetalinger_dod_ar.update_layout(
 #| include: false
 
 # ser på antall tilbakekrevinger vs antall feilutbetalinger fra og med 2021
-# plott årlig sum av: mnd_feilutbet, mnd_tilbakekrevd, mnd_feil_etter_tilbkr på dod_ar, med bosatt_norge som color
-agg_df_tilbkr = df[df['dod_ar'] >= '2021'].groupby(['dod_ar', 'bosatt_norge']).agg(
+# plott årlig sum av: mnd_feilutbet, mnd_tilbakekrevd, mnd_feil_etter_tilbkr på dod_ar, med bosatt som color
+agg_df_tilbkr = df[df['dod_ar'] >= '2021'].groupby(['dod_ar', 'bosatt']).agg(
     sum_mnd_feilutbet=('mnd_feilutbet', 'sum'),
     sum_mnd_tilbakekrevd=('mnd_tilbakekrevd', 'sum'),
     sum_mnd_feil_etter_tilbkr=('mnd_feil_etter_tilbkr', 'sum')
@@ -283,7 +205,7 @@ fig_tilbakekreving_vs_feilutbetaling.add_trace(go.Bar(
     offsetgroup=0,
     legendgroup='Feilutbetaling',
     hovertemplate='Dødsår: %{x}<br>Sum feilutbetalte måneder: %{y}<br>Bosted: %{customdata}<extra></extra>',
-    customdata=agg_df_tilbkr['bosatt_norge']
+    customdata=agg_df_tilbkr['bosatt']
 ))
 fig_tilbakekreving_vs_feilutbetaling.add_trace(go.Bar(
     x=agg_df_tilbkr['dod_ar'],
@@ -295,7 +217,7 @@ fig_tilbakekreving_vs_feilutbetaling.add_trace(go.Bar(
     offsetgroup=1,
     legendgroup='Tilbakekreving',
     hovertemplate='Dødsår: %{x}<br>Sum tilbakekrevde måneder: %{y}<br>Bosted: %{customdata}<extra></extra>',
-    customdata=agg_df_tilbkr['bosatt_norge']
+    customdata=agg_df_tilbkr['bosatt']
 ))
 fig_tilbakekreving_vs_feilutbetaling.add_trace(go.Bar(
     x=agg_df_tilbkr['dod_ar'],
@@ -307,7 +229,7 @@ fig_tilbakekreving_vs_feilutbetaling.add_trace(go.Bar(
     offsetgroup=2,
     legendgroup='Feil etter tilbakekreving',
     hovertemplate='Dødsår: %{x}<br>Sum feilutbetalte måneder etter tilbakekreving: %{y}<br>Bosted: %{customdata}<extra></extra>',
-    customdata=agg_df_tilbkr['bosatt_norge']
+    customdata=agg_df_tilbkr['bosatt']
 ))
 fig_tilbakekreving_vs_feilutbetaling.update_layout(
     barmode='group',

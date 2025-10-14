@@ -9,6 +9,7 @@ with
 vedtak as (
     select
         p.dato_dod,
+        to_char(p.dato_dod, 'YYYY') as dod_ar,
         case
             when (p.bostedsland = 161 or p.bostedsland is null) then 'nor'
             when p.bostedsland in (60, 72, 202) then 'dan/fin/sve' -- 202 er Sverige, 72 er Finland, 60 er Danmark
@@ -16,89 +17,132 @@ vedtak as (
             when p.bostedsland = 57 then 'tyskland'-- Tyskland. Evt se på hele EU?
             else 'utl'
         end as bosatt,
-        v.sak_id,
-        v.vedtak_id,
-        v.dato_vedtak,
-        v.dato_virk_fom
-        -- v.basert_pa_vedtak, -- vedtaket som var løpende
-    from pen.t_vedtak v
-    inner join pen.t_person p on p.person_id = v.person_id
+        coalesce(v_lop.dato_stoppet, v_opph.dato_vedtak) as dato_utbetaling_stopp, -- vedtak som stoppes uten formell dødsmelding
+        v_lop.dato_stoppet as lop_dato_stoppet,
+        v_opph.dato_vedtak as opph_dato_vedtak,
+        v_opph.dato_virk_fom as opph_dato_virk_fom,
+        v_lop.dato_lopende_tom as lop_dato_lopende_tom,
+        v_tilb.dato_virk_fom as tilb_dato_virk_fom,
+        v_tilb.dato_virk_tom as tilb_dato_virk_tom,
+        v_opph.sak_id,
+        v_opph.vedtak_id as opph_vedtak_id,
+        v_lop.vedtak_id as lop_vedtak_id,
+        v_tilb.vedtak_id as tilb_vedtak_id
+    from pen.t_vedtak v_opph
+    left join pen.t_person p
+        on
+            p.person_id = v_opph.person_id
+    left join pen.t_vedtak v_lop on v_opph.basert_pa_vedtak = v_lop.vedtak_id
+    left join pen.t_vedtak v_tilb
+        on
+            v_tilb.sak_id = v_opph.sak_id
+            and v_tilb.k_vedtak_t = 'TILBAKEKR'
+            and v_tilb.k_sak_t = 'ALDER'
+            and trunc(v_tilb.dato_virk_fom) >= p.dato_dod
     where
         1 = 1
-        and v.k_sak_t = 'ALDER'
-        and v.k_vedtak_t = 'OPPHOR'
-        -- and v.ansv_saksbh = 'DødsfallBehandling'
-        and v.basert_pa_vedtak in (select vedtak_id from pen.t_vedtak where dato_lopende_tom is not null) --noqa
-        -- filteret over fjerner saker som aldri har hatt et løpende vedtak, feks planlagte pensjoner
-        and p.dato_dod <= v.dato_vedtak -- dødsfallet må ha skjedd før vedtaket. dette fjerner 12 vedtak fra 2024-2025
         and p.dato_dod is not null
+        and p.dato_dod <= v_opph.dato_vedtak -- dødsfallet må ha skjedd før vedtaket. dette fjerner 12 vedtak fra 2024-2025
         and p.dato_dod >= to_date('01.01.2011', 'DD.MM.YYYY') -- fjerner 2009 og 2010
-        -- and v.dato_vedtak >= to_date('01.09.2025', 'DD.MM.YYYY')
+        and v_opph.k_sak_t = 'ALDER'
+        and v_opph.k_vedtak_t = 'OPPHOR'
+        and v_opph.basert_pa_vedtak in (select vedtak_id from pen.t_vedtak where dato_lopende_tom is not null) --noqa
+        -- filteret over fjerner saker som aldri har hatt et løpende vedtak, feks planlagte pensjoner
 ),
 
-finner_antall_mnd as (
+finner_antall_mnd_feil_med_buffer as (
     select
-        months_between(trunc(dato_vedtak, 'MM'), dato_virk_fom) + 1 as mnd_feilutbet,
-        bosatt,
+        case
+            -- ingen feilutbetalinger
+            when trunc(dato_dod, 'MM') = trunc(dato_utbetaling_stopp, 'MM')
+                then 0
+            -- hvis stopp er før den 12. i en mnd regner vi fra forrige mnd
+            when extract(day from dato_utbetaling_stopp) < 12
+                then months_between(trunc(dato_utbetaling_stopp, 'MM'), trunc(dato_dod, 'MM')) - 1
+            -- hvis stopp er etter den 12. i en mnd regner vi fra inneværende mnd
+            else
+                months_between(trunc(dato_utbetaling_stopp, 'MM'), trunc(dato_dod, 'MM'))
+        end as mnd_feilutbetaling,
+        case
+            when tilb_vedtak_id is not null
+                then months_between(tilb_dato_virk_tom + 1, tilb_dato_virk_fom)
+        end as mnd_tilbakekrevd, -- ser ut som noen gamle tilbakekrevinger kun har virk fom, ikke virk tom ...
         dato_dod,
-        to_char(dato_dod, 'YYYY') as dod_ar,
-        sak_id,
-        vedtak_id,
-        dato_vedtak,
-        dato_virk_fom
+        dod_ar,
+        bosatt,
+        lop_dato_stoppet,
+        opph_dato_vedtak,
+        opph_dato_virk_fom,
+        lop_dato_lopende_tom,
+        tilb_dato_virk_fom,
+        tilb_dato_virk_tom,
+        opph_vedtak_id,
+        lop_vedtak_id,
+        tilb_vedtak_id,
+        sak_id
     from vedtak
 ),
 
-setter_10_dager_margin as (
+finner_feil_etter_tilbakekreving as (
     select
-        -- mnd_feilutbet as mnd_feilutbet_uten_margin,
-        case
-            when (mnd_feilutbet = 1 and extract(day from dato_vedtak) <= 10) then mnd_feilutbet - 1
-            else mnd_feilutbet
-        end as mnd_feilutbet,
-        bosatt,
+        mnd_feilutbetaling,
+        mnd_tilbakekrevd,
+        mnd_feilutbetaling - mnd_tilbakekrevd as mnd_feilutbetaling_etter_tilbakekreving,
         dato_dod,
         dod_ar,
-        sak_id,
-        vedtak_id,
-        dato_vedtak,
-        dato_virk_fom
-    from finner_antall_mnd
+        bosatt,
+        lop_dato_stoppet,
+        opph_dato_vedtak,
+        opph_dato_virk_fom,
+        lop_dato_lopende_tom,
+        tilb_dato_virk_fom,
+        tilb_dato_virk_tom,
+        opph_vedtak_id,
+        lop_vedtak_id,
+        tilb_vedtak_id,
+        sak_id
+    from finner_antall_mnd_feil_med_buffer
 ),
 
-finner_eventuell_tilbakekreving as (
+aggregering as (
     select
-        setter_10_dager_margin.*,
-        v.vedtak_id as tilbakekreving_vedtak_id,
-        v.k_sak_t as tilbakekreving_k_sak_t,
-        v.dato_virk_fom as tilbakekreving_dato_virk_fom,
-        v.dato_virk_tom as tilbakekreving_dato_virk_tom,
-        months_between(v.dato_virk_tom + 1, v.dato_virk_fom) as mnd_tilbakekrevd
-    from setter_10_dager_margin
-    left join pen.t_vedtak v
-        on
-            v.sak_id = setter_10_dager_margin.sak_id
-            and v.k_vedtak_t = 'TILBAKEKR'
-            and v.k_vedtak_s = 'IVERKS'
-            and v.k_sak_t = 'ALDER'
-            and trunc(v.dato_virk_fom) >= setter_10_dager_margin.dato_dod
+        sum(mnd_feilutbetaling) as sum_feilutbetaling,
+        sum(mnd_tilbakekrevd) as sum_tilbakekreving,
+        sum(mnd_feilutbetaling_etter_tilbakekreving) as sum_feil_etter_tilbakekreving,
+        count(*) as antall_saker_totalt,
+        count(case when tilb_vedtak_id is not null then 1 end) as antall_saker_med_tilbakekreving,
+        count(case when mnd_feilutbetaling = 0 then 1 end) as antall_saker_uten_feil,
+        count(case when mnd_feilutbetaling = 1 then 1 end) as antall_saker_med_1_feil,
+        count(case when mnd_feilutbetaling > 1 then 1 end) as antall_saker_med_flere_feil,
+        sum(case when mnd_feilutbetaling > 1 then mnd_feilutbetaling end) as sum_i_saker_med_flere_feil,
+        dod_ar,
+        bosatt
+    from finner_feil_etter_tilbakekreving
+    group by
+        dod_ar,
+        bosatt
+    order by
+        dod_ar desc,
+        bosatt desc
+),
+
+final as (
+    select
+        dod_ar,
+        bosatt,
+        antall_saker_totalt,
+        sum_feilutbetaling,
+        sum_tilbakekreving,
+        sum_feil_etter_tilbakekreving,
+        sum_i_saker_med_flere_feil,
+        antall_saker_uten_feil,
+        antall_saker_med_1_feil,
+        antall_saker_med_flere_feil,
+        antall_saker_med_tilbakekreving
+    from aggregering
 )
 
-select
-    mnd_feilutbet,
-    -- mnd_feilutbet_uten_margin,
-    mnd_tilbakekrevd,
-    -- tilbakekreving_dato_virk_fom,
-    -- tilbakekreving_dato_virk_tom,
-    bosatt,
-    dod_ar,
-    dato_dod,
-    dato_virk_fom,
-    dato_vedtak
-    -- sak_id,
-    -- vedtak_id,
-    -- tilbakekreving_vedtak_id,
-from finner_eventuell_tilbakekreving
+select * from final
 order by
-    mnd_feilutbet desc,
+    dod_ar asc,
     bosatt desc

@@ -10,6 +10,7 @@ format:
         embed-resources: true
         code-copy: true
         theme: flatly
+        scrolling: true
 ---
 
 ```{python}
@@ -26,30 +27,22 @@ import plotly.graph_objects as go
 from google.cloud import secretmanager
 ```
 
-# Plott
-
 ```{python}
-print(f"""
-Denne datafortellingen viser en initiell analyse av feilutbetalinger til døde alderspensjonister. 
-Dataene her er hentet {datetime.now().strftime("%d.%m.%Y")} og vil utvikle seg over tid med flere registrerte dødsfall tilbake i tid.
-I fanen "sql" kan du se sql-spørringen som er kjørt mot pen. Denne er aggregert på litt ulik vis for å få til plottene under.
-""")
-```
-
-
-```{python}
-#| include: false
+# | include: false
 
 # henter data
-def find_git_root(start_path):
+def find_git_root(start_path=None):
+    if start_path is None:
+        start_path = Path.cwd()  # Use current working directory instead of __file__
     current_path = Path(start_path).resolve()
     while current_path != current_path.parent:
-        if (current_path / '.git').is_dir():
+        if (current_path / ".git").is_dir():
             return current_path
         current_path = current_path.parent
     return None
 
-git_root = find_git_root(Path(__file__).parent)
+
+git_root = find_git_root()
 
 with open(git_root / "data" / "hemmelighet_navn", "r", encoding="utf-8") as f:
     hemmelighet = f.read().strip()
@@ -58,11 +51,11 @@ client = secretmanager.SecretManagerServiceClient()
 response = client.access_secret_version(request={"name": secret_name})
 secret = json.loads(response.payload.data.decode("UTF-8"))
 connectionDVHP = oracledb.connect(
-    user=secret.get('DB_USER'),
-    host=secret.get('DB_HOST'),
-    port=secret.get('DB_PORT'),
-    password=secret.get('DB_PASSWORD'),
-    service_name=secret.get('DB_SERVICE_NAME')
+    user=secret.get("DB_USER"),
+    host=secret.get("DB_HOST"),
+    port=secret.get("DB_PORT"),
+    password=secret.get("DB_PASSWORD"),
+    service_name=secret.get("DB_SERVICE_NAME"),
 )
 
 sql_path = git_root / "sql" / "feilutbetalinger_per_mnd.sql"
@@ -76,60 +69,33 @@ with connectionDVHP.cursor() as cursor:
 connectionDVHP.close()
 df = pd.DataFrame(data, columns=columns)
 print("Kolonner i df:\n" + "\n".join(f"- {col}" for col in df.columns))
+print("Unike bostedsland i df:\n" + "\n".join(f"- {land}" for land in df["bosatt"].unique()))
+
+# lager en df aggregert per år, dvs fjerner bosted
+df_arlig = df.groupby("dod_ar").sum(numeric_only=True).reset_index()
 ```
+
 
 ```{python}
 #| include: false
 
-# eks på df med dummydata
-# mnd_feilutbet	bosatt	dato_dod	dod_ar	dato_vedtak	   dato_virk_fom
-# 	    4               nor	       2024-06-19	 2023	 2024-07-01	    2024-07-01
-# 	    1               utl	       2024-02-20	 2024	 2024-02-20	    2024-03-01
-# 	    0               utl	       2024-11-04	 2024	 2024-11-06	    2024-12-01
-# 	    12              nor	       2025-05-05	 2025	 2025-05-19	    2025-06-01
+fig_arlig = go.Figure()
+for col in df_arlig.columns:
+    if col != 'dod_ar':
+        fig_arlig.add_trace(go.Bar(
+            x=df_arlig['dod_ar'],
+            y=df_arlig[col],
+            name=col.replace('_', ' '),
+            visible='legendonly' if col != 'sum_feilutbetaling' else True
+        ))
 
-df['mnd_feil_etter_tilbkr'] = df['mnd_feilutbet'] - df['mnd_tilbakekrevd'].fillna(0)
-
-agg_df = df.groupby(['mnd_feilutbet', 'bosatt', 'dod_ar']).size().reset_index(name='antall_saker')
-agg_df['sum_feilutbetaling'] = agg_df['antall_saker'] * agg_df['mnd_feilutbet']
-agg_df['dod_ar+bosatt'] = agg_df['dod_ar'].astype(str) + ' - ' + agg_df['bosatt']
-agg_df = agg_df.sort_values(by='dod_ar+bosatt', ascending=False)
-totalt_mnd_feilutbetaling = agg_df['sum_feilutbetaling'].sum()
-totalt_saker_uten_feilutbetaling = agg_df[agg_df['mnd_feilutbet'] <= 0]['antall_saker'].sum()
-```
-
-```{python}
-#| include: false
-
-# new table:
-# dod_ar, bosatt, antall_saker_uten_feil, sum_feilutbetaling_mnd
-summary_df = agg_df.groupby(['dod_ar', 'bosatt']).agg(
-    sum_feilutbetaling_mnd=('sum_feilutbetaling', 'sum'),
-    antall_saker_med_1_feil=('antall_saker', lambda x: x[agg_df['mnd_feilutbet'] == 1].sum()),
-    antall_saker_med_flere_feil=('antall_saker', lambda x: x[agg_df['mnd_feilutbet'] > 1].sum()),
-    antall_saker_uten_feil=('antall_saker', lambda x: x[agg_df['mnd_feilutbet'] == 0].sum())
-).reset_index()
-summary_df = summary_df.sort_values(by=['dod_ar', 'bosatt'], ascending=[False, False])
-# Add a total row to summary_df
-# Add total rows per 'nor', 'utl', and overall total
-totals = []
-for bosatt in ['nor', 'utl']:
-    df_bosatt = summary_df[summary_df['bosatt'] == bosatt]
-    totals.append({
-        'dod_ar': 'Totalt',
-        'bosatt': bosatt,
-        'antall_saker_uten_feil': df_bosatt['antall_saker_uten_feil'].sum(),
-        'antall_saker_med_1_feil': df_bosatt['antall_saker_med_1_feil'].sum(),
-        'antall_saker_med_flere_feil': df_bosatt['antall_saker_med_flere_feil'].sum(),
-        'sum_feilutbetaling_mnd': df_bosatt['sum_feilutbetaling_mnd'].sum()
-    })
-total_rows = pd.DataFrame(totals)
-summary_df_total = pd.concat([summary_df, total_rows], ignore_index=True)
-
-```
-
-```{python}
-show(summary_df_total, paging=False)
+fig_arlig.update_layout(
+    barmode='group',
+    title_text='Feilutbetalinger per dødsår',
+    xaxis_title='Dødsår',
+    yaxis_title='Antall måneder eller antall saker',
+    legend_title='Trykk for å vise/skjule',
+)
 ```
 
 ```{python}
@@ -137,46 +103,54 @@ show(summary_df_total, paging=False)
 
 # new plot: dod_ar on x, bosatt as color, sum of feilutbetaling on y
 fig_feilutbetalinger_dod_ar = px.bar(
-    summary_df,
+    df,
     x="dod_ar",
-    y="sum_feilutbetaling_mnd",
-    color="bosatt",
+    y="sum_feilutbetaling",
     barmode='group',
-    labels={"dod_ar": "Dødsår", "sum_feilutbetaling_mnd": "Sum feilutbetalte måneder"},
+    color="bosatt",
+    hover_name="bosatt",
+    labels={"dod_ar": "Dødsår", "sum_feilutbetaling": "Sum feilutbetalte måneder, før evt tilbakekreving"},
 )
-# Legg til antall saker uten feilutbetaling som ekstra barer
-uten_feil = summary_df[summary_df['antall_saker_uten_feil'] > 0]
-med_1_feil = summary_df[summary_df['antall_saker_med_1_feil'] > 0]
-med_flere_feil = summary_df[summary_df['antall_saker_med_flere_feil'] > 0]
 
-for bosatt in uten_feil['bosatt'].unique():
-    bosatt_data = uten_feil[uten_feil['bosatt'] == bosatt]
+for bosatt in df['bosatt'].unique():
+    bosatt_data = df[df['bosatt'] == bosatt]
     fig_feilutbetalinger_dod_ar.add_bar(
         x=bosatt_data['dod_ar'],
         y=bosatt_data['antall_saker_uten_feil'],
-        name=f"Antall saker uten feilutbetaling ({bosatt})",
+        name=f"[{bosatt}] # saker uten feilutbetaling",
         marker_color='green',
         opacity=0.6,
+        legendgroup=f"{bosatt}",
         visible='legendonly'
     )
     # Legg til antall saker med 1 feilutbetaling
-    med_1_feil_data = med_1_feil[med_1_feil['bosatt'] == bosatt]
     fig_feilutbetalinger_dod_ar.add_bar(
-        x=med_1_feil_data['dod_ar'],
-        y=med_1_feil_data['antall_saker_med_1_feil'],
-        name=f"Antall saker med 1 feilutbetaling ({bosatt})",
+        x=bosatt_data['dod_ar'],
+        y=bosatt_data['antall_saker_med_1_feil'],
+        name=f"[{bosatt}] # saker med 1 feilutbetaling",
         marker_color='yellow',
         opacity=0.6,
+        legendgroup=f"{bosatt}",
         visible='legendonly'
     )
     # Legg til antall saker med flere feilutbetalinger
-    med_flere_feil_data = med_flere_feil[med_flere_feil['bosatt'] == bosatt]
     fig_feilutbetalinger_dod_ar.add_bar(
-        x=med_flere_feil_data['dod_ar'],
-        y=med_flere_feil_data['antall_saker_med_flere_feil'],
-        name=f"Antall saker med flere feilutbetalinger ({bosatt})",
+        x=bosatt_data['dod_ar'],
+        y=bosatt_data['antall_saker_med_flere_feil'],
+        name=f"[{bosatt}] # saker med flere feilutbetalinger",
         marker_color='orange',
         opacity=0.6,
+        legendgroup=f"{bosatt}",
+        visible='legendonly'
+    )
+    # Legg til antall feilutbetalte måneder i saker med flere feilutbetalinger
+    fig_feilutbetalinger_dod_ar.add_bar(
+        x=bosatt_data['dod_ar'],
+        y=bosatt_data['sum_i_saker_med_flere_feil'],
+        name=f"[{bosatt}] Sum feil i saker med flere feilutbetalinger",
+        marker_color='red',
+        opacity=0.6,
+        legendgroup=f"{bosatt}",
         visible='legendonly'
     )
 fig_feilutbetalinger_dod_ar.update_layout(
@@ -189,49 +163,43 @@ fig_feilutbetalinger_dod_ar.update_layout(
 ```{python}
 #| include: false
 
-# ser på antall tilbakekrevinger vs antall feilutbetalinger fra og med 2021
-# plott årlig sum av: mnd_feilutbet, mnd_tilbakekrevd, mnd_feil_etter_tilbkr på dod_ar, med bosatt som color
-agg_df_tilbkr = df[df['dod_ar'] >= '2021'].groupby(['dod_ar', 'bosatt']).agg(
-    sum_mnd_feilutbet=('mnd_feilutbet', 'sum'),
-    sum_mnd_tilbakekrevd=('mnd_tilbakekrevd', 'sum'),
-    sum_mnd_feil_etter_tilbkr=('mnd_feil_etter_tilbkr', 'sum')
-).reset_index()
+# plot med tilbakekrevinger
 fig_tilbakekreving_vs_feilutbetaling = go.Figure()
 fig_tilbakekreving_vs_feilutbetaling.add_trace(go.Bar(
-    x=agg_df_tilbkr['dod_ar'],
-    y=agg_df_tilbkr['sum_mnd_feilutbet'],
+    x=df['dod_ar'],
+    y=df['sum_feilutbetaling'],
     name='Sum feilutbetalte måneder',
     marker_color='indianred',
-    text=agg_df_tilbkr['sum_mnd_feilutbet'],
+    text=df['sum_feilutbetaling'],
     textposition='auto',
     offsetgroup=0,
     legendgroup='Feilutbetaling',
     hovertemplate='Dødsår: %{x}<br>Sum feilutbetalte måneder: %{y}<br>Bosted: %{customdata}<extra></extra>',
-    customdata=agg_df_tilbkr['bosatt']
+    customdata=df['bosatt']
 ))
 fig_tilbakekreving_vs_feilutbetaling.add_trace(go.Bar(
-    x=agg_df_tilbkr['dod_ar'],
-    y=agg_df_tilbkr['sum_mnd_tilbakekrevd'],
+    x=df['dod_ar'],
+    y=df['sum_tilbakekreving'],
     name='Sum tilbakekrevde måneder',
     marker_color='lightseagreen',
-    text=agg_df_tilbkr['sum_mnd_tilbakekrevd'],
+    text=df['sum_tilbakekreving'],
     textposition='auto',
     offsetgroup=1,
     legendgroup='Tilbakekreving',
     hovertemplate='Dødsår: %{x}<br>Sum tilbakekrevde måneder: %{y}<br>Bosted: %{customdata}<extra></extra>',
-    customdata=agg_df_tilbkr['bosatt']
+    customdata=df['bosatt']
 ))
 fig_tilbakekreving_vs_feilutbetaling.add_trace(go.Bar(
-    x=agg_df_tilbkr['dod_ar'],
-    y=agg_df_tilbkr['sum_mnd_feil_etter_tilbkr'],
+    x=df['dod_ar'],
+    y=df['sum_feil_etter_tilbakekreving'],
     name='Sum feilutbetalte måneder etter tilbakekreving',
     marker_color='lightsalmon',
-    text=agg_df_tilbkr['sum_mnd_feil_etter_tilbkr'],
+    text=df['sum_feil_etter_tilbakekreving'],
     textposition='auto',
     offsetgroup=2,
     legendgroup='Feil etter tilbakekreving',
     hovertemplate='Dødsår: %{x}<br>Sum feilutbetalte måneder etter tilbakekreving: %{y}<br>Bosted: %{customdata}<extra></extra>',
-    customdata=agg_df_tilbkr['bosatt']
+    customdata=df['bosatt']
 ))
 fig_tilbakekreving_vs_feilutbetaling.update_layout(
     barmode='group',
@@ -242,10 +210,52 @@ fig_tilbakekreving_vs_feilutbetaling.update_layout(
 )
 ```
 
+# plott
 
+Work-in-progress! Obs! Bør først vise per år, og så per år og bosted.
+
+Plottene under gir en initiell oversikt over muligefeilutbetalinger til døde alderspensjonister.
+Merk at tallene er hentet fra PEN, så det er ikke koblet til faktiske feilutbetalinger.
+
+```{python}
+fig_arlig
+```
+
+```{python}
+fig_feilutbetalinger_dod_ar
+```
+
+
+Dette andre plottet kobler sammen vedtak om tilbakekrevinger med feilutbetalinger.
+
+```{python}
+fig_tilbakekreving_vs_feilutbetaling
+```
+
+# tabell per år
+
+```{python}
+show(df_arlig, paging=False)
+```
+
+# tabell per år og bosted
+
+```{python}
+show(df, paging=False)
+```
 
 # sql
 
 ```{python}
 print(base_sql)
+```
+
+# om
+
+```{python}
+print(f"""
+Denne datafortellingen viser en initiell analyse av feilutbetalinger til døde alderspensjonister. 
+Dataene her er hentet {datetime.now().strftime("%d.%m.%Y")} og vil utvikle seg over tid med flere registrerte dødsfall tilbake i tid.
+I fanen "sql" kan du se sql-spørringen som er kjørt mot pen. Denne er aggregert på litt ulik vis for å få til plottene under.
+""")
 ```

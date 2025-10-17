@@ -83,9 +83,16 @@ with DAG(
         script_path="scripts/vedtakstyper.py",
     )
 
+    manedlig_omregning = python_operator_wrapped(
+        dag=dag,
+        name="manedlig_omregning",
+        script_path="scripts/manedlig_omregning.py",
+    )
+
     aldersovergang
     vedtakstyper
     autobrev_inntektsendring
     laaste_vedtak
     kravstatus
     kontrollpunkt
+    manedlig_omregning

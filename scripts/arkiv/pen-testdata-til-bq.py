@@ -4,7 +4,7 @@ from google.cloud.bigquery import Client
 from google.cloud.bigquery import LoadJobConfig
 from google.cloud.bigquery.job.load import LoadJob
 
-sys.path.append(str(Path(__file__).parent.parent / "libs"))
+sys.path.append(str(Path(__file__).parent.parent.parent / "libs"))
 from utils import pesys_utils
 
 
@@ -51,6 +51,11 @@ t_hendelse = 't_hendelse'
 sql_t_hendelse = """select * from pen.t_hendelse
 where sak_id in (22983576, 22916985, 23505034, 22983695)"""
 
+# -- t_kontrollpunkt
+t_kontrollpunkt = 't_kontrollpunkt'
+sql_t_kontrollpunkt = """select * from pen.t_kontrollpunkt
+where sak_id in (22983576, 22916985, 23505034, 22983695)"""
+
 # -- t_k_hendelse_t
 t_k_hendelse_t = 't_k_hendelse_t'
 sql_t_k_hendelse_t = """select * from pen.t_k_hendelse_t"""
@@ -83,10 +88,10 @@ t_k_vilkar_resul_t = 't_k_vilkar_resul_t'
 sql_t_k_vilkar_resul_t = """select * from pen.t_k_vilkar_resul_t"""
 
 
-tabeller = [t_sak, t_vedtak, t_kravhode, t_person, t_kravlinje, t_vilkar_vedtak, t_hendelse, t_k_hendelse_t,t_k_krav_gjelder,
+tabeller = [t_sak, t_vedtak, t_kravhode, t_person, t_kravlinje, t_vilkar_vedtak, t_hendelse, t_kontrollpunkt, t_k_hendelse_t,t_k_krav_gjelder,
     t_k_krav_s, t_k_kravlinje_t, t_k_sak_s, t_k_sak_t, t_k_vedtak_s, t_k_vedtak_t, t_k_vilk_vurd_t, t_k_vilkar_resul_t]
 sqler = [ sql_t_sak, sql_t_vedtak, sql_t_kravhode, sql_t_person, sql_t_kravlinje, sql_t_vilkar_vedtak, sql_t_hendelse,
-    sql_t_k_hendelse_t, sql_t_k_krav_gjelder, sql_t_k_krav_s, sql_t_k_kravlinje_t, sql_t_k_sak_s, sql_t_k_sak_t, sql_t_k_vedtak_s,
+    sql_t_kontrollpunkt, sql_t_k_hendelse_t, sql_t_k_krav_gjelder, sql_t_k_krav_s, sql_t_k_kravlinje_t, sql_t_k_sak_s, sql_t_k_sak_t, sql_t_k_vedtak_s,
     sql_t_k_vedtak_t, sql_t_k_vilk_vurd_t, sql_t_k_vilkar_resul_t]
 
 # oracle

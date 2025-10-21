@@ -1,8 +1,8 @@
---- okning per ytelse per mnd
+--- belop_okt per ytelse per mnd
 select to_char(opp.dato_opprettet, 'yyyy-mm') as kjoremaned,
        opp.ytelse,
-       count(opp.okning)                      as okning
+       count(opp.belop_okt)                      as okning
 from pen.t_opptjeningsendring_bruker opp
-where opp.okning = '1'
-group by to_char(opp.dato_opprettet, 'yyyy-mm'), opp.ytelse, opp.okning
-order by kjoremaned desc, opp.ytelse, okning desc
+where opp.belop_okt = '1'
+group by to_char(opp.dato_opprettet, 'yyyy-mm'), opp.ytelse, opp.belop_okt
+order by kjoremaned desc, opp.ytelse, belop_okt desc

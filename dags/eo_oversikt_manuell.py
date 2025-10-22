@@ -9,7 +9,7 @@ from dataverk_airflow import python_operator
 with DAG(
     dag_id="eo_oversikt_manuell",
     description="Manuell kjøring for oppdatering av dataprodukter, altså BQ-tabeller",
-    schedule_interval="*/15 * * * *",
+    schedule_interval="0 * * * *",  # every hour
     start_date=datetime(2025, 6, 5, tzinfo=timezone("Europe/Oslo")),
     catchup=False,
 ) as dag:

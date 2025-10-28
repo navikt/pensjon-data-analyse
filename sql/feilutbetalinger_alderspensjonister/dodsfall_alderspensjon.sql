@@ -1,3 +1,5 @@
+-- dodsfall_alderspensjon
+
 select
     extract(year from p.dato_dod) as dod_ar,
     count(*) as antall_dodsfall_alder

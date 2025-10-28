@@ -1,4 +1,4 @@
--- feilutbetalinger_per_mnd
+-- feilutbetalinger
 -- finner antall måneder med feilutbetalinger ved å telle tilbakekrevinger
 -- ser på diff mellom fom og tom på tilbakekrevingskravet etter dødsfallet
 -- skjuler alle saker med mindre enn 10 årlige dødsfallopphør

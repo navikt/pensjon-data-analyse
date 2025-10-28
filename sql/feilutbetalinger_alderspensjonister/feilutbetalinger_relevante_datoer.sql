@@ -1,6 +1,9 @@
 -- feilutbetalinger_relevante_datoer
 -- henter ut datoer knytter til opphørssaker ved dødsfall
 -- dødsdato, datoer fra opphørsvedtak, datoer fra løpende vedtak, datoer fra evt tilbakekrevingsvedtak
+
+-- OBS! skal ikke deles åpent på markedsplassen
+
 select
     to_char(p.dato_dod, 'YYYY') as dod_ar,
     land.land_3_tegn as bosatt, -- evt land.dekode

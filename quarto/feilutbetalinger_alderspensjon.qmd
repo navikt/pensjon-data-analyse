@@ -43,14 +43,13 @@ def find_git_root(start_path=None):
 
 
 git_root = find_git_root()
-
 with open(git_root / "data" / "hemmelighet_navn", "r", encoding="utf-8") as f:
     hemmelighet = f.read().strip()
 secret_name = f"projects/230094999443/secrets/{hemmelighet}/versions/latest"
 client = secretmanager.SecretManagerServiceClient()
 response = client.access_secret_version(request={"name": secret_name})
 secret = json.loads(response.payload.data.decode("UTF-8"))
-connectionDVHP = oracledb.connect(
+connection_pen = oracledb.connect(
     user=secret.get("DB_USER"),
     host=secret.get("DB_HOST"),
     port=secret.get("DB_PORT"),
@@ -58,21 +57,30 @@ connectionDVHP = oracledb.connect(
     service_name=secret.get("DB_SERVICE_NAME"),
 )
 
-sql_path = git_root / "sql" / "feilutbetalinger_per_mnd.sql"
+sql_path = git_root / "sql" / "feilutbetalinger_alderspensjonister" / "feilutbetalinger_per_mnd.sql"
 with open(sql_path, "r", encoding="utf-8") as f:
     base_sql = f.read()
+sql_path_dodsfall = git_root / "sql" / "feilutbetalinger_alderspensjonister" / "dodsfall_fra_t_person.sql"
+with open(sql_path_dodsfall, "r", encoding="utf-8") as f:
+    sql_dodsfall_persontabell = f.read()
 
-with connectionDVHP.cursor() as cursor:
+with connection_pen.cursor() as cursor:
     cursor.execute(base_sql)
     columns = [col[0].lower() for col in cursor.description]
     data = cursor.fetchall()
-connectionDVHP.close()
+    cursor.execute(sql_dodsfall_persontabell)
+    columns_dodsfall = [col[0].lower() for col in cursor.description]
+    dodsfall_data = cursor.fetchall()
+
+connection_pen.close()
 df = pd.DataFrame(data, columns=columns)
+df_dodsfall = pd.DataFrame(dodsfall_data, columns=columns_dodsfall)
 print("Kolonner i df:\n" + "\n".join(f"- {col}" for col in df.columns))
 print("Unike bostedsland i df:\n" + "\n".join(f"- {land}" for land in df["bosatt"].unique()))
+df['Prosent saker med tilbakekreving'] = round((df['antall_saker_med_tilbakekreving'] / df['antall_saker_totalt'] ) * 100, 1)
 
-# lager en df aggregert per år, dvs fjerner bosted
 df_arlig = df.groupby("dod_ar").sum(numeric_only=True).reset_index()
+df_arlig['Prosent saker med tilbakekreving'] = round((df_arlig['antall_saker_med_tilbakekreving'] / df_arlig['antall_saker_totalt'] ) * 100, 1)
 ```
 
 
@@ -80,20 +88,25 @@ df_arlig = df.groupby("dod_ar").sum(numeric_only=True).reset_index()
 #| include: false
 
 fig_arlig = go.Figure()
+fig_arlig.add_trace(go.Bar(
+    x=df_dodsfall['dod_ar'],
+    y=df_dodsfall['antall_dodsfall_alder'],
+    name='Dødsfall med sak ALDER (t_person)',
+    marker_color='grey'
+))
 for col in df_arlig.columns:
     if col != 'dod_ar':
         fig_arlig.add_trace(go.Bar(
             x=df_arlig['dod_ar'],
             y=df_arlig[col],
             name=col.replace('_', ' '),
-            visible='legendonly' if col != 'sum_feilutbetaling' else True
+            visible='legendonly' if col != 'antall_saker_totalt' else True
         ))
-
 fig_arlig.update_layout(
     barmode='group',
-    title_text='Feilutbetalinger per dødsår',
+    title_text='Feilutbetalinger per dødsår – (antall saker er opphørssaker på dødsfall)',
     xaxis_title='Dødsår',
-    yaxis_title='Antall måneder eller antall saker',
+    yaxis_title='Antall saker / dødsfall',
     legend_title='Trykk for å vise/skjule',
 )
 ```
@@ -101,136 +114,63 @@ fig_arlig.update_layout(
 ```{python}
 #| include: false
 
-# new plot: dod_ar on x, bosatt as color, sum of feilutbetaling on y
-fig_feilutbetalinger_dod_ar = px.bar(
+fig_tilbakekrevinger_antall = px.bar(
     df,
     x="dod_ar",
-    y="sum_feilutbetaling",
-    barmode='group',
+    y='antall_saker_med_tilbakekreving',
+    title="Antall opphørssaker ved dødsfall med påfølgende tilbakekreving",
     color="bosatt",
     hover_name="bosatt",
-    labels={"dod_ar": "Dødsår", "sum_feilutbetaling": "Sum feilutbetalte måneder, før evt tilbakekreving"},
+    hover_data=["dod_ar", "antall_saker_med_tilbakekreving", "sum_tilbakekreving", "Prosent saker med tilbakekreving"],
+    labels={"dod_ar": "Dødsår", "sum_tilbakekreving": "Sum av mnd tilbakekrevd", "antall_saker_med_tilbakekreving": "Antall saker med tilbakekreving"}
+)
+fig_tilbakekrevinger_sum = px.bar(
+    df,
+    x="dod_ar",
+    y='sum_tilbakekreving',
+    title="Sum måneder tilbakekrevd",
+    color="bosatt",
+    hover_name="bosatt",
+    hover_data=["dod_ar", "antall_saker_med_tilbakekreving", "sum_tilbakekreving", "Prosent saker med tilbakekreving"],
+    labels={"dod_ar": "Dødsår", "sum_tilbakekreving": "Sum av mnd tilbakekrevd", "antall_saker_med_tilbakekreving": "Antall saker med tilbakekreving"}
+)
+fig_tilbakekrevinger_prosent = px.bar(
+    df,
+    x="dod_ar",
+    y='Prosent saker med tilbakekreving',
+    title="Prosent saker med tilbakekreving",
+    color="bosatt",
+    barmode="group", # kun denne er group
+    hover_name="bosatt",
+    hover_data=["dod_ar", "antall_saker_med_tilbakekreving", "sum_tilbakekreving", "Prosent saker med tilbakekreving"],
+    labels={"dod_ar": "Dødsår", "sum_tilbakekreving": "Sum av mnd tilbakekrevd", "antall_saker_med_tilbakekreving": "Antall saker med tilbakekreving"}
 )
 
-for bosatt in df['bosatt'].unique():
-    bosatt_data = df[df['bosatt'] == bosatt]
-    fig_feilutbetalinger_dod_ar.add_bar(
-        x=bosatt_data['dod_ar'],
-        y=bosatt_data['antall_saker_uten_feil'],
-        name=f"[{bosatt}] # saker uten feilutbetaling",
-        marker_color='green',
-        opacity=0.6,
-        legendgroup=f"{bosatt}",
-        visible='legendonly'
-    )
-    # Legg til antall saker med 1 feilutbetaling
-    fig_feilutbetalinger_dod_ar.add_bar(
-        x=bosatt_data['dod_ar'],
-        y=bosatt_data['antall_saker_med_1_feil'],
-        name=f"[{bosatt}] # saker med 1 feilutbetaling",
-        marker_color='yellow',
-        opacity=0.6,
-        legendgroup=f"{bosatt}",
-        visible='legendonly'
-    )
-    # Legg til antall saker med flere feilutbetalinger
-    fig_feilutbetalinger_dod_ar.add_bar(
-        x=bosatt_data['dod_ar'],
-        y=bosatt_data['antall_saker_med_flere_feil'],
-        name=f"[{bosatt}] # saker med flere feilutbetalinger",
-        marker_color='orange',
-        opacity=0.6,
-        legendgroup=f"{bosatt}",
-        visible='legendonly'
-    )
-    # Legg til antall feilutbetalte måneder i saker med flere feilutbetalinger
-    fig_feilutbetalinger_dod_ar.add_bar(
-        x=bosatt_data['dod_ar'],
-        y=bosatt_data['sum_i_saker_med_flere_feil'],
-        name=f"[{bosatt}] Sum feil i saker med flere feilutbetalinger",
-        marker_color='red',
-        opacity=0.6,
-        legendgroup=f"{bosatt}",
-        visible='legendonly'
-    )
-fig_feilutbetalinger_dod_ar.update_layout(
-    title_text="Feilutbetalinger per dødsår og bosted – vis antall saker uten feilutbetaling ved å trykke i legend",
-    barmode='group',
-    xaxis=dict(categoryorder='category ascending')
-)
+fig_tilbakekrevinger_sum
+fig_tilbakekrevinger_antall
+fig_tilbakekrevinger_prosent
 ```
 
-```{python}
-#| include: false
-
-# plot med tilbakekrevinger
-fig_tilbakekreving_vs_feilutbetaling = go.Figure()
-fig_tilbakekreving_vs_feilutbetaling.add_trace(go.Bar(
-    x=df['dod_ar'],
-    y=df['sum_feilutbetaling'],
-    name='Sum feilutbetalte måneder',
-    marker_color='indianred',
-    text=df['sum_feilutbetaling'],
-    textposition='auto',
-    offsetgroup=0,
-    legendgroup='Feilutbetaling',
-    hovertemplate='Dødsår: %{x}<br>Sum feilutbetalte måneder: %{y}<br>Bosted: %{customdata}<extra></extra>',
-    customdata=df['bosatt']
-))
-fig_tilbakekreving_vs_feilutbetaling.add_trace(go.Bar(
-    x=df['dod_ar'],
-    y=df['sum_tilbakekreving'],
-    name='Sum tilbakekrevde måneder',
-    marker_color='lightseagreen',
-    text=df['sum_tilbakekreving'],
-    textposition='auto',
-    offsetgroup=1,
-    legendgroup='Tilbakekreving',
-    hovertemplate='Dødsår: %{x}<br>Sum tilbakekrevde måneder: %{y}<br>Bosted: %{customdata}<extra></extra>',
-    customdata=df['bosatt']
-))
-fig_tilbakekreving_vs_feilutbetaling.add_trace(go.Bar(
-    x=df['dod_ar'],
-    y=df['sum_feil_etter_tilbakekreving'],
-    name='Sum feilutbetalte måneder etter tilbakekreving',
-    marker_color='lightsalmon',
-    text=df['sum_feil_etter_tilbakekreving'],
-    textposition='auto',
-    offsetgroup=2,
-    legendgroup='Feil etter tilbakekreving',
-    hovertemplate='Dødsår: %{x}<br>Sum feilutbetalte måneder etter tilbakekreving: %{y}<br>Bosted: %{customdata}<extra></extra>',
-    customdata=df['bosatt']
-))
-fig_tilbakekreving_vs_feilutbetaling.update_layout(
-    barmode='group',
-    title_text='Feilutbetalinger vs tilbakekreving per dødsår',
-    xaxis_title='Dødsår',
-    yaxis_title='Antall måneder',
-    legend_title='Kategori',
-)
-```
 
 # plott
 
-Work-in-progress! Obs! Bør først vise per år, og så per år og bosted.
-
-Plottene under gir en initiell oversikt over muligefeilutbetalinger til døde alderspensjonister.
-Merk at tallene er hentet fra PEN, så det er ikke koblet til faktiske feilutbetalinger.
 
 ```{python}
 fig_arlig
 ```
 
 ```{python}
-fig_feilutbetalinger_dod_ar
+fig_tilbakekrevinger_antall
 ```
-
-
-Dette andre plottet kobler sammen vedtak om tilbakekrevinger med feilutbetalinger.
 
 ```{python}
-fig_tilbakekreving_vs_feilutbetaling
+fig_tilbakekrevinger_sum
 ```
+
+```{python}
+fig_tilbakekrevinger_prosent
+```
+
 
 # tabell per år
 

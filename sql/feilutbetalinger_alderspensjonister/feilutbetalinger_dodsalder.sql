@@ -44,7 +44,7 @@ vedtak as (
 
 gjennomsnitt_dodsalder as (
     select
-        avg(dodsalder) as gjennomsnitt_dodsalder,
+        round(avg(dodsalder), 2) as gjennomsnitt_dodsalder,
         count(*) as antall_personer,
         bostedsland
     from vedtak
@@ -54,4 +54,4 @@ gjennomsnitt_dodsalder as (
 
 -- select * from gjennomsnitt_dodsalder_per_ar order by dodsar desc, bostedsland, gjennomsnitt_dodsalder desc;
 select * from gjennomsnitt_dodsalder
-order by gjennomsnitt_dodsalder desc;
+order by gjennomsnitt_dodsalder desc

@@ -49,7 +49,7 @@ finner_antall_mnd_feil as (
             when tilb_vedtak_id is not null and (tilb_dato_virk_tom + 1 > tilb_dato_virk_fom) -- fjerner 2 saker
                 then months_between(tilb_dato_virk_tom + 1, tilb_dato_virk_fom)
         end as mnd_tilbakekrevd, -- ser ut som noen gamle tilbakekrevinger kun har virk fom, ikke virk tom ...
-        case when tilb_vedtak_id is not null then 1 else 0 end as ,
+        case when tilb_vedtak_id is not null then 1 else 0 end as tilbakekrevd_flagg,
         dod_ar,
         bosatt
     from vedtak

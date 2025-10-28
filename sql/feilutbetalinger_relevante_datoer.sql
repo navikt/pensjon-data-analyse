@@ -2,10 +2,13 @@
 -- henter ut datoer knytter til opphørssaker ved dødsfall
 -- dødsdato, datoer fra opphørsvedtak, datoer fra løpende vedtak, datoer fra evt tilbakekrevingsvedtak
 select
+    to_char(p.dato_dod, 'YYYY') as dod_ar,
+    land.land_3_tegn as bosatt, -- evt land.dekode
     p.dato_dod,
     v_lop.dato_stoppet as lop_dato_stoppet,
     v_opph.dato_vedtak as opph_dato_vedtak,
     v_opph.dato_virk_fom as opph_dato_virk_fom,
+    coalesce(v_lop.dato_stoppet, v_opph.dato_vedtak) as dato_utbetaling_stopp, -- vedtak som stoppes uten formell dødsmelding
     v_lop.dato_lopende_tom as lop_dato_lopende_tom,
     v_tilb.dato_virk_fom as tilb_dato_virk_fom,
     v_tilb.dato_virk_tom as tilb_dato_virk_tom,
@@ -25,6 +28,7 @@ left join pen.t_vedtak v_tilb
         --and v_tilb.k_vedtak_s = 'IVERKS'
         and v_tilb.k_sak_t = 'ALDER'
         and trunc(v_tilb.dato_virk_fom) >= p.dato_dod
+left join pen.t_k_land_3_tegn land on land.k_land_3_tegn_id = coalesce(p.bostedsland, 161)
 where
     1 = 1
     and p.dato_dod is not null

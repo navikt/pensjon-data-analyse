@@ -11,6 +11,7 @@ logging.basicConfig(level=logging.INFO)
 bq_feilutbetalinger = "pensjon-saksbehandli-prod-1f83.feilutbetalinger.feilutbetalinger"
 bq_feilutbetalinger_dodsalder = "pensjon-saksbehandli-prod-1f83.feilutbetalinger.feilutbetalinger_dodsalder"
 bq_dodsfall_alderspensjon = "pensjon-saksbehandli-prod-1f83.feilutbetalinger.dodsfall_alderspensjon"
+bq_feilutbetalinger_med_avtaleland = "pensjon-saksbehandli-prod-1f83.feilutbetalinger.feilutbetalinger_med_avtaleland"
 
 # oracle PEN
 tuning = 10000
@@ -24,6 +25,9 @@ df_feilutbetalinger_dodsalder = pesys_utils.pandas_from_sql(
 )
 df_dodsfall_alderspensjon = pesys_utils.pandas_from_sql(
     "../sql/feilutbetalinger_alderspensjonister/dodsfall_alderspensjon.sql", con=con, tuning=tuning, lowercase=True
+)
+df_feilutbetalinger_med_avtaleland = pesys_utils.pandas_from_sql(
+    "../sql/feilutbetalinger_alderspensjonister/feilutbetalinger_med_avtaleland.sql", con=con, tuning=tuning, lowercase=True
 )
 con.close()
 
@@ -45,3 +49,6 @@ job2.result()
 
 job3 = client.load_table_from_dataframe(df_dodsfall_alderspensjon, bq_dodsfall_alderspensjon, job_config=job_config)
 job3.result()
+
+job4 = client.load_table_from_dataframe(df_feilutbetalinger_med_avtaleland, bq_feilutbetalinger_med_avtaleland, job_config=job_config)
+job4.result()

@@ -66,7 +66,7 @@ aggregering as (
     group by
         dod_ar,
         bosatt
-    having count(*) > 10
+    having count(*) >= 4
     order by
         dod_ar desc,
         bosatt desc

@@ -14,7 +14,7 @@ def python_operator_wrapped(
     dag: DAG,
     name: str,
     script_path: str,
-    resources: k8s.V1ResourceRequirements = None,
+    resources: k8s.V1ResourceRequirements = None, # type: ignore
 ):
     """Wrapper dataverk_airflow.python_operator with default arguments."""
     return python_operator(
@@ -47,5 +47,12 @@ with DAG(
         name="feilutbetalinger",
         script_path="scripts/feilutbetalinger.py",
     )
+    etteroppgjoret = python_operator_wrapped(
+        dag=dag,
+        name="etteroppgjoret",
+        script_path="scripts/eo_oversikt.py",
+        # eo_oversikt.sql, eo_oversikt_per_dag.sql, eo_varselbrev_sluttresultat.sql, eo_varselbrev_tidslinje.sql
+    )
 
     feilutbetalinger
+    etteroppgjoret

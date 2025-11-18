@@ -12,6 +12,8 @@ bq_eo_oversikt = "pensjon-saksbehandli-prod-1f83.etteroppgjoret.eo_oversikt"
 bq_eo_oversikt_per_dag = "pensjon-saksbehandli-prod-1f83.etteroppgjoret.eo_oversikt_per_dag"
 bq_eo_varselbrev_sluttresultat = "pensjon-saksbehandli-prod-1f83.etteroppgjoret.eo_varselbrev_sluttresultat"
 bq_eo_varselbrev_tidslinje = "pensjon-saksbehandli-prod-1f83.etteroppgjoret.eo_varselbrev_tidslinje"
+bq_eo_avviksbelop = "pensjon-saksbehandli-prod-1f83.etteroppgjoret.eo_avviksbelop"
+bq_eo_belopsoversikt = "pensjon-saksbehandli-prod-1f83.etteroppgjoret.eo_belopsoversikt"
 
 logging.basicConfig(level=logging.INFO)
 
@@ -43,6 +45,18 @@ df_eo_varselbrev_tidslinje = pesys_utils.pandas_from_sql(
     tuning=tuning,
     lowercase=True,
 )
+df_eo_avviksbelop = pesys_utils.pandas_from_sql(
+    sqlfile="../sql/eo_avviksbelop.sql",
+    con=con,
+    tuning=tuning,
+    lowercase=True,
+)
+df_eo_belopsoversikt = pesys_utils.pandas_from_sql(
+    sqlfile="../sql/eo_belopsoversikt.sql",
+    con=con,
+    tuning=tuning,
+    lowercase=True,
+)
 con.close()
 
 
@@ -69,5 +83,9 @@ run_job4 = client.load_table_from_dataframe(
     df_eo_varselbrev_tidslinje, bq_eo_varselbrev_tidslinje, job_config=job_config
 )
 run_job4.result()
+run_job5 = client.load_table_from_dataframe(df_eo_avviksbelop, bq_eo_avviksbelop, job_config=job_config)
+run_job5.result()
+run_job6 = client.load_table_from_dataframe(df_eo_belopsoversikt, bq_eo_belopsoversikt, job_config=job_config)
+run_job6.result()
 
 logging.info("Data lastet opp til BigQuery.")

@@ -89,7 +89,7 @@ with DAG(
         script_path="scripts/manedlig_omregning.py",
     )
 
-    manuell_behandling = python_operator_wrapped(
+    manuell_behandling_antall_oppgaver = python_operator_wrapped(
         dag=dag,
         name="manuell_behandling",
         script_path="scripts/manuell_behandling/antall_oppgaver.py",
@@ -102,4 +102,4 @@ with DAG(
     kravstatus
     kontrollpunkt
     manedlig_omregning
-    manuell_behandling
+    manuell_behandling_antall_oppgaver

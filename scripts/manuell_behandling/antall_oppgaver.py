@@ -2,7 +2,7 @@ import sys
 from pathlib import Path
 from google.cloud.bigquery import LoadJobConfig
 
-from scripts.manuell_behandling.underkategori_mapper import UNDERKATEGORI_KODE, map_underkategori_kode
+from scripts.manuell_behandling.underkategori_mapper import map_underkategori_kode
 
 sys.path.append(str(Path(__file__).parent.parent / "libs"))
 from utils import pesys_utils, gcp_utils

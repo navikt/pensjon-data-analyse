@@ -3,7 +3,7 @@ from pathlib import Path
 import logging
 from google.cloud.bigquery import LoadJobConfig
 
-sys.path.append(str(Path(__file__).parent.parent / "libs"))
+sys.path.append(str(Path(__file__).parent.parent.parent / "libs"))
 from utils import pesys_utils, gcp_utils
 
 logging.basicConfig(level=logging.INFO)
@@ -16,7 +16,7 @@ pesys_utils.set_db_secrets(secret_name="pen-prod-lesekopien-pen_dataprodukt")
 tuning = 10000
 con = pesys_utils.connect_to_oracle()
 df_inntektsendring = pesys_utils.pandas_from_sql(
-    sqlfile="../sql/autobrev_inntektsendring.sql",
+    sqlfile="../../sql/autobrev_inntektsendring.sql",
     con=con,
     tuning=tuning,
     lowercase=True,

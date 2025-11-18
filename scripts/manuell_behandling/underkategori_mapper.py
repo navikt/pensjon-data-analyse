@@ -145,7 +145,7 @@ UNDERKATEGORI_KODE = {
   'YRK_OKO': 'Yrkesskade',
 }
 
-def map_underkategori_kode(df: pd.DataFrame, column: str = 'UNDERKATEGORI_KODE') -> pd.DataFrame:
+def map_underkategori_kode(df: pd.DataFrame, column: str = 'UNDERKATEGORI') -> pd.DataFrame:
     df_copy = df.copy()
     df_copy[column] = df_copy[column].map(UNDERKATEGORI_KODE).fillna('Ukjent')
     return df_copy

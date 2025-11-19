@@ -95,6 +95,12 @@ with DAG(
         script_path="scripts/manuell_behandling/antall_oppgaver.py",
     )
 
+    behandling_behandlingstid = python_operator_wrapped(
+        dag=dag,
+        name="behandling_behandlingstid",
+        script_path="scripts/behandling/behandlingstid.py",
+    )
+
     aldersovergang
     vedtakstyper
     autobrev_inntektsendring
@@ -103,3 +109,4 @@ with DAG(
     kontrollpunkt
     manedlig_omregning
     manuell_behandling_antall_oppgaver
+    behandling_behandlingstid

@@ -13,7 +13,7 @@ tuning = 10000
 pesys_utils.set_db_secrets(secret_name="pen-prod-lesekopien-pen_dataprodukt")
 con = pesys_utils.connect_to_oracle()
 
-df_antall_oppgaver = pesys_utils.pandas_from_sql(
+df_behandlingstid = pesys_utils.pandas_from_sql(
     "../../sql/behandling_behandlingstid.sql", con=con, tuning=tuning, lowercase=True
 )
 con.close()
@@ -27,4 +27,4 @@ job_config = LoadJobConfig(
     create_disposition="CREATE_IF_NEEDED",
 )
 
-client.load_table_from_dataframe(df_antall_oppgaver, BEHANDLING_BEHANDLINGSTID_BQ_TABLL, job_config=job_config).result()
+client.load_table_from_dataframe(df_behandlingstid, BEHANDLING_BEHANDLINGSTID_BQ_TABLL, job_config=job_config).result()

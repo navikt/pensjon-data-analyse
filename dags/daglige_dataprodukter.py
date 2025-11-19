@@ -91,8 +91,8 @@ with DAG(
 
     manuell_behandling_antall_oppgaver = python_operator_wrapped(
         dag=dag,
-        name="manuell_behandling",
-        script_path="scripts/manuell_behandling/antall_oppgaver.py",
+        name="manuell",
+        script_path="scripts/manuell/antall_oppgaver.py",
     )
 
     behandling_behandlingstid = python_operator_wrapped(

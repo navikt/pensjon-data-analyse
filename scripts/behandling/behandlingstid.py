@@ -7,7 +7,7 @@ from utils import pesys_utils, gcp_utils
 
 # OBS! Dette kjøres som en append i BQ, så ved dobbeltkjøring vil det bli duplikater
 PROJECT = "pensjon-saksbehandli-prod-1f83"
-BEHANDLING_BEHANDLINGSTID_BQ_TABLL = f"{PROJECT}.behandling.behandlingstid"
+BEHANDLING_BEHANDLINGSTID_BQ_TABELL = f"{PROJECT}.behandling.behandlingstid"
 
 tuning = 10000
 pesys_utils.set_db_secrets(secret_name="pen-prod-lesekopien-pen_dataprodukt")
@@ -27,4 +27,4 @@ job_config = LoadJobConfig(
     create_disposition="CREATE_IF_NEEDED",
 )
 
-client.load_table_from_dataframe(df_behandlingstid, BEHANDLING_BEHANDLINGSTID_BQ_TABLL, job_config=job_config).result()
+client.load_table_from_dataframe(df_behandlingstid, BEHANDLING_BEHANDLINGSTID_BQ_TABELL, job_config=job_config).result()

@@ -89,10 +89,16 @@ with DAG(
         script_path="scripts/manedlig_omregning.py",
     )
 
-    manuell_behandling_antall_oppgaver = python_operator_wrapped(
+    behandling_manuell = python_operator_wrapped(
         dag=dag,
-        name="manuell_behandling",
-        script_path="scripts/manuell_behandling/antall_oppgaver.py",
+        name="behandling_manuell",
+        script_path="scripts/behandling/manuell/antall_oppgaver.py",
+    )
+
+    behandling_behandlingstid = python_operator_wrapped(
+        dag=dag,
+        name="behandling_behandlingstid",
+        script_path="scripts/behandling/behandlingstid.py",
     )
 
     aldersovergang
@@ -102,4 +108,5 @@ with DAG(
     kravstatus
     kontrollpunkt
     manedlig_omregning
-    manuell_behandling_antall_oppgaver
+    behandling_manuell
+    behandling_behandlingstid

@@ -8,5 +8,5 @@ select b.behandling_code  as behandlingstype,
        ansvarlig_team
 from pen.t_behandling b
 where b.status = 'FULLFORT'
-  and trunc(b.opprettet) < -- Initsiell last, bytt til = etter forste kjoring
+  and trunc(b.opprettet) =
       trunc(sysdate) - 1

@@ -17,17 +17,33 @@ format:
         theme: superhero
 
 ---
-<!-- author: "Brynjar Morka Mæhlum, team Uføre" -->
 <!-- GCP-team: teampensjon -->
 
 # Ukas oppmerksomhet
 ## {height=100%}
 ::: {.valuebox}
-<img src="https://i.imgflip.com/a886x2.jpg" style="width:90%;"/>
-<!-- ::: {.card}
-![](https://i.redd.it/the-work-is-mysterious-and-important-template-v0-qargwgtdrfi91.jpg?width=2022&format=pjpg&auto=webp&s=d5bc51c666d67d6097b3de3d315bcec5b130bdf8) -->
+<img src="https://i.imgflip.com/acsv8x.jpg" style="width:90%;"/>
 :::
 
+
+# Ukas oppmerksomhet 2
+## {height=100%}
+::: {.valuebox}
+<img src="https://i.imgflip.com/acsvee.jpg" style="width:90%;"/>
+:::
+
+# Etterlevelsesuka
+## {height=100%}
+::: {.card }
+![](../../bilder/etterlevelsesuka-kalender.png)
+:::
+
+
+# Tilbakemeldinger QR
+## {height=100%}
+::: {.card }
+![](../../bilder/etterlevelsesuka-tilbakemeldinger-qr.png)
+:::
 
 # Visjon
 ## {height=100%}

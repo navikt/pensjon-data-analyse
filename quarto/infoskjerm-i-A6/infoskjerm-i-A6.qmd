@@ -32,6 +32,13 @@ format:
 <img src="https://i.imgflip.com/acsvee.jpg" style="width:90%;"/>
 :::
 
+# fun
+## {height=100%}
+::: {.valuebox }
+![](../../bilder/etterlevelsesuka-slackbot.png)
+:::
+
+
 # Etterlevelsesuka
 ## {height=100%}
 ::: {.card }

@@ -1,0 +1,159 @@
+---
+title: "Antall uførebrev og brevtitler (fra 2022 til november 2024)"
+jupyter: python3
+execute:
+    echo: false
+    warning: false
+    include: true
+format:
+    dashboard:
+        embed-resources: true
+        code-copy: true
+        theme: 
+            light: [minty, highlight]
+---
+
+<!-- knada-team: pensjon-saksbehandling -->
+<!-- https://data.ansatt.nav.no/quarto/9f874bb4-8a01-489f-8e20-7003c112c602 -->
+<!-- dataene er tilgjengelig i en GCP-bucket på pensjon-saksbehandling -->
+
+```{python}
+import pandas as pd
+from itables import show
+import plotly.express as px
+
+pd.set_option("display.float_format", lambda x: "%.1f" % x)
+
+cols = ["brevkode","tittel","k_fagomrade","k_journal_s","dato_opprettet","k_utsendings_kanal", "KOLONNE_UTEN_NAVN"]
+df = pd.read_csv("export.csv", sep=",", encoding="Windows 1252", skiprows=1, names=cols)
+df["dato_opprettet"] = pd.to_datetime(df["dato_opprettet"], format="%d.%m.%Y %H.%M.%S")
+df["brevtype"] = df["brevkode"].str.extract(r"(UT|UP|IY)")
+df["aar"] = df["dato_opprettet"].dt.year.astype(str)
+df["mnd"] = df["dato_opprettet"].dt.month.astype(str).str.zfill(2)
+df["uke"] = df["dato_opprettet"].dt.isocalendar().week.astype(str).str.zfill(2)
+df["aarmnd"] = df["aar"] + df["mnd"].str.zfill(2)
+
+dict_endre_navn = {
+    'PE_IY_05_300': 'Brev fra Nav (redigerbar tittel)',
+    'PE_IY_03_155': 'Forvaltningsnotat (redigerbar tittel)',
+    'PE_IY_03_156': 'Internt forvaltningsnotat (redigerbar tittel)',
+}
+for key, value in dict_endre_navn.items():
+    df.loc[df["brevkode"] == key, "tittel"] = value
+df.loc[df["brevkode"] == "PE_UT_ADHOC_2024_INFO_HVILENDE_RETT_4_AAR", "brevkode"] = "PE_UT_ADHOC4"
+df.loc[df["brevkode"] == "PE_UT_ADHOC4", "tittel"] += ". Egentlig brevkode: PE_UT_ADHOC_2024_INFO_HVILENDE_RETT_4_AAR"
+
+
+# 116 unike brevkoder, men 42629 unike titler i .csv-filen
+# med dict_endre_navn er det nå 570 unike titler.
+# Fjerner de som er under 10 unike forekomster, så blir det 120 unike titler
+df_titler = df.groupby(["brevkode", "tittel"]).size().reset_index(name="antall")
+for key_tittel in set(df_titler[df_titler['antall'] < 10].tittel):
+    df_titler.loc[df_titler["tittel"] == key_tittel, "tittel"] = f"Tittel skjult pga. færre enn 10 unike forekomster"
+df_titler = df_titler.rename(columns={"tittel": "vanligste brevtittel"})
+df_unike_titler = df_titler.sort_values("antall", ascending=False).drop_duplicates(subset="brevkode")
+df_unike_titler = df_unike_titler.drop(columns="antall")
+
+df_agg = df.groupby(["aar", "brevkode", "brevtype"]).size().reset_index(name="antall").sort_values("antall", ascending=False)
+df_agg = df_agg.merge(df_unike_titler, on="brevkode", how="left")
+
+df_oversikt_brevtype = (df_agg.groupby(["brevtype"]).agg({"brevkode": "nunique", "antall": ["sum", "mean", "min", "max"]}).reset_index())
+df_oversikt_brevtype.columns = ['_'.join(col).strip('_') for col in df_oversikt_brevtype.columns]
+
+df_oversikt_aar = (df_agg.groupby(["aar"]).agg({"brevkode": "nunique", "antall": ["sum", "mean", "min", "max"]}).reset_index())
+df_oversikt_aar.columns = ['_'.join(col).strip('_') for col in df_oversikt_aar.columns]
+```
+
+
+
+# Tabell
+
+### Rad {height=50%}
+
+Viser brevkoder og brevtitler på uførebrev send fra og med 1.1.2022 til 25.11.2024.
+Illustrerer antall brev, at det er flere titler per brevkode, og at noen brev er lite brukt.
+
+**OBS!** Datagrunnlaget ble hentet 25. november 2024, og er ikke oppdatert siden.
+Alle brevene er med fagkode "PEN" eller "UFO", og inkluderer alle brev med brevkoder som begynner med:
+
+- "PE_UT"
+- "PE_UP"
+- "PE_IY"
+
+Dataene er hentet fra Joard-db, på [forespørsel i Slack i #team-dokumentløsninger (link)](https://nav-it.slack.com/archives/C6W9E5GPJ/p1732104371048489).
+Datagrunnlaget er med dato-oppløsning, så vi kan vise når de ulike brevene blir brukt i løpet av året, hvis det er interessant.
+
+
+I tabellen under kan du søke på feks "2024".
+Kolonnen "vanligste brevtittel" viser den vanligste tittelen for brevtypen, fordi det finnes 116 unike brevkoder, men 42629 unike titler.
+Se fanen "Brevtitler" for detaljer.
+
+```{python}
+print(
+    "Her vises oversikt per brevtype og per år\n(unike brevkoder, antall brev totalt, samt snitt, min og maks per brevkode)"
+)
+df_oversikt_aar.to_html(index=False)
+df_oversikt_brevtype.to_html(index=False)
+```
+
+### Rad {height=50%}
+
+```{python}
+show(df_agg, show_index=False)
+```
+
+
+
+# Interaktivt plott
+
+Plottet er interaktivt. Du kan velge å se på ett år av gangen ved å trykke på årstallene i legenden.
+Du kan også zoome inn på et område ved å dra musepekeren over plottet.
+
+```{python}
+fig_bar = px.bar(df_agg, x="brevkode", y="antall", color="aar", title="Antall brev fom. 2022", hover_data=["vanligste brevtittel"])
+fig_bar.update_layout(
+    xaxis_categoryorder="total descending",
+    legend_title="År",
+)
+```
+
+
+# Brevtitler
+
+Her er en interaktiv tabell med brevkode og brevtittel med antall forekomster siden 1.1.2022.
+Brev med færre enn 10 unike forekomster har fått tittelen "Tittel skjult pga. færre enn 10 unike forekomster".
+
+```{python}
+df_titler = df_titler.sort_values(["brevkode", "antall"], ascending=[True, False])
+df_titler.reset_index(drop=True, inplace=True)
+show(df_titler[["brevkode", "antall", "vanligste brevtittel"]], show_index=False)
+```
+
+
+# Tidslinje
+
+Her er en tidslinje som viser når brev blir sendt ut, både per uke og per måned.
+
+### Rad {height=50%}
+
+```{python}
+df_agg_uke = df.groupby(["uke", "aar"]).size().reset_index(name="antall").sort_values("uke")
+fig_bar = px.bar(df_agg_uke, x="uke", y="antall", barmode="group", color="aar", title="Antall brev per uke fom. 2022")
+fig_bar.update_layout(
+    xaxis_title="Ukenummer",
+    yaxis_title="Antall brev",
+    legend_title="År",
+)
+```
+
+### Rad {height=50%}
+
+```{python}
+df_agg_mnd = df.groupby(["mnd", "aar"]).size().reset_index(name="antall")
+fig_bar_mnd = px.bar(df_agg_mnd, x="mnd", y="antall", barmode="group", color="aar", title="Antall brev per måned fom. 2022")
+fig_bar_mnd.update_layout(
+    xaxis_title="Måned",
+    yaxis_title="Antall brev",
+    legend_title="År",
+)
+```

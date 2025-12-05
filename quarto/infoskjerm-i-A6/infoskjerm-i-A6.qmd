@@ -29,7 +29,7 @@ format:
 # Ukas oppmerksomhet 2
 ## {height=100%}
 ::: {.valuebox}
-<img src="https://i.imgflip.com/acsvee.jpg" style="width:90%;"/>
+![](../../bilder/qr-nullpktmaling.png)
 :::
 
 # fun

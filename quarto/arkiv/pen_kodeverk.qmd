@@ -1,0 +1,113 @@
+---
+title: "Kodeverk i pen"
+author: "Team Wendelboe"
+jupyter: python3
+execute:
+    echo: false
+    warning: false
+    include: true
+format:
+    dashboard:
+        embed-resources: true
+        code-copy: true
+        theme: 
+            light: [minty, highlight]
+
+---
+<!-- GCP-team: teampensjon -->
+```{python}
+#| include: false
+import getpass
+import itables
+import oracledb
+import pandas as pd
+
+# ikke kjørbar som qmd på grunn av input
+user = input('user: ')
+password = getpass.getpass('password: ')
+host = input('host: ')
+service_name = "pen_q2_ha"
+
+sql_alle_kolonner = """
+select
+    lower(table_name) as tabell,
+    lower(column_name) as kolonne
+from all_tab_cols
+where owner = 'PEN'
+order by table_name, column_name"""
+
+sql_kodeverkstabeller = """
+select distinct(table_name) as table_name
+from all_tab_cols
+where column_name = 'DEKODE'"""
+df_kodeverk = pd.DataFrame(columns=['kode', 'kolonnenavn', 'tabell', 'dekode'])
+feilede_tabeller = []
+
+con = oracledb.connect(port=1521, host=host, user=user, password=password, service_name=service_name)
+# %%
+
+with con.cursor() as cursor:
+    # henter alle kolonner i alle tabeller
+    cursor.execute(sql_alle_kolonner)
+    kolonner_og_tabeller = cursor.fetchall()
+    cols = [col[0].lower() for col in cursor.description]
+    df_kolonner_og_tabeller = pd.DataFrame(kolonner_og_tabeller, columns=cols)
+
+    # henter kun kodeverkstabeller
+    cursor.execute(sql_kodeverkstabeller)
+    kodeverkstabeller = cursor.fetchall()
+    cols = [col[0].lower() for col in cursor.description]
+    df_kodetabeller = pd.DataFrame(kodeverkstabeller, columns=cols)
+    df_kodetabeller['kolonne_kode'] = df_kodetabeller['table_name'].str.replace('^T_','', regex=True)
+    for i in range(len(df_kodetabeller)):
+        try:
+            if 'T_K_UR_KONTO' == df_kodetabeller.iloc[i]['table_name']:
+                continue  # denne tabellen har ingen verdifull dekode
+            sql_kodeverk = f"""select
+                {df_kodetabeller.iloc[i]['kolonne_kode']} as kode,
+                dekode,
+                '{df_kodetabeller.iloc[i]['kolonne_kode']}' as kolonnenavn,
+                '{df_kodetabeller.iloc[i]['table_name']}' as tabell
+                from pen.{df_kodetabeller.iloc[i]['table_name']}"""
+            cursor.execute(sql_kodeverk)
+            kodeverk = cursor.fetchall()
+            cols = [col[0].lower() for col in cursor.description]
+            df_temp = pd.DataFrame(kodeverk, columns=cols)
+            df_kodeverk = pd.concat([df_kodeverk, df_temp], ignore_index=True)
+        except Exception as e:
+            print(f"Error på {df_kodetabeller.iloc[i]['table_name']}")
+            feilede_tabeller.append(df_kodetabeller.iloc[i]['table_name'])
+print("Feilet på ", len(feilede_tabeller), " tabeller")
+# %%
+con.close()
+
+df_kodeverk['kolonnenavn'] = df_kodeverk['kolonnenavn'].str.lower()
+df_kodeverk['tabell'] = df_kodeverk['tabell'].str.lower()
+df_kodeverk = df_kodeverk.sort_values('tabell').reset_index(drop=True)
+
+df_kolonner_og_tabeller = df_kolonner_og_tabeller[df_kolonner_og_tabeller['tabell'].str.startswith('t_')].reset_index(drop=True)
+
+# df_kodeverk.to_csv('alle_kodetabeller_pen_q2.csv', index=False)
+
+```
+
+# Kodeverk i pen
+```{python}
+itables.show(df_kodeverk, show_index=False, lengthMenu=[20, 50, 100, 500])
+```
+
+
+# Alle kolonner og tabeller i pen
+
+```{python}
+itables.show(df_kolonner_og_tabeller, show_index=False, lengthMenu=[20, 50, 100, 500])
+```
+
+# Feilede tabeller i kodeverk-henting
+```{python}
+print("Feilet på ", len(feilede_tabeller), " tabeller:")
+for tabell in feilede_tabeller:
+    print(tabell)
+
+print("\nKlarte ikke hente 'dekode' eller tabellnavn minus 'T_...' for overnevnte tabeller.")
+```

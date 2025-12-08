@@ -22,14 +22,14 @@ format:
 # Ukas oppmerksomhet
 ## {height=100%}
 ::: {.valuebox}
-<img src="https://i.imgflip.com/acsv8x.jpg" style="width:90%;"/>
+<img src="https://i.imgflip.com/adrvh8.jpg" style="width:90%;"/>
 :::
 
 
 # Ukas oppmerksomhet 2
 ## {height=100%}
 ::: {.valuebox}
-<img src="https://i.imgflip.com/acsvee.jpg" style="width:90%;"/>
+![](../../bilder/qr-nullpktmaling.png)
 :::
 
 # fun

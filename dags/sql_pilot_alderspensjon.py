@@ -34,8 +34,7 @@ with DAG(
         retries=5,
         repo="navikt/pensjon-pen-dataprodukt",
         script_path="dbt/dbt_run.py",
-        # dbt_command="build --exclude sql_pilot_original --exclude tag:work-in-progress",
-        dbt_command="run -s dataprodukt_alderspensjon_belop+",
+        dbt_command="build --exclude sql_pilot_original --exclude tag:work-in-progress",
         allowlist=[
             "dmv18-scan.adeo.no:1521",
             "hub.getdbt.com",

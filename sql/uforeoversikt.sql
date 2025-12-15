@@ -57,38 +57,43 @@ kravhoder as (
 kravlinjer as (
     select
         kh.*,
-        case when kl.k_kravlinje_t = 'BT' then 1 else 0 end as flagg_bt,
-        -- UT_GJT, FAST_UTG_INST, ET(få så mulig droppe?), BT
-        -- kl.k_kravlinje_t,
-        -- kls.k_kravlinje_s,
+        case when kl.k_kravlinje_t = 'UT' then 1 else 0 end as ut_flagg,
+        case when kl.k_kravlinje_t = 'UT_GJT' then 1 else 0 end as ut_gjt_flagg,
+        case when kl.k_kravlinje_t = 'FAST_UTG_INST' then 1 else 0 end as fast_utg_inst_flagg,
+        case when kl.k_kravlinje_t = 'ET' then 1 else 0 end as et_flagg,
+        case when kl.k_kravlinje_t = 'BT' then 1 else 0 end as bt_flagg,
+        kl.k_kravlinje_t,
         kl.k_land_3_tegn_id
     from kravhoder kh
     left join pen.t_kravlinje kl on kh.kravhode_id = kl.kravhode_id
-    -- left join pen.t_kravlinje_s kls on kl.kravlinje_s_id = kls.kravlinje_s_id
+),
+
+agg_kravlinjer as (
+    select
+        vedtak_id,
+        -- må være max på neste og ikke sum, fordi bla. BT er flere barn og UT er fordelt på land
+        max(ut_flagg) as ut_flagg,
+        max(ut_gjt_flagg) as ut_gjt_flagg,
+        max(fast_utg_inst_flagg) as fast_utg_inst_flagg,
+        max(et_flagg) as et_flagg,
+        max(bt_flagg) as bt_flagg
+    from kravlinjer
+    group by vedtak_id
 )
 
 select
     count(*) as ant,
-    count(distinct sak_id) as ant_saker,
-    k_kravlinje_t
-    -- k_vedtak_t
-from kravlinjer
+    count(distinct vedtak_id) as ant_saker,
+    ut_flagg,
+    ut_gjt_flagg,
+    fast_utg_inst_flagg,
+    et_flagg,
+    bt_flagg
+from agg_kravlinjer
 group by
-    k_kravlinje_t
-    -- k_vedtak_t
--- ;
--- 
--- 
--- select * from pen.t_sak;
--- select * from pen.t_vedtak;
--- select * from pen.t_kravlinje;
--- select * from pen.t_kravlinje_s;
--- select
---     kl.kravlinje_id,
---     kl.k_land_3_tegn_id,
---     kl.k_kravlinje_t,
---     kls.k_kravlinje_s,
---     kl.kravlinje_s_id
--- from pen.t_kravlinje kl
--- left join pen.t_kravlinje_s kls on kl.kravlinje_s_id = kls.kravlinje_s_id;
--- select * from pen.t_kravhode;
+    ut_flagg,
+    ut_gjt_flagg,
+    fast_utg_inst_flagg,
+    et_flagg,
+    bt_flagg
+order by ant desc

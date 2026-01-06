@@ -35,7 +35,7 @@ format:
 # fun
 ## {height=100%}
 ::: {.valuebox }
-![](../../bilder/Trygdebeistet.png)
+![](../../bilder/etterlevelsesuka-slackbot.png)
 :::
 
 

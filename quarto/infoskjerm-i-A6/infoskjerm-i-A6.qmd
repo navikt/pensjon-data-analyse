@@ -22,20 +22,20 @@ format:
 # Ukas oppmerksomhet
 ## {height=100%}
 ::: {.valuebox}
-<img src="https://i.imgflip.com/adrvh8.jpg" style="width:90%;"/>
+<img src="https://i.imgflip.com/agmjoq.jpg" style="width:90%;"/>
 :::
 
 
 # Ukas oppmerksomhet 2
 ## {height=100%}
 ::: {.valuebox}
-![](../../bilder/qr-nullpktmaling.png)
+<img src="https://i.imgflip.com/afij6y.jpg" style="width:90%;"/>
 :::
 
 # fun
 ## {height=100%}
 ::: {.valuebox }
-![](../../bilder/etterlevelsesuka-slackbot.png)
+![](../../bilder/Trygdebeistet.png)
 :::
 
 

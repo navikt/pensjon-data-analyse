@@ -18,7 +18,7 @@ with DAG(
         retries=5,
         repo="navikt/pensjon-pen-dataprodukt",
         script_path="dbt/dbt_run.py",
-        dbt_command="build -s +tag:sak",
+        dbt_command="build -s +tag:sak --exclude snapshot_sakteam",
         allowlist=[
             "dmv36-scan.adeo.no:1521",
             "hub.getdbt.com",

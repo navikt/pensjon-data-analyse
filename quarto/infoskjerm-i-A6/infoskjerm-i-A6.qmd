@@ -26,7 +26,7 @@ format:
 :::
 
 <!-- Gamle memes -->
-<!-- ledelsen, how do you do fellow kids - https://imgflip.com/i/agwds8 -->
+<!-- ledelsen, how do you do fellow kids - https://i.imgflip.com/agwey5.jpg -->
 <!-- pesys vs pesys modernisert - https://i.imgflip.com/agmjoq.jpg -->
 <!-- Juleønske om drager og Pesys - https://i.imgflip.com/adrvh8.jpg -->
 <!-- Bernie asking om å fylle ut etterlevelse - bilder/etterlevelsesuka-slackbot.png -->
@@ -39,7 +39,7 @@ format:
 # Ukas oppmerksomhet 2
 ## {height=100%}
 ::: {.valuebox}
-<img src="https://imgflip.com/i/agwds8" style="width:90%;"/>
+<img src="https://i.imgflip.com/agwey5.jpg" style="width:90%;"/>
 :::
 
 # fun

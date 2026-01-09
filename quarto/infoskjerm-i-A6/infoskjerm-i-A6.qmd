@@ -44,13 +44,14 @@ format:
 
 # fun
 ## {height=100%}
-::: {.valuebox }
-![](../../bilder/etterlevelsesuka-slackbot.png)
+::: {.card }
+![](../../bilder/QR-T1-stramling-tilbakemelding.jpeg)
 :::
+<!-- ![](../../bilder/etterlevelsesuka-slackbot.png) -->
 
 
 # Visjon
-## {height=100%}
+## {height=80%}
 ```{python}
 #| content: valuebox
 #| title: "Visjon for uføretrygd"
@@ -139,7 +140,7 @@ Disse tallene er kvalitetssikret og brukes utad. Tall i offentlig statistikk har
 
 ## Row 1
 ### col
-::: {.valuebox color="primary" icon="people"}
+::: {.valuebox title="Gi dine tilbakemeldinger på stramling og målsafari for T1 2026" color="primary" icon="people"}
 Antall uføretrygdede i 2024
 
 373000

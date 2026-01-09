@@ -25,11 +25,21 @@ format:
 <img src="https://i.imgflip.com/agmjoq.jpg" style="width:90%;"/>
 :::
 
+<!-- Gamle memes -->
+<!-- ledelsen, how do you do fellow kids - https://imgflip.com/i/agwds8 -->
+<!-- pesys vs pesys modernisert - https://i.imgflip.com/agmjoq.jpg -->
+<!-- Juleønske om drager og Pesys - https://i.imgflip.com/adrvh8.jpg -->
+<!-- Bernie asking om å fylle ut etterlevelse - bilder/etterlevelsesuka-slackbot.png -->
+<!-- svampebob om å etterlever alle lover og regler - https://i.imgflip.com/acsvee.jpg -->
+<!-- etterlevelseskrav, just do it - https://i.imgflip.com/acsv8x.jpg -->
+<!-- svampebob om teknisk modernisering - https://i.imgflip.com/a886x2.jpg -->
+<!-- the work is mysterious and important - https://www.reddit.com/media?url=https%3A%2F%2Fi.redd.it%2Fthe-work-is-mysterious-and-important-template-v0-qargwgtdrfi91.jpg%3Fwidth%3D2022%26format%3Dpjpg%26auto%3Dwebp%26s%3Dd5bc51c666d67d6097b3de3d315bcec5b130bdf8 -->
+
 
 # Ukas oppmerksomhet 2
 ## {height=100%}
 ::: {.valuebox}
-<img src="https://i.imgflip.com/afij6y.jpg" style="width:90%;"/>
+<img src="https://imgflip.com/i/agwds8" style="width:90%;"/>
 :::
 
 # fun

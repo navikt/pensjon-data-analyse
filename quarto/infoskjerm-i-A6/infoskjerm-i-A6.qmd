@@ -14,10 +14,10 @@ format:
               href: https://nav-it.slack.com/archives/C06NKNY1399
         embed-resources: true
         code-copy: true
-        theme: superhero
-
+        theme: quartz
 ---
 <!-- GCP-team: teampensjon -->
+<!-- finn nye theme her: https://bootswatch.com/ -->
 
 # Ukas oppmerksomhet
 ## {height=100%}
@@ -49,19 +49,6 @@ format:
 :::
 
 
-# Etterlevelsesuka
-## {height=100%}
-::: {.card }
-![](../../bilder/etterlevelsesuka-kalender.png)
-:::
-
-
-# Tilbakemeldinger QR
-## {height=100%}
-::: {.card }
-![](../../bilder/etterlevelsesuka-tilbakemeldinger-qr.png)
-:::
-
 # Visjon
 ## {height=100%}
 ```{python}
@@ -72,56 +59,55 @@ format:
 'En trygg og bærekraftig uføretrygd'
 ```
 
-# Ambisjon 1
-##  {height=100%}
+# Prioriteringer
+##  {height=25%}
 ```{python}
 #| content: valuebox
-#| title: "Ambisjon 1"
+#| title: "Prioritering 1 i SPU"
+#| color: primary
+#| icon: 1-circle-fill
+'Nødvendige driftsoppgaver'
+```
+
+##  {height=25%}
+```{python}
+#| content: valuebox
+#| title: "Prioritering 2 i SPU"
 #| color: success
-#| icon: activity
-'Vi gjennomfører reformer og regelverksendringer bærekraftig og med et tydelig brukerfokus'
+#| icon: 2-circle-fill
+'Regelverksendringer, oppdrag fra politisk ledelse, utredninger'
 ```
 
-# Ambisjon 2
-##  {height=100%}
+##  {height=25%}
 ```{python}
 #| content: valuebox
-#| title: "Ambisjon 2"
-#| color: dark
-#| icon: activity
-'Vi sikrer effektiv forvaltning og stabil drift, med fokus på fart og flyt. Vi tilpasser oss kvalitetskrav og brukerbehov, og proiriterer kontinuerlig utvikling for å være klare for fremtiden'
+#| title: "Prioritering 3 i SPU"
+#| color: info
+#| icon: 3-circle-fill
+'Teknisk modernisering'
 ```
 
-# Ambisjon 3
-##  {height=100%}
+##  {height=25%}
 ```{python}
 #| content: valuebox
-#| title: "Ambisjon 3"
+#| title: "Prioritering 4 i SPU"
 #| color: dark
-#| icon: activity
-'Vi skal bli klar til teknisk modernisering'
+#| icon: 4-circle-fill
+'Strategisk handlingsrom'
 ```
-
 
 # how-to
 
-## {height=33%}
+## {height=40%}
 ```{python}
 #| content: valuebox
 #| title: "Hvordan få opp andre nettsider her?"
 #| color: dark
 #| icon: patch-question
-'Snakk med Brynjar!'
+'Snakk med Brynjar/Eystein!'
 ```
-## {height=33%}
-```{python}
-#| content: valuebox
-#| title: "Eventuelt kan du sjekke ut github-repoet"
-#| color: dark
-#| icon: eyeglasses
-'navikt/infoskjerm-karusell og fila nettsider.yaml'
-```
-## {height=33%}
+
+## {height=40%}
 ```{python}
 #| content: valuebox
 #| title: "Hva kan vises?"

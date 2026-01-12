@@ -16,7 +16,7 @@ with DAG(
     datalast_ufore_q2 = python_operator(
         dag=dag,
         name='datalast_ufore_q2',
-        script_path="scripts/dvh_sak.py",
+        script_path="scripts/dvh_sak_ufore.py",
         requirements_path="requirements.txt",
         use_uv_pip_install=True,
         repo="navikt/pensjon-data-analyse",

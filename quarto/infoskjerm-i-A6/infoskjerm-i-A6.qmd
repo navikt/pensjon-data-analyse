@@ -51,13 +51,22 @@ format:
 
 
 # Visjon
-## {height=80%}
+## {height=45%}
 ```{python}
 #| content: valuebox
-#| title: "Visjon for uføretrygd"
+#| title: "Visjon for uføreklynga"
 #| color: success
 #| icon: stars
 'En trygg og bærekraftig uføretrygd'
+```
+
+## {height=45%}
+```{python}
+#| content: valuebox
+#| title: "Visjon for aldersklynga"
+#| color: success
+#| icon: stars
+'Vi gjør pensjon enklere'
 ```
 
 # Prioriteringer

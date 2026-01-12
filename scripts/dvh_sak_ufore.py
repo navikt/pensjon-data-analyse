@@ -1,7 +1,7 @@
 import logging
 import pandas as pd
 from time import time
-from google.cloud.bigquery import LoadJobConfig
+from google.cloud.bigquery import LoadJobConfig, SchemaField, enums
 from google.api_core.exceptions import NotFound
 
 import sys
@@ -37,7 +37,43 @@ except NotFound:
 
 con = pesys_utils.connect_to_oracle()
 df_bq = pesys_utils.df_from_sql(sql_pen_dev, con)
-job_config = LoadJobConfig(write_disposition="WRITE_APPEND", create_disposition=create_disposition)
+
+schema: list[SchemaField] = [
+    SchemaField("behandling_id", enums.SqlTypeNames.STRING),
+    SchemaField("sak_id", enums.SqlTypeNames.STRING),
+    SchemaField("aktor_id", enums.SqlTypeNames.STRING),
+    SchemaField("sak_ytelse", enums.SqlTypeNames.STRING),
+    SchemaField("sak_utland", enums.SqlTypeNames.STRING),
+    SchemaField("behandling_type", enums.SqlTypeNames.STRING),
+    SchemaField("behandling_status", enums.SqlTypeNames.STRING),
+    SchemaField("behandling_resultat", enums.SqlTypeNames.STRING),
+    SchemaField("behandling_metode", enums.SqlTypeNames.STRING),
+    SchemaField("behandling_arsak", enums.SqlTypeNames.STRING),
+    SchemaField("opprettet_av", enums.SqlTypeNames.STRING),
+    SchemaField("saksbehandler", enums.SqlTypeNames.STRING),
+    SchemaField("ansvarlig_beslutter", enums.SqlTypeNames.STRING),
+    SchemaField("ansvarlig_enhet", enums.SqlTypeNames.STRING),
+    SchemaField("mottatt_tid", enums.SqlTypeNames.DATETIME),
+    SchemaField("registrert_tid", enums.SqlTypeNames.DATETIME),
+    SchemaField("ferdigbehandlet_tid", enums.SqlTypeNames.DATETIME),
+    SchemaField("utbetalt_tid", enums.SqlTypeNames.DATETIME),
+    SchemaField("endret_tid", enums.SqlTypeNames.DATETIME),
+    SchemaField("forventetoppstart_tid", enums.SqlTypeNames.DATETIME),
+    SchemaField("teknisk_tid", enums.SqlTypeNames.DATETIME),
+    SchemaField("fagsystem_navn", enums.SqlTypeNames.STRING),
+    SchemaField("relatertbehandling_id", enums.SqlTypeNames.STRING),
+    SchemaField("relatert_fagsystem", enums.SqlTypeNames.STRING),
+    SchemaField("tilbakekrev_belop", enums.SqlTypeNames.STRING),
+    SchemaField("funksjonell_periode_fom", enums.SqlTypeNames.STRING),
+    SchemaField("funksjonell_periode_tom", enums.SqlTypeNames.STRING),
+    SchemaField("fagsystem_versjon", enums.SqlTypeNames.STRING),
+]
+
+job_config = LoadJobConfig(
+    write_disposition="WRITE_APPEND",
+    create_disposition=create_disposition,
+    schema=schema,
+)
 
 start = time()
 job = client.load_table_from_dataframe(df_bq, dev_table_id, job_config=job_config)

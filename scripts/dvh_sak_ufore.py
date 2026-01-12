@@ -21,15 +21,15 @@ client = gcp_utils.get_bigquery_client(
     project="pensjon-saksbehandli-prod-1f83", target_principal="bq-airflow@wendelboe-prod-801c.iam.gserviceaccount.com"
 )
 create_disposition = "CREATE_NEVER"  # endres til CREATE_IF_NEEDED under hvis tabellen ikke finnes
-sql_pen_dev = "select * from pen_dataprodukt.snapshot_saksbehandlingsstatistikk"
+sql_pen_dev = "select * from pen_dataprodukt.behandlingsstatistikk_meldinger"
 # prøver å finne maks kjoretidspunkt i BQ, og hvis det finnes legges det til som en where
 try:  # hvis tabellen finnes, hent alle nye rader
-    query = f"select max(kjoretidspunkt) as maks_kjoretidspunkt_bq from `{dev_table_id}`"
+    query = f"select max(teknisk_tid) as maks_kjoretidspunkt_bq from `{dev_table_id}`"
     results = client.query(query).result()
     df = results.to_dataframe()
     if not df.empty and pd.notnull(df.iloc[0]["maks_kjoretidspunkt_bq"]):
         maks_kjoretidspunkt_bq = df.iloc[0]["maks_kjoretidspunkt_bq"]
-        sql_pen_dev += f" where kjoretidspunkt > to_date('{maks_kjoretidspunkt_bq}', 'YYYY-MM-DD HH24:MI:SS')"
+        sql_pen_dev += f" where teknisk_tid > to_date('{maks_kjoretidspunkt_bq}', 'YYYY-MM-DD HH24:MI:SS')"
         logging.info(f"Maks kjoretidspunkt i BQ: {maks_kjoretidspunkt_bq}")
 except NotFound:
     logging.info("Tabellen finnes ikke i BQ, så oppretter ny tabell med alle rader fra oracle.")

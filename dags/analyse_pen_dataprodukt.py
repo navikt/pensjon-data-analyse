@@ -6,19 +6,20 @@ from operators.dbt_operator import dbt_operator
 
 
 with DAG(
-    dag_id="sql_pilot_alderspensjon",
-    start_date=datetime(2025, 6, 30, tzinfo=pendulum.timezone("Europe/Oslo")),
-    schedule_interval="1 0 * * *",  # 00:01 every day - kjører som inkrementell på periode-feltet
+    dag_id="analyse_pen_dataprodukt",
+    start_date=datetime(2026, 1, 14, tzinfo=pendulum.timezone("Europe/Oslo")),
+    schedule_interval=None,  # 00:01 every day - kjører som inkrementell på periode-feltet
     catchup=False,
 ) as dag:
-    sql_pilot_q2 = dbt_operator(
+
+    dbt_run_analyse_dev = dbt_operator(
         dag=dag,
-        name="sql_pilot_q2",
+        name="dbt_run_analyse_dev",
         startup_timeout_seconds=60 * 10,
-        retries=5,
+        retries=0,
         repo="navikt/pensjon-pen-dataprodukt",
         script_path="dbt/dbt_run.py",
-        dbt_command="build --exclude sql_pilot_original --exclude tag:analyse --exclude tag:sak",
+        dbt_command="run -s tag:analyse",
         allowlist=[
             "dmv36-scan.adeo.no:1521",
             "hub.getdbt.com",
@@ -27,14 +28,14 @@ with DAG(
         db_environment="pen_q2",
     )
 
-    sql_pilot_prod = dbt_operator(
+    dbt_run_analyse_prod = dbt_operator(
         dag=dag,
-        name="sql_pilot_prod",
+        name="dbt_run_analyse_prod",
         startup_timeout_seconds=60 * 10,
-        retries=5,
+        retries=0,
         repo="navikt/pensjon-pen-dataprodukt",
         script_path="dbt/dbt_run.py",
-        dbt_command="build --exclude sql_pilot_original --exclude tag:analyse --exclude tag:sak",
+        dbt_command="run -s tag:analyse",
         allowlist=[
             "dmv18-scan.adeo.no:1521",
             "hub.getdbt.com",
@@ -43,5 +44,5 @@ with DAG(
         db_environment="pen_prod",
     )
 
-    sql_pilot_q2
-    sql_pilot_prod
+    dbt_run_analyse_dev
+    dbt_run_analyse_prod

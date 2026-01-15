@@ -11,6 +11,7 @@ sys.path.append(str(Path(__file__).parent.parent / "libs"))
 from utils import pesys_utils, gcp_utils
 
 dev_table_id = "pensjon-saksbehandli-prod-1f83.dvh_sak_dev.saksbehandlingsstatistikk"
+dev_view_id = "pensjon-saksbehandli-prod-1f83.dvh_sak_dev.view_saksbehandlingsstatistikk"
 # dataset på datamarkedplassen
 
 logging.basicConfig(level=logging.INFO)
@@ -47,13 +48,13 @@ schema: list[SchemaField] = [
     SchemaField("relatert_fagsystem", enums.SqlTypeNames.STRING),
     SchemaField("sak_id", enums.SqlTypeNames.STRING),
     SchemaField("aktor_id", enums.SqlTypeNames.STRING),
-    SchemaField("mottatt_tid", enums.SqlTypeNames.DATETIME),
-    SchemaField("registrert_tid", enums.SqlTypeNames.DATETIME),
-    SchemaField("ferdigbehandlet_tid", enums.SqlTypeNames.DATETIME),
-    SchemaField("utbetalt_tid", enums.SqlTypeNames.DATETIME),
-    SchemaField("endret_tid", enums.SqlTypeNames.DATETIME),
-    SchemaField("forventetoppstart_tid", enums.SqlTypeNames.DATETIME),
-    SchemaField("teknisk_tid", enums.SqlTypeNames.DATETIME),
+    SchemaField("mottatt_tid", enums.SqlTypeNames.TIMESTAMP),
+    SchemaField("registrert_tid", enums.SqlTypeNames.TIMESTAMP),
+    SchemaField("ferdigbehandlet_tid", enums.SqlTypeNames.TIMESTAMP),
+    SchemaField("utbetalt_tid", enums.SqlTypeNames.TIMESTAMP),
+    SchemaField("endret_tid", enums.SqlTypeNames.TIMESTAMP),
+    SchemaField("forventetoppstart_tid", enums.SqlTypeNames.TIMESTAMP),
+    SchemaField("teknisk_tid", enums.SqlTypeNames.TIMESTAMP),
     SchemaField("sak_ytelse", enums.SqlTypeNames.STRING),
     SchemaField("sak_utland", enums.SqlTypeNames.STRING),
     SchemaField("behandling_type", enums.SqlTypeNames.STRING),
@@ -66,8 +67,8 @@ schema: list[SchemaField] = [
     SchemaField("ansvarlig_beslutter", enums.SqlTypeNames.STRING),
     SchemaField("ansvarlig_enhet", enums.SqlTypeNames.STRING),
     SchemaField("tilbakekrev_belop", enums.SqlTypeNames.FLOAT64),
-    SchemaField("funksjonell_periode_fom", enums.SqlTypeNames.DATETIME),
-    SchemaField("funksjonell_periode_tom", enums.SqlTypeNames.DATETIME),
+    SchemaField("funksjonell_periode_fom", enums.SqlTypeNames.TIMESTAMP),
+    SchemaField("funksjonell_periode_tom", enums.SqlTypeNames.TIMESTAMP),
     SchemaField("fagsystem_navn", enums.SqlTypeNames.STRING),
     SchemaField("fagsystem_versjon", enums.SqlTypeNames.STRING),
 ]
@@ -78,9 +79,21 @@ job_config = LoadJobConfig(
     schema=schema,
 )
 
+
+
 start = time()
 job = client.load_table_from_dataframe(df_bq, dev_table_id, job_config=job_config)
 job.result()
 end = time()
 
 print(f"{len(df_bq)} rader ble skrevet til bigquery etter {end - start} sekunder.")
+
+view_query = f"""
+CREATE OR REPLACE VIEW `{dev_view_id}` as
+select * from `{dev_table_id}`
+"""
+try:
+    client.query(view_query).result()
+    logging.info(f"View {dev_view_id} opprettet/oppdatert.")
+except Exception as e:
+    logging.error(f"Feil ved oppretting/oppdatering av view {dev_view_id}: {e}")

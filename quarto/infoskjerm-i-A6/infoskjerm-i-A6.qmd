@@ -20,10 +20,26 @@ format:
 <!-- finn nye theme her: https://bootswatch.com/ -->
 
 # Ukas oppmerksomhet
-## {height=100%}
-::: {.valuebox}
-<img src="https://i.imgflip.com/agmjoq.jpg" style="width:90%;"/>
+
+##  {height=25%}
+```{python}
+#| content: valuebox
+#| icon: cloud-check
+'Team Supplerende stønad er helt i sky!'
+```
+
+##  {height=25%}
+::: {.card }
+Dette understøtter Nav sin skystrategi og vil gi oss blant annet økt sikkerhet og økt fleksibilitet.
+
+I tillegg ble løsningene i juni 2025 utvidet til å ta inn alle nye søknader.
+
+Det betyr at det ikke har kommet inn nye søknader om supplerende stønad i infotrygd de siste syv månedene.
+
+Gratulerer til teamet!
 :::
+## {height=10%}
+
 
 <!-- Gamle memes -->
 <!-- ledelsen, how do you do fellow kids - https://i.imgflip.com/agwey5.jpg -->
@@ -45,7 +61,7 @@ format:
 # fun
 ## {height=100%}
 ::: {.card }
-![](../../bilder/QR-T1-stramling-tilbakemelding.jpeg)
+<img src="https://i.imgflip.com/agmjoq.jpg" style="width:90%;"/>
 :::
 <!-- ![](../../bilder/etterlevelsesuka-slackbot.png) -->
 
@@ -149,7 +165,7 @@ Disse tallene er kvalitetssikret og brukes utad. Tall i offentlig statistikk har
 
 ## Row 1
 ### col
-::: {.valuebox title="Gi dine tilbakemeldinger på stramling og målsafari for T1 2026" color="primary" icon="people"}
+::: {.valuebox color="primary" icon="people"}
 Antall uføretrygdede i 2024
 
 373000

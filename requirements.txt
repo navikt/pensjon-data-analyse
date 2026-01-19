@@ -87,7 +87,7 @@ psutil==7.2.1
 ptyprocess==0.7.0
 pure-eval==0.2.3
 pyarrow==22.0.0
-pyasn1==0.6.1
+pyasn1==0.6.2
 pyasn1-modules==0.4.2
 pycparser==2.23
 pydata-google-auth==1.9.1

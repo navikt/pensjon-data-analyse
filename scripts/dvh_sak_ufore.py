@@ -43,6 +43,7 @@ con = pesys_utils.connect_to_oracle()
 df_bq = pesys_utils.df_from_sql(sql_pen_dev, con)
 
 schema: list[SchemaField] = [
+    SchemaField("sekvensnummer", enums.SqlTypeNames.INT64),
     SchemaField("behandling_id", enums.SqlTypeNames.STRING),
     SchemaField("relatertbehandling_id", enums.SqlTypeNames.STRING),
     SchemaField("relatert_fagsystem", enums.SqlTypeNames.STRING),

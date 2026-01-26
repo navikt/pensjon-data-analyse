@@ -1,7 +1,7 @@
 import logging
 import pandas as pd
 from time import time
-from google.cloud.bigquery import LoadJobConfig, SchemaField, enums
+from google.cloud.bigquery import LoadJobConfig, SchemaField, enums, Dataset
 from google.api_core.exceptions import NotFound
 
 import sys
@@ -10,17 +10,31 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent / "libs"))
 from utils import pesys_utils, gcp_utils
 
-dev_table_id = "pensjon-saksbehandli-prod-1f83.dvh_sak_dev.saksbehandlingsstatistikk"
-dev_view_id = "pensjon-saksbehandli-prod-1f83.dvh_sak_dev.view_saksbehandlingsstatistikk"
+GCP_PROJECT_ID = "pensjon-saksbehandli-dev-cb76"
+DATASET_NAME = "saksbehandlingsstatistikk"
+TABLE_NAME = "saksbehandlingsstatistikk_ufore"
+
+dev_table_id = f"{GCP_PROJECT_ID}.{DATASET_NAME}.{TABLE_NAME}"
+dev_view_id = f"{GCP_PROJECT_ID}.{DATASET_NAME}.{TABLE_NAME}_view"
 # dataset på datamarkedplassen
 
 logging.basicConfig(level=logging.INFO)
 pesys_utils.set_db_secrets(secret_name="pen-q2-pen_dataprodukt")
 
 # bigquery
-client = gcp_utils.get_bigquery_client(
-    project="pensjon-saksbehandli-prod-1f83", target_principal="bq-airflow@wendelboe-prod-801c.iam.gserviceaccount.com"
-)
+#client = gcp_utils.get_bigquery_client(project="pensjon-saksbehandli-prod-1f83", target_principal="bq-airflow@wendelboe-prod-801c.iam.gserviceaccount.com")
+client = gcp_utils.get_bigquery_client(project=GCP_PROJECT_ID)
+
+# Sjekk om datasettet finnes
+dataset = Dataset(f"{GCP_PROJECT_ID}.{DATASET_NAME}")
+dataset.location = "europe-north1"
+try:
+    client.get_dataset(dataset)
+    logging.info(f"Datasettet {DATASET_NAME} finnes.")
+except NotFound:
+    logging.info(f"Datasettet {DATASET_NAME} finnes ikke. Oppretter datasett.")
+    dataset = client.create_dataset(dataset)
+    logging.info(f"Datasettet {DATASET_NAME} er opprettet.")
 
 # Sjekk om tabellen finnes og hent maks teknisk_tid
 create_disposition = "CREATE_NEVER"  # endres til CREATE_IF_NEEDED under hvis tabellen ikke finnes

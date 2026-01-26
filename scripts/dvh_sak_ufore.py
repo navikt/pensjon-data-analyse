@@ -26,6 +26,8 @@ pesys_utils.set_db_secrets(secret_name="pen-q2-pen_dataprodukt")
 client = gcp_utils.get_bigquery_client(
     project=GCP_PROJECT_ID, target_principal="bq-airflow-dev@pensjon-saksbehandli-dev-cb76.iam.gserviceaccount.com"
 )
+# grants for dev-data, se: https://console.cloud.google.com/bigquery?sq=230094999443:8ec4c0a3a32a4bd7b8862be1274fb077
+# grants for prod-data går via Datamarkedplassen
 
 # Sjekk om datasettet finnes
 dataset = Dataset(f"{GCP_PROJECT_ID}.{DATASET_NAME}")

@@ -22,8 +22,10 @@ logging.basicConfig(level=logging.INFO)
 pesys_utils.set_db_secrets(secret_name="pen-q2-pen_dataprodukt")
 
 # bigquery
-#client = gcp_utils.get_bigquery_client(project="pensjon-saksbehandli-prod-1f83", target_principal="bq-airflow@wendelboe-prod-801c.iam.gserviceaccount.com")
-client = gcp_utils.get_bigquery_client(project=GCP_PROJECT_ID)
+# client = gcp_utils.get_bigquery_client(project="pensjon-saksbehandli-prod-1f83", target_principal="bq-airflow@wendelboe-prod-801c.iam.gserviceaccount.com")
+client = gcp_utils.get_bigquery_client(
+    project=GCP_PROJECT_ID, target_principal="bq-airflow-dev@pensjon-saksbehandli-dev-cb76.iam.gserviceaccount.com"
+)
 
 # Sjekk om datasettet finnes
 dataset = Dataset(f"{GCP_PROJECT_ID}.{DATASET_NAME}")
@@ -93,7 +95,6 @@ job_config = LoadJobConfig(
     create_disposition=create_disposition,
     schema=schema,
 )
-
 
 
 start = time()

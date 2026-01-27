@@ -5,7 +5,7 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent / "libs"))
 from utils import pesys_utils, gcp_utils
-from utils.oracle_to_bigquery import copy_oracle_table_to_bigquery, JobConfig
+from utils.oracle_to_bigquery import delta_load_oracle_table_to_bigquery, JobConfig
 
 logging.basicConfig(level=logging.INFO)
 
@@ -51,7 +51,7 @@ if __name__ == "__main__":
         bigquery_table=TABLE_NAME,
         delta_column_name_bigquery="teknisk_tid",
     )
-    copy_oracle_table_to_bigquery(
+    delta_load_oracle_table_to_bigquery(
         oracle_client=oracle_client,
         bigquery_client=client,
         job_config=job_config,

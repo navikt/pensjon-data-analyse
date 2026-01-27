@@ -55,7 +55,7 @@ except NotFound:
 if not df.empty and pd.notnull(df.iloc[0]["maks_kjoretidspunkt_bq"]):
     maks_kjoretidspunkt_bq = df.iloc[0]["maks_kjoretidspunkt_bq"]
     logging.info(f"Maks kjoretidspunkt i BQ: {maks_kjoretidspunkt_bq}")
-sql_pen_dev = f"select * from pen_dataprodukt.behandlingsstatistikk_meldinger where teknisk_tid > to_date('{maks_kjoretidspunkt_bq}', 'YYYY-MM-DD HH24:MI:SS')"
+sql_pen_dev = f"select * from pen_dataprodukt.behandlingsstatistikk_meldinger where teknisk_tid > to_timestamp_tz('{maks_kjoretidspunkt_bq}', 'YYYY-MM-DD HH24:MI:SS.FF6TZH:TZM')"
 
 con = pesys_utils.connect_to_oracle()
 df_bq = pesys_utils.df_from_sql(sql_pen_dev, con)

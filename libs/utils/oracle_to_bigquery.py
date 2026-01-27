@@ -3,7 +3,7 @@ import time
 from pydantic import BaseModel
 
 import pandas as pd
-from google.cloud.bigquery import Client, Dataset, SchemaField, enums, LoadJobConfig
+from google.cloud.bigquery import Client, Dataset, enums, LoadJobConfig
 from google.cloud.exceptions import NotFound
 from oracledb import Connection
 
@@ -18,7 +18,7 @@ class JobConfig(BaseModel):
     bigquery_dataset: str
     bigquery_table: str
     delta_column_name_bigquery: str = "teknisk_tid"
-    schema: list[SchemaField] = DefaultSchemas.BEHANDLINGSSTATISTIKK_MELDINGER
+    bigquery_schema: list = DefaultSchemas.BEHANDLINGSSTATISTIKK_MELDINGER.value
     write_disposition: str = enums.WriteDisposition.WRITE_APPEND
     create_disposition: str = enums.CreateDisposition.CREATE_IF_NEEDED
 
@@ -69,7 +69,7 @@ def delta_load_oracle_table_to_bigquery(oracle_client: Connection, bigquery_clie
     bigquery_job_config = LoadJobConfig(
         write_disposition=job_config.write_disposition,
         create_disposition=job_config.create_disposition,
-        schema=job_config.schema,
+        schema=job_config.bigquery_schema,
     )
 
 

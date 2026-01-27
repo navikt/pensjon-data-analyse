@@ -1,6 +1,7 @@
 from google.cloud.bigquery import SchemaField, enums
+from enum import Enum
 
-class DefaultSchemas:
+class DefaultSchemas(Enum):
     BEHANDLINGSSTATISTIKK_MELDINGER: list[SchemaField] = [
         SchemaField("sekvensnummer", enums.SqlTypeNames.INT64),
         SchemaField("behandling_id", enums.SqlTypeNames.STRING),

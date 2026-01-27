@@ -23,7 +23,7 @@ elif ENVIRONMENT == "prod":
 else:
     raise ValueError(f"Ukjent environment: {ENVIRONMENT}")
 
-DATASET_NAME = "saksbehandlingsstatistikk_test"
+DATASET_NAME = "saksbehandlingsstatistikk"
 TABLE_NAME = "saksbehandlingsstatistikk_ufore"
 ORACLE_TABLE = "pen_dataprodukt.behandlingsstatistikk_meldinger"
 

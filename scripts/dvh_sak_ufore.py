@@ -47,7 +47,7 @@ if __name__ == "__main__":
         oracle_table="pen_dataprodukt.behandlingsstatistikk_meldinger",
         delta_column_name_oracle="teknisk_tid",
         gcp_project=GCP_PROJECT_ID,
-        bigquery_dataset=DATASET_NAME,
+        bigquery_dataset_name=DATASET_NAME,
         bigquery_table=TABLE_NAME,
         delta_column_name_bigquery="teknisk_tid",
     )

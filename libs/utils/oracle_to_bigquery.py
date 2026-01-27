@@ -15,7 +15,7 @@ class JobConfig(BaseModel):
     oracle_table: str
     delta_column_name_oracle: str = "teknisk_tid"
     gcp_project: str
-    bigquery_dataset: str
+    bigquery_dataset_name: str
     bigquery_table: str
     delta_column_name_bigquery: str = "teknisk_tid"
     bigquery_schema: list = DefaultSchemas.BEHANDLINGSSTATISTIKK_MELDINGER.value
@@ -24,7 +24,7 @@ class JobConfig(BaseModel):
 
     @property
     def bigquery_dataset(self) -> Dataset:
-        dataset = Dataset(f"{self.gcp_project}.{self.bigquery_dataset}")
+        dataset = Dataset(f"{self.gcp_project}.{self.bigquery_dataset_name}")
         dataset.location = "europe-north1"
         return dataset
 

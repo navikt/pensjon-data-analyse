@@ -13,7 +13,7 @@ install: bootstrap
     @uv sync --dev
 
 # Oppgrader dependencies og setter opp miljøet på nytt
-update-dependencies: bootstrap
+update: bootstrap
     @printf "Oppgraderer dependencies\n"
     @uv sync --upgrade --dev
 

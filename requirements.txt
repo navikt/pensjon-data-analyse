@@ -14,7 +14,7 @@ certifi==2026.1.4
 cffi==2.0.0
 charset-normalizer==3.4.4
 comm==0.2.3
-cryptography==46.0.4
+cryptography==46.0.5
 db-dtypes==1.5.0
 debugpy==1.8.20
 decorator==5.2.1

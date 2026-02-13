@@ -6,6 +6,7 @@ execute:
     echo: false
     warning: false
     include: true
+output-file: "index.html"
 format:
     dashboard:
         embed-resources: true
@@ -21,11 +22,12 @@ import getpass
 import itables
 import oracledb
 import pandas as pd
+import os
 
 # ikke kjørbar som qmd på grunn av input
-user = input('user: ')
-password = getpass.getpass('password: ')
-host = input('host: ')
+user = os.environ['DB_USER']
+host = os.environ['DB_HOST']
+password = os.environ['DB_ENV_SECRET_PASS']
 service_name = "pen_q2_ha"
 
 sql_alle_kolonner = """
@@ -42,6 +44,20 @@ from all_tab_cols
 where column_name = 'DEKODE'"""
 df_kodeverk = pd.DataFrame(columns=['kode', 'kolonnenavn', 'tabell', 'dekode'])
 feilede_tabeller = []
+
+sql_relasjoner = """
+SELECT 
+    a.table_name as tabell, 
+    a.column_name as kolonnenavn, 
+    c_pk.table_name ref_tabell
+  FROM all_cons_columns a
+  inner join (select distinct lower(table_name) as table_name from all_tab_cols where owner = 'PEN') t on lower(a.table_name) = t.table_name
+  INNER JOIN all_constraints c ON a.owner = c.owner
+                        AND a.constraint_name = c.constraint_name
+  INNER JOIN all_constraints c_pk ON c.r_owner = c_pk.owner
+                           AND c.r_constraint_name = c_pk.constraint_name
+ WHERE c.constraint_type = 'R'
+ order by a.table_name, a.column_name"""
 
 con = oracledb.connect(port=1521, host=host, user=user, password=password, service_name=service_name)
 # %%
@@ -79,7 +95,15 @@ with con.cursor() as cursor:
             feilede_tabeller.append(df_kodetabeller.iloc[i]['table_name'])
 print("Feilet på ", len(feilede_tabeller), " tabeller")
 # %%
+
+with con.cursor() as cursor:
+    cursor.execute(sql_relasjoner)
+    relasjoner = cursor.fetchall()
+    cols = [col[0].lower() for col in cursor.description]
+    df_relasjoner = pd.DataFrame(relasjoner, columns=cols)
+
 con.close()
+        
 
 df_kodeverk['kolonnenavn'] = df_kodeverk['kolonnenavn'].str.lower()
 df_kodeverk['tabell'] = df_kodeverk['tabell'].str.lower()
@@ -103,6 +127,21 @@ itables.show(df_kodeverk, show_index=False, lengthMenu=[20, 50, 100, 500])
 itables.show(df_kolonner_og_tabeller, show_index=False, lengthMenu=[20, 50, 100, 500])
 ```
 
+# Alle tabeller med fremmednøkler i pen
+
+```{python}
+#itables.show(df_relasjoner, show_index=False, lengthMenu=[20, 50, 100, 500])
+itables.show(
+    df_relasjoner, 
+    show_index=False, 
+    lengthMenu=[20, 50, 100, 500],
+    columnDefs=[
+        {"targets": [0], "searchable": True},
+        {"targets": "_all", "searchable": False}
+    ]
+)
+```
+
 # Feilede tabeller i kodeverk-henting
 ```{python}
 print("Feilet på ", len(feilede_tabeller), " tabeller:")
@@ -111,3 +150,5 @@ for tabell in feilede_tabeller:
 
 print("\nKlarte ikke hente 'dekode' eller tabellnavn minus 'T_...' for overnevnte tabeller.")
 ```
+
+

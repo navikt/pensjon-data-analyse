@@ -25,8 +25,8 @@ fqdn==1.5.1
 google-api-core==2.29.0
 google-auth==2.48.0
 google-auth-oauthlib==1.2.4
-google-cloud-bigquery==3.40.0
-google-cloud-bigquery-storage==2.36.0
+google-cloud-bigquery==3.40.1
+google-cloud-bigquery-storage==2.36.1
 google-cloud-core==2.5.0
 google-cloud-secret-manager==2.26.0
 google-crc32c==1.8.0
@@ -73,12 +73,12 @@ numpy==2.4.2
 oauthlib==3.3.1
 oracledb==3.4.2
 packaging==26.0
-pandas==2.3.3
+pandas==3.0.0
 pandas-gbq==0.33.0
 pandocfilters==1.5.1
 parso==0.8.6
 pexpect==4.9.0
-platformdirs==4.5.1
+platformdirs==4.9.2
 plotly==6.5.2
 prometheus-client==0.24.1
 prompt-toolkit==3.0.52
@@ -87,7 +87,7 @@ protobuf==6.33.5
 psutil==7.2.2
 ptyprocess==0.7.0
 pure-eval==0.2.3
-pyarrow==23.0.0
+pyarrow==23.0.1
 pyasn1==0.6.2
 pyasn1-modules==0.4.2
 pycparser==3.0
@@ -114,7 +114,7 @@ six==1.17.0
 soupsieve==2.8.3
 stack-data==0.6.3
 terminado==0.18.1
-tinycss2==1.4.0
+tinycss2==1.5.1
 tornado==6.5.4
 traitlets==5.14.3
 typing-extensions==4.15.0

@@ -16,7 +16,7 @@ select
 from (
     select
         v.sak_id,
-        dekode_just.dekode as institusjonsopphold,
+        iop.k_just_periode as institusjonsopphold,
         v.dato_virk_fom,
         iop.dato_fom,
         iop.dato_tom,
@@ -36,7 +36,6 @@ from (
         on
             pg.person_grunnlag_id = iop.person_grunnlag_id
             and iop.k_just_periode in ('REDUKSJON_FO', 'REDUKSJON_HS', 'REDUKSJON')
-    left join pen.t_k_just_periode dekode_just on iop.k_just_periode = dekode_just.k_just_periode
     inner join pen.t_k_vedtak_t kvt on kvt.k_vedtak_t = v.k_vedtak_t and kvt.kan_lope = '1'
 
     where

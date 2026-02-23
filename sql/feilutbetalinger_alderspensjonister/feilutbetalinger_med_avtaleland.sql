@@ -26,8 +26,7 @@ vedtak as (
         kh.kravhode_id as kh_kravhode_id,
         pg.kravhode_id as pg_kravhode_id,
         v_lop.kravhode_id as v_lop_kravhode_id,
-        -- ta.k_avtale_t,
-        dekode_avtale.dekode as avtaleland,
+        ta.k_avtale_t as avtaleland,
         case
             when v_tilb.vedtak_id is not null and (v_tilb.dato_virk_tom + 1 > v_tilb.dato_virk_fom)
                 then months_between(v_tilb.dato_virk_tom + 1, v_tilb.dato_virk_fom)
@@ -49,7 +48,6 @@ vedtak as (
     left join pen.t_kravhode kh on kh.kravhode_id = v_lop.kravhode_id
     left join pen.t_person_grunnlag pg on pg.kravhode_id = kh.kravhode_id and pg.person_id = p.person_id
     left join pen.t_trygdeavtale ta on ta.person_grunnlag_id = pg.person_grunnlag_id
-    left join pen.t_k_avtale_t dekode_avtale on dekode_avtale.k_avtale_t = ta.k_avtale_t
     -- alternativt var pg.person_grunnlag_id til pen.t_trygdetid og videre til pen.t_tt_utl_trgd_avt for å finne k_avtaleland, men ga få treff
     where
         1 = 1

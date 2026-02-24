@@ -2,7 +2,7 @@
 -- pensjon-saksbehandli-prod-1f83.vedtak.laast_data_handling
 
 -- oversikt over krav og vedtak som har blitt "låst opp" ved å endre status eller behandlingstype
--- lagt til mapping av k_laast_data_handling til beskrivelse navn
+-- lagt til mapping av k_laast_data_handling til beskrivende navn
 
 with laast_data_handling_map as (
     select 'ENDR_KRAV_BEH_TYPE' as kode, 'Endre behandlingstype' as dekode from dual

@@ -1,7 +1,7 @@
 -- kravstatus.py (Metabase)
 -- pensjon-saksbehandli-prod-1f83.saksstatistikk.kravstatus_med_kravarsak
 
--- Kravårsak-mapping som erstatter pen.t_k_krav_arsak_t
+-- Kravårsak-mapping som erstatter t_k_krav_arsak_t, t_k_krav_gjelder, t_k_sak_t, t_k_krav_s
 with kravarsak_map as (
     select 'AFP_EO' as k_krav_arsak_t, 'AFP etteroppgjør' as dekode from dual union all
     select 'ALDERSOVERGANG', 'Aldersovergang' from dual union all
@@ -102,21 +102,94 @@ with kravarsak_map as (
     select 'TVUNGEN_FORVALTNING', 'Tvungen forvaltning' from dual union all
     select 'OMGJ_ETTER_FVL_P35_A', 'Omgjøring fvl. § 35 første ledd bokstav a' from dual union all
     select 'OMGJ_ETTER_FVL_P35_B', 'Omgjøring fvl. § 35 første ledd bokstav b' from dual
-)
+),
+sak_t_map as (
+     select 'AFP' as k_sak_t, 'AFP' as dekode from dual union all
+     select 'AFP_PRIVAT', 'AFP Privat' from dual union all
+     select 'ALDER', 'Alderspensjon' from dual union all
+     select 'BARNEP', 'Barnepensjon' from dual union all
+     select 'FAM_PL', 'Familiepleierytelse' from dual union all
+     select 'GAM_YRK', 'Gammel yrkesskade' from dual union all
+     select 'GENRL', 'Generell' from dual union all
+     select 'GJENLEV', 'Gjenlevendeytelse' from dual union all
+     select 'GRBL', 'Grunnblanketter' from dual union all
+     select 'KRIGSP', 'Krigspensjon' from dual union all
+     select 'OMSORG', 'Omsorgsopptjening' from dual union all
+     select 'UFOREP', 'Uføretrygd' from dual
+ ),
+krav_s_map as (
+    select 'ATT' as k_krav_s, 'Attestert' as dekode from dual union all
+    select 'AVBRUTT', 'Avbrutt behandling' from dual union all
+    select 'BEREGNET', 'Beregnet' from dual union all
+    select 'FERDIG', 'Ferdig behandlet' from dual union all
+    select 'KLAR_TIL_ATT', 'Klar til attestering' from dual union all
+    select 'PA_VENT', 'På vent' from dual union all
+    select 'TIL_BEHANDLING', 'Til behandling' from dual union all
+    select 'VENTER_AFP', 'Venter på Fellesordningen' from dual union all
+    select 'VENTER_ANDRE', 'Venter på andre' from dual union all
+    select 'VENTER_BRUKER', 'Venter på bruker' from dual union all
+    select 'VENTER_KLAGEINSTANS', 'Venter på klageinstans' from dual union all
+    select 'VENTER_SAKSBEH', 'Venter på saksbehandling' from dual union all
+    select 'VILKARSPROVD', 'Vilkårsprøvd' from dual
+),
+krav_gjelder_map as (
+     select 'AFP_EO' as k_krav_gjelder, 'AFP etteroppgjør' as dekode from dual union all
+     select 'ANKE', 'Anke' from dual union all
+     select 'EKSPORT', 'Eksport' from dual union all
+     select 'ENDR_UTTAKSGRAD', 'Endring uttaksgrad' from dual union all
+     select 'ERSTATNING', 'Erstatning' from dual union all
+     select 'ETTERGIV_GJELD', 'Ettergivelse av gjeld' from dual union all
+     select 'FAS_UTG_IO', 'Dekning faste utgifter inst.opphold' from dual union all
+     select 'FORSTEG_BH', 'Førstegangsbehandling' from dual union all
+     select 'F_BH_BO_UTL', 'Førstegangsbehandling bosatt utland' from dual union all
+     select 'F_BH_KUN_UTL', 'Førstegangsbehandling kun utland' from dual union all
+     select 'F_BH_MED_UTL', 'Førstegangsbehandling Norge/utland' from dual union all
+     select 'GJ_RETT', 'Gjenlevenderettighet' from dual union all
+     select 'GOD_OMSGSP', 'Godskriving omsorgsopptjening' from dual union all
+     select 'GOMR', 'G-omregning' from dual union all
+     select 'HJLPBER_OVERG_UT', 'Hjelpeberegning ved overgang til uføretrygd' from dual union all
+     select 'INNT_E', 'Inntektsendring' from dual union all
+     select 'INNT_KTRL', 'Inntektskontroll' from dual union all
+     select 'KLAGE', 'Klage' from dual union all
+     select 'KONTROLL_3_17_A', 'Kontroll 3-17 a' from dual union all
+     select 'KONVERTERING', 'Konvertert krav' from dual union all
+     select 'KONVERTERING_MIN', 'Minimalt konvertert krav' from dual union all
+     select 'KONV_AVVIK_G_BATCH', 'Konvertering - Avvik ved G-omr' from dual union all
+     select 'MELLOMBH', 'Mellombehandling' from dual union all
+     select 'MTK', 'Merskatt tilbakekreving' from dual union all
+     select 'OMGJ_TILBAKE', 'Omgjøring av tilbakekreving' from dual union all
+     select 'OVERF_OMSGSP', 'Overføring omsorgsopptjening' from dual union all
+     select 'REGULERING', 'Regulering' from dual union all
+     select 'REVURD', 'Revurdering' from dual union all
+     select 'SAK_OMKOST', 'Saksomkostninger' from dual union all
+     select 'SLUTTBEH_KUN_UTL', 'Sluttbehandling kun utland' from dual union all
+     select 'SLUTT_BH_UTL', 'Sluttbehandling Norge/utland' from dual union all
+     select 'SOK_OKN_UG', 'Søknad om økning av uføregrad' from dual union all
+     select 'SOK_RED_UG', 'Søknad om reduksjon av uføregrad' from dual union all
+     select 'SOK_UU', 'Søknad om ung ufør' from dual union all
+     select 'SOK_YS', 'Søknad om yrkesskade' from dual union all
+     select 'TILBAKEKR', 'Tilbakekreving' from dual union all
+     select 'UTSEND_AVTALELAND', 'Utsendelse til avtaleland' from dual union all
+     select 'UT_EO', 'Uføretrygd etteroppgjør' from dual union all
+     select 'UT_VURDERING_EO', 'Uføretrygd vurdering av etteroppgjør' from dual
+ )
 select
-    dim_sak_t.dekode as sakstype,
-    dim_krav_gjelder.dekode as kravtype,
-    dim_krav_s.dekode as kravstatus,
+    coalesce(dim_sak_t.dekode, s.k_sak_t) as sakstype,
+    coalesce(dim_krav_gjelder.dekode, kh.k_krav_gjelder) as kravtype,
+    coalesce(dim_krav_s.dekode, kh.k_krav_s) as kravstatus,
     coalesce(kam.dekode, arsak.k_krav_arsak_t) as kravarsak,
     count(*) antall
 from pen.t_kravhode kh
-inner join pen.t_k_krav_s dim_krav_s on dim_krav_s.k_krav_s = kh.k_krav_s
-inner join pen.t_k_krav_gjelder dim_krav_gjelder on dim_krav_gjelder.k_krav_gjelder = kh.k_krav_gjelder
+left join krav_s_map dim_krav_s on dim_krav_s.k_krav_s = kh.k_krav_s
+left join krav_gjelder_map dim_krav_gjelder on dim_krav_gjelder.k_krav_gjelder = kh.k_krav_gjelder
 inner join pen.t_sak s on s.sak_id = kh.sak_id
-inner join pen.t_k_sak_t dim_sak_t on dim_sak_t.k_sak_t = s.k_sak_t
+left join sak_t_map dim_sak_t on dim_sak_t.k_sak_t = s.k_sak_t
 inner join pen.t_krav_arsak arsak on arsak.kravhode_id = kh.kravhode_id
 left join kravarsak_map kam on kam.k_krav_arsak_t = arsak.k_krav_arsak_t
 where kh.k_krav_s not like 'AVBRUTT'
 and kh.k_krav_s not like 'FERDIG'
-group by dim_sak_t.dekode, dim_krav_gjelder.dekode, dim_krav_s.dekode, coalesce(kam.dekode, arsak.k_krav_arsak_t)
+group by coalesce(dim_sak_t.dekode, s.k_sak_t),
+         coalesce(dim_krav_gjelder.dekode, kh.k_krav_gjelder),
+         coalesce(dim_krav_s.dekode, kh.k_krav_s),
+         coalesce(kam.dekode, arsak.k_krav_arsak_t)
 order by antall desc

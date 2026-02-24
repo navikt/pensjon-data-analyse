@@ -1,7 +1,7 @@
 -- kontrollpunkt.py (Metabase)
 -- pensjon-saksbehandli-prod-1f83.kontrollpunkt.kontrollpunkt_daglig
 
--- Kravårsak-mapping som erstatter pen.t_k_krav_arsak_t
+-- Lagt til mapping som tidligere lå i kodeverkstabeller
 with kravarsak_map as (
     select 'AFP_EO' as k_krav_arsak_t, 'AFP etteroppgjør' as dekode from dual union all
     select 'ALDERSOVERGANG', 'Aldersovergang' from dual union all
@@ -103,15 +103,90 @@ with kravarsak_map as (
     select 'OMGJ_ETTER_FVL_P35_A', 'Omgjøring fvl. § 35 første ledd bokstav a' from dual union all
     select 'OMGJ_ETTER_FVL_P35_B', 'Omgjøring fvl. § 35 første ledd bokstav b' from dual
 ),
+krav_gjelder_map as (
+     select 'AFP_EO' as k_krav_gjelder, 'AFP etteroppgjør' as dekode from dual union all
+     select 'ANKE', 'Anke' from dual union all
+     select 'EKSPORT', 'Eksport' from dual union all
+     select 'ENDR_UTTAKSGRAD', 'Endring uttaksgrad' from dual union all
+     select 'ERSTATNING', 'Erstatning' from dual union all
+     select 'ETTERGIV_GJELD', 'Ettergivelse av gjeld' from dual union all
+     select 'FAS_UTG_IO', 'Dekning faste utgifter inst.opphold' from dual union all
+     select 'FORSTEG_BH', 'Førstegangsbehandling' from dual union all
+     select 'F_BH_BO_UTL', 'Førstegangsbehandling bosatt utland' from dual union all
+     select 'F_BH_KUN_UTL', 'Førstegangsbehandling kun utland' from dual union all
+     select 'F_BH_MED_UTL', 'Førstegangsbehandling Norge/utland' from dual union all
+     select 'GJ_RETT', 'Gjenlevenderettighet' from dual union all
+     select 'GOD_OMSGSP', 'Godskriving omsorgsopptjening' from dual union all
+     select 'GOMR', 'G-omregning' from dual union all
+     select 'HJLPBER_OVERG_UT', 'Hjelpeberegning ved overgang til uføretrygd' from dual union all
+     select 'INNT_E', 'Inntektsendring' from dual union all
+     select 'INNT_KTRL', 'Inntektskontroll' from dual union all
+     select 'KLAGE', 'Klage' from dual union all
+     select 'KONTROLL_3_17_A', 'Kontroll 3-17 a' from dual union all
+     select 'KONVERTERING', 'Konvertert krav' from dual union all
+     select 'KONVERTERING_MIN', 'Minimalt konvertert krav' from dual union all
+     select 'KONV_AVVIK_G_BATCH', 'Konvertering - Avvik ved G-omr' from dual union all
+     select 'MELLOMBH', 'Mellombehandling' from dual union all
+     select 'MTK', 'Merskatt tilbakekreving' from dual union all
+     select 'OMGJ_TILBAKE', 'Omgjøring av tilbakekreving' from dual union all
+     select 'OVERF_OMSGSP', 'Overføring omsorgsopptjening' from dual union all
+     select 'REGULERING', 'Regulering' from dual union all
+     select 'REVURD', 'Revurdering' from dual union all
+     select 'SAK_OMKOST', 'Saksomkostninger' from dual union all
+     select 'SLUTTBEH_KUN_UTL', 'Sluttbehandling kun utland' from dual union all
+     select 'SLUTT_BH_UTL', 'Sluttbehandling Norge/utland' from dual union all
+     select 'SOK_OKN_UG', 'Søknad om økning av uføregrad' from dual union all
+     select 'SOK_RED_UG', 'Søknad om reduksjon av uføregrad' from dual union all
+     select 'SOK_UU', 'Søknad om ung ufør' from dual union all
+     select 'SOK_YS', 'Søknad om yrkesskade' from dual union all
+     select 'TILBAKEKR', 'Tilbakekreving' from dual union all
+     select 'UTSEND_AVTALELAND', 'Utsendelse til avtaleland' from dual union all
+     select 'UT_EO', 'Uføretrygd etteroppgjør' from dual union all
+     select 'UT_VURDERING_EO', 'Uføretrygd vurdering av etteroppgjør' from dual
+     ),
+ sak_t_map as (
+     select 'AFP' as k_sak_t, 'AFP' as dekode from dual union all
+     select 'AFP_PRIVAT', 'AFP Privat' from dual union all
+     select 'ALDER', 'Alderspensjon' from dual union all
+     select 'BARNEP', 'Barnepensjon' from dual union all
+     select 'FAM_PL', 'Familiepleierytelse' from dual union all
+     select 'GAM_YRK', 'Gammel yrkesskade' from dual union all
+     select 'GENRL', 'Generell' from dual union all
+     select 'GJENLEV', 'Gjenlevendeytelse' from dual union all
+     select 'GRBL', 'Grunnblanketter' from dual union all
+     select 'KRIGSP', 'Krigspensjon' from dual union all
+     select 'OMSORG', 'Omsorgsopptjening' from dual union all
+     select 'UFOREP', 'Uføretrygd' from dual
+ ),
+krav_s_map as (
+     select 'ATT' as k_krav_s, 'Attestert' as dekode from dual union all
+     select 'AVBRUTT', 'Avbrutt behandling' from dual union all
+     select 'BEREGNET', 'Beregnet' from dual union all
+     select 'FERDIG', 'Ferdig behandlet' from dual union all
+     select 'KLAR_TIL_ATT', 'Klar til attestering' from dual union all
+     select 'PA_VENT', 'På vent' from dual union all
+     select 'TIL_BEHANDLING', 'Til behandling' from dual union all
+     select 'VENTER_AFP', 'Venter på Fellesordningen' from dual union all
+     select 'VENTER_ANDRE', 'Venter på andre' from dual union all
+     select 'VENTER_BRUKER', 'Venter på bruker' from dual union all
+     select 'VENTER_KLAGEINSTANS', 'Venter på klageinstans' from dual union all
+     select 'VENTER_SAKSBEH', 'Venter på saksbehandling' from dual union all
+     select 'VILKARSPROVD', 'Vilkårsprøvd' from dual
+ ),
+behandling_t_map as (
+    select 'AUTO' as k_behandling_t, 'Automatisk' as dekode from dual union all
+    select 'DEL_AUTO', 'Del-automatisk' from dual union all
+    select 'MAN', 'Manuell' from dual
+),
 base as (
     select
         trunc(kp.dato_opprettet) as dato,
-        dkh.dekode as kravtype,
+        coalesce(dkh.dekode, kh.k_krav_gjelder) as kravtype,
         (case when substr(kh.opprettet_av,1,1) in ('0','1','2','3','4','5','6','7','8','9') then 'Bruker' else
         case when substr(kh.opprettet_av,1,1) not in ('0','1','2','3','4','5','6','7','8','9') and substr(kh.opprettet_av,2,1) in ('0','1','2','3','4','5','6','7','8','9') then 'Saksbehandler' else
         kh.opprettet_av end end ) as behandler,
-        ds.dekode as sakstype,
-        dks.dekode as kravstatus,
+        coalesce(ds.dekode, s.k_sak_t) as sakstype,
+        coalesce(dks.dekode, kh.k_krav_s) as kravstatus,
         dkb.dekode as behandlingstype,
         kp.k_kontrollpnkt_t as kontrollpunkt,
         coalesce(kam.dekode, arsak.k_krav_arsak_t) as kravarsak,
@@ -120,11 +195,11 @@ base as (
     from pen.t_kontrollpunkt kp
     inner join pen.t_kravhode kh on kh.kravhode_id = kp.kravhode_id
     inner join pen.t_sak s on s.sak_id = kp.sak_id
-    inner join pen.t_k_krav_gjelder dkh on dkh.k_krav_gjelder = kh.k_krav_gjelder
-    inner join pen.t_k_sak_t ds on ds.k_sak_t = s.k_sak_t
+    left join krav_gjelder_map dkh on dkh.k_krav_gjelder = kh.k_krav_gjelder
+    left join sak_t_map ds on ds.k_sak_t = s.k_sak_t
     inner join pen.t_k_kontrollpnkt_t dkp on dkp.k_kontrollpnkt_t = kp.k_kontrollpnkt_t
-    inner join pen.t_k_krav_s dks on dks.k_krav_s = kh.k_krav_s
-    inner join pen.t_k_behandling_t dkb on dkb.k_behandling_t = kh.k_behandling_t
+    left join krav_s_map dks on dks.k_krav_s = kh.k_krav_s
+    left join behandling_t_map dkb on dkb.k_behandling_t = kh.k_behandling_t
     inner join pen.t_krav_arsak arsak on arsak.kravhode_id = kh.kravhode_id
     left join kravarsak_map kam on kam.k_krav_arsak_t = arsak.k_krav_arsak_t
 

@@ -10,7 +10,7 @@ from dataverk_airflow import python_operator
 # Først kartlegg om de er i bruk, feks i Metabase. Det gjelder:
 # - laaste_vedtak
 # - kravstatus
-# - kontrollpunkt
+# - kontrollpunkt -> er per feb 2026 i bruk av hvertfall team motta pensjon
 
 
 def python_operator_wrapped(

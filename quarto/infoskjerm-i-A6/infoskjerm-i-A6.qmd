@@ -25,20 +25,28 @@ format:
 ```{python}
 #| content: valuebox
 #| icon: cloud-check
-'Team Supplerende stønad er helt i sky!'
+#| color: success
+'Ambisjon: Vi gjør pensjon enklere!'
 ```
 
 ##  {height=25%}
-::: {.card }
-Dette understøtter Nav sin skystrategi og vil gi oss blant annet økt sikkerhet og økt fleksibilitet.
-
-I tillegg ble løsningene i juni 2025 utvidet til å ta inn alle nye søknader.
-
-Det betyr at det ikke har kommet inn nye søknader om supplerende stønad i infotrygd de siste syv månedene.
-
-Gratulerer til teamet!
-:::
-## {height=10%}
+```{python}
+#| content: valuebox
+#| icon: lightbulb-fill
+'Alle skal ha mulighet til å ta opplyste pensjonvalg'
+```
+##  {height=25%}
+```{python}
+#| content: valuebox
+#| icon: fast-forward-fill
+'Kvaliteten på alderspensjon skal øke for å sikre rettferdig og pålitelig forvaltning'
+```
+##  {height=25%}
+```{python}
+#| content: valuebox
+#| icon: hourglass-split
+'Vi kan møte økt saksmengde med samme bemanning og kvalitet'
+```
 
 
 <!-- Gamle memes -->

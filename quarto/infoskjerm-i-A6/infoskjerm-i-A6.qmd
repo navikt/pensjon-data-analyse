@@ -26,7 +26,7 @@ format:
 #| content: valuebox
 #| icon: cloud-check
 #| color: success
-'Ambisjon: Vi gjør pensjon enklere!'
+'Visjon: Vi gjør pensjon enklere!'
 ```
 
 ##  {height=25%}

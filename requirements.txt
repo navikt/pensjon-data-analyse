@@ -14,8 +14,8 @@ certifi==2026.1.4
 cffi==2.0.0
 charset-normalizer==3.4.4
 comm==0.2.3
-cryptography==45.0.7
-db-dtypes==1.5.0
+cryptography==46.0.5
+db-dtypes==1.4.4
 debugpy==1.8.20
 decorator==5.2.1
 defusedxml==0.7.1
@@ -43,7 +43,7 @@ ipykernel==7.2.0
 ipython==9.10.0
 ipython-pygments-lexers==1.1.1
 isoduration==20.11.0
-itables==2.7.1
+itables==2.7.0
 jedi==0.19.2
 jinja2==3.1.6
 json5==0.13.0
@@ -73,13 +73,13 @@ numpy==2.4.2
 oauthlib==3.3.1
 oracledb==3.4.2
 packaging==26.0
-pandas==2.3.3
-pandas-gbq==0.34.0
+pandas==3.0.1
+pandas-gbq==0.31.0
 pandocfilters==1.5.1
 parso==0.8.6
 pexpect==4.9.0
 platformdirs==4.5.1
-plotly==6.6.0
+plotly==6.5.2
 prometheus-client==0.24.1
 prompt-toolkit==3.0.52
 proto-plus==1.27.1
@@ -97,7 +97,6 @@ pydata-google-auth==1.9.1
 pygments==2.19.2
 python-dateutil==2.9.0.post0
 python-json-logger==4.0.0
-pytz==2025.2
 pyyaml==6.0.3
 pyzmq==27.1.0
 referencing==0.37.0

@@ -16,7 +16,7 @@ from google.cloud.bigquery import Client
 # 7. slette duplikater-timestamps i BQ, etter brukerbekreftelse
 
 
-tabell_kravstatus = "pensjon-saksbehandli-prod-1f83.saksstatistikk.kravstatus"
+tabell_kravstatus = "pensjon-saksbehandli-prod-1f83.saksstatistikk.kravstatus_med_kravarsak"
 sql_kravstatus = f"""
 select
     dato, -- timestamp
@@ -43,8 +43,8 @@ dato_to_drop = []
 
 for dag in dupe_dager:
     dupe_rows = df[df["dag"] == dag].sort_values(by="dato")
-    # behold siste, dropp alle andre
-    dato_to_drop.extend(dupe_rows.iloc[:-1]["dato"].tolist())
+    # behold første, dropp alle andre
+    dato_to_drop.extend(dupe_rows.iloc[1:]["dato"].tolist())
 
 print("Dato (timestamp) som skal droppes:")
 for dato in dato_to_drop:

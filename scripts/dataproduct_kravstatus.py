@@ -46,6 +46,7 @@ job_config = LoadJobConfig(
         SchemaField("kravstatus", enums.SqlTypeNames.STRING),
         SchemaField("antall", enums.SqlTypeNames.INTEGER),
         SchemaField("dato", enums.SqlTypeNames.TIMESTAMP),
+        SchemaField("kan_lope", enums.SqlTypeNames.STRING),
     ],
     write_disposition="WRITE_APPEND",
 )
@@ -58,6 +59,7 @@ job2_config = LoadJobConfig(
         SchemaField("kravarsak", enums.SqlTypeNames.STRING),
         SchemaField("antall", enums.SqlTypeNames.INTEGER),
         SchemaField("dato", enums.SqlTypeNames.TIMESTAMP),
+        SchemaField("kan_lope", enums.SqlTypeNames.STRING),
     ],
     write_disposition="WRITE_APPEND",
 )
@@ -68,8 +70,8 @@ client = gcp_utils.get_bigquery_client(
 
 job = client.load_table_from_dataframe(df_kravstatus, table_id, job_config=job_config)
 job.result()
-print(f"Table {table_id} successfully updated")
+print(f"Append på tabell {table_id} med følgende antall rader: {len(df_kravstatus)}")
 
 job2 = client.load_table_from_dataframe(df_kravstatus_med_kravarsak, table_id_med_kravarsak, job_config=job2_config)
 job2.result()
-print(f"Table {table_id_med_kravarsak} successfully updated")
+print(f"Append på tabell {table_id_med_kravarsak} med følgende antall rader: {len(df_kravstatus_med_kravarsak)}")

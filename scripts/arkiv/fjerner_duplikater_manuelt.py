@@ -16,7 +16,7 @@ from google.cloud.bigquery import Client
 # 7. slette duplikater-timestamps i BQ, etter brukerbekreftelse
 
 
-tabell_kravstatus = "pensjon-saksbehandli-prod-1f83.saksstatistikk.kravstatus_med_kravarsak"
+tabell_kravstatus = "pensjon-saksbehandli-prod-1f83.saksstatistikk.kravstatus"
 sql_kravstatus = f"""
 select
     dato, -- timestamp
@@ -75,7 +75,6 @@ if dato_to_drop:
         where dato in ({dato_list_str})
         \n"""
     print(sql_query)
-    if input("Vil du kjøre denne SQL-spørringen (j/n)? ") == "j":
-        bq_client.query(query=sql_query)
+    print("\nKopier og kjør denne SQL-en i BigQuery for å slette duplikatene.")
 else:
     print("Ingen duplikater å slette.")

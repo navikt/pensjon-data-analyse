@@ -62,7 +62,7 @@ format:
 # fun
 ## {height=100%}
 ::: {.card }
-<img src="https://i.imgflip.com/an4l2m.jpg" style="width:90%;"/>
+<img src="https://i.imgflip.com/an4l2m.jpg" style="width:50%;"/>
 :::
 <!-- ![](../../bilder/etterlevelsesuka-slackbot.png) -->
 

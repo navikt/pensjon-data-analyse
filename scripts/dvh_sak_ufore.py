@@ -44,7 +44,7 @@ if __name__ == "__main__":
     oracle_client = pesys_utils.connect_to_oracle()
 
     job_config = JobConfig(
-        oracle_table="pen_dataprodukt.behandlingsstatistikk_meldinger",
+        oracle_table=ORACLE_TABLE,
         delta_column_name_oracle="teknisk_tid",
         gcp_project=GCP_PROJECT_ID,
         bigquery_dataset_name=DATASET_NAME,

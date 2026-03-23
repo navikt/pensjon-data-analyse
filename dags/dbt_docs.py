@@ -1,7 +1,6 @@
 import pendulum
-from datetime import datetime
 from airflow import DAG
-
+from datetime import datetime
 from operators.dbt_operator import dbt_operator
 
 

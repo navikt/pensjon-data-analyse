@@ -1,20 +1,19 @@
 import pendulum
-from datetime import datetime
 from airflow import DAG
-
+from datetime import datetime
 from operators.dbt_operator import dbt_operator
 
 
 with DAG(
-    dag_id="analyse_pen_dataprodukt",
+    dag_id="dbt_analyse",
     start_date=datetime(2026, 1, 14, tzinfo=pendulum.timezone("Europe/Oslo")),
-    schedule_interval=None,  # 00:01 every day - kjører som inkrementell på periode-feltet
+    schedule_interval=None,
     catchup=False,
 ) as dag:
 
-    dbt_run_analyse_dev = dbt_operator(
+    analyse_q2 = dbt_operator(
         dag=dag,
-        name="dbt_run_analyse_dev",
+        name="analyse_q2",
         startup_timeout_seconds=60 * 10,
         retries=0,
         repo="navikt/pensjon-pen-dataprodukt",
@@ -28,9 +27,9 @@ with DAG(
         db_environment="pen_q2",
     )
 
-    dbt_run_analyse_prod = dbt_operator(
+    analyse_prod = dbt_operator(
         dag=dag,
-        name="dbt_run_analyse_prod",
+        name="analyse_prod",
         startup_timeout_seconds=60 * 10,
         retries=0,
         repo="navikt/pensjon-pen-dataprodukt",
@@ -44,5 +43,5 @@ with DAG(
         db_environment="pen_prod",
     )
 
-    dbt_run_analyse_dev
-    dbt_run_analyse_prod
+    analyse_q2
+    analyse_prod

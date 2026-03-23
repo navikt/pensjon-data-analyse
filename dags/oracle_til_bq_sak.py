@@ -4,10 +4,8 @@ from pendulum import timezone
 from dataverk_airflow import python_operator
 
 # DAG for overføring av data fra oracle til BQ for saksbehandlingsstatistikk
-
-
 with DAG(
-    dag_id="dvh_sak",
+    dag_id="oracle_til_bq_sak",
     description="overføring av data fra oracle til BQ for saksbehandlingsstatistikk",
     start_date=datetime(2026, 1, 11, tzinfo=timezone("Europe/Oslo")),
     schedule_interval="0 1,9,13,17 * * *",  # Kl 01:00, 09:00, 13:00 og 17:00 hver dag

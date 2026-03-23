@@ -4,15 +4,12 @@ from pendulum import timezone
 from kubernetes import client as k8s
 from dataverk_airflow import python_operator
 
-# DAG for daglig oppdaterte dataprodukter
-
 # Bør vudere om de tre dataproduktene Vebjørn lagde kan saneres.
 # Først kartlegg om de er i bruk, feks i Metabase. Det gjelder:
 # - laaste_vedtak
 # - kravstatus
-# - kontrollpunkt -> er per feb 2026 i bruk av i hvert fall team motta pensjon
 
-
+# DAG for daglig oppdaterte dataprodukter
 def python_operator_wrapped(
     *,  # Enforce keyword-only arguments
     dag: DAG,
@@ -40,7 +37,7 @@ def python_operator_wrapped(
 
 
 with DAG(
-    dag_id="daglige_dataprodukter",
+    dag_id="dataprodukter_daglig",
     description="Daglig oppdatering av dataprodukter, altså BQ-tabeller",
     schedule_interval="15 5 * * *",
     start_date=datetime(2025, 3, 12, tzinfo=timezone("Europe/Oslo")),

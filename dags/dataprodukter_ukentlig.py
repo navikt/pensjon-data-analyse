@@ -5,10 +5,6 @@ from kubernetes import client as k8s
 from dataverk_airflow import python_operator
 
 # DAG for ukentlig oppdaterte dataprodukter
-# Kan være data som ikke trenger å oppdateres daglig
-# eller spørringer som tar litt tid, eller begge
-
-
 def python_operator_wrapped(
     *,  # Enforce keyword-only arguments
     dag: DAG,

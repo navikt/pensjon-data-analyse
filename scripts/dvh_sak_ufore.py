@@ -24,8 +24,8 @@ else:
     raise ValueError(f"Ukjent environment: {ENVIRONMENT}")
 
 DATASET_NAME = "saksbehandlingsstatistikk"
-TABLE_NAME = "saksbehandlingsstatistikk_ufore"
-ORACLE_TABLE = "pen_dataprodukt.behandlingsstatistikk_meldinger"
+TABLE_NAME = "behandlingsstatistikk_ufore_meldinger"
+ORACLE_TABLE = "pen_dataprodukt.behandlingsstatistikk_ufore_meldinger"
 
 
 # grants for dev-data, se: https://console.cloud.google.com/bigquery?sq=230094999443:8ec4c0a3a32a4bd7b8862be1274fb077

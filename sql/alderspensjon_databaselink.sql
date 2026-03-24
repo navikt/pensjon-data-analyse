@@ -6,28 +6,28 @@ DECLARE
     periode_var varchar := '202511';
 BEGIN
 
---create table dataprodukt_alderspensjon_vedtak as 
-insert into dataprodukt_alderspensjon_vedtak
-select * from pen_dataprodukt.dataprodukt_alderspensjon_vedtak@lesekopien_til_dvh_prod
+--create table stonadsstatistikk_alder_vedtak as 
+insert into stonadsstatistikk_alder_vedtak
+select * from pen_dataprodukt.stonadsstatistikk_alder_vedtak@lesekopien_til_dvh_prod
 where periode = periode_var;
 
---drop table dataprodukt_alderspensjon_vedtak purge;
+--drop table stonadsstatistikk_alder_vedtak purge;
 
 
---create table dataprodukt_alderspensjon_beregning as 
-insert into dataprodukt_alderspensjon_beregning 
-select * from pen_dataprodukt.dataprodukt_alderspensjon_beregning@lesekopien_til_dvh_prod
+--create table stonadsstatistikk_alder_beregning as 
+insert into stonadsstatistikk_alder_beregning 
+select * from pen_dataprodukt.stonadsstatistikk_alder_beregning@lesekopien_til_dvh_prod
 where periode = periode_var;
 
---drop table dataprodukt_alderspensjon_belop purge;
+--drop table stonadsstatistikk_alder_belop purge;
 
 
---create table dataprodukt_alderspensjon_belop as 
-insert into dataprodukt_alderspensjon_belop 
-select * from pen_dataprodukt.dataprodukt_alderspensjon_belop@lesekopien_til_dvh_prod
+--create table stonadsstatistikk_alder_belop as 
+insert into stonadsstatistikk_alder_belop 
+select * from pen_dataprodukt.stonadsstatistikk_alder_belop@lesekopien_til_dvh_prod
 where periode = periode_var;
 
---drop table dataprodukt_alderspensjon_belop purge;
+--drop table stonadsstatistikk_alder_belop purge;
 
 
 select 1 from dual;

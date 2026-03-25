@@ -14,34 +14,34 @@ with DAG(
         dag=dag,
         name="datalast_stonad_alder_q2",
         script_path="scripts/dvh_stonad_alder.py",
-        requirements_path="requirements.txt",
-        use_uv_pip_install=True,
         repo="navikt/pensjon-data-analyse",
+        requirements_path="requirements.txt",
         slack_channel="#pensak-airflow-alerts",
+        use_uv_pip_install=True,
+        python_version="3.12",
+        extra_envs={"ENVIRONMENT": "dev"},
         allowlist=[
             "secretmanager.googleapis.com",
             "bigquery.googleapis.com",
             "dmv36-scan.adeo.no:1521",  # q2
         ],
-        python_version="3.12",
-        extra_envs={"ENVIRONMENT": "dev"},  # eller "prod"
     )
 
     datalast_stonad_alder_prod = python_operator(
         dag=dag,
         name="datalast_stonad_alder_prod",
         script_path="scripts/dvh_stonad_alder.py",
-        requirements_path="requirements.txt",
-        use_uv_pip_install=True,
         repo="navikt/pensjon-data-analyse",
+        requirements_path="requirements.txt",
         slack_channel="#pensak-airflow-alerts",
+        use_uv_pip_install=True,
+        python_version="3.12",
+        extra_envs={"ENVIRONMENT": "prod"},
         allowlist=[
             "secretmanager.googleapis.com",
             "bigquery.googleapis.com",
             "dmv14-scan.adeo.no:1521",  # prod lesekopien
         ],
-        python_version="3.12",
-        extra_envs={"ENVIRONMENT": "prod"},  # eller "prod"
     )
 
     datalast_stonad_alder_q2

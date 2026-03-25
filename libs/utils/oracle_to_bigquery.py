@@ -18,7 +18,7 @@ class JobConfig(BaseModel):
     bigquery_dataset_name: str
     bigquery_table: str
     delta_column_name_bigquery: str = "teknisk_tid"
-    bigquery_schema: list = DefaultSchemas.BEHANDLINGSSTATISTIKK_MELDINGER.value
+    bigquery_schema: list | None = DefaultSchemas.BEHANDLINGSSTATISTIKK_MELDINGER.value
     write_disposition: str = enums.WriteDisposition.WRITE_APPEND
     create_disposition: str = enums.CreateDisposition.CREATE_IF_NEEDED
 

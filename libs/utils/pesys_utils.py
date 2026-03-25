@@ -47,13 +47,20 @@ def connect_to_oracle():
     return con
 
 
-def df_from_sql(sql: str, connection: oracledb.Connection):
-    """Henter data med en sql-spørring og returnerer en pandas.DataFrame."""
+def df_from_sql(sql: str, connection: oracledb.Connection, arraysize: int = 100) -> pd.DataFrame:
+    """Henter data med en sql-spørring og returnerer en pandas.DataFrame.
+
+    Args:
+        sql: SQL-spørringen som skal kjøres.
+        connection: Aktiv Oracle-tilkobling.
+        arraysize: Antall rader hentet per nettverksrunde. Høyere verdi gir
+            færre rundturer og raskere henting, men bruker mer minne.
+    """
     with connection.cursor() as cursor:
+        cursor.arraysize = arraysize
         cursor.execute(sql)
         columns = [col[0].lower() for col in cursor.description]
-        data = cursor.fetchall()
-    df = pd.DataFrame(data, columns=columns)
+        df = pd.DataFrame(cursor.fetchall(), columns=columns)
     logging.info(f"Hentet {len(df)} rader")
     return df
 

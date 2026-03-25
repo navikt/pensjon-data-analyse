@@ -31,7 +31,7 @@ class JobConfig(BaseModel):
     @property
     def bigquery_table_id(self) -> str:
         return f"{self.gcp_project}.{self.bigquery_dataset_name}.{self.bigquery_table}"
-    
+
     @property
     def bigquery_view_id(self) -> str:
         return f"{self.gcp_project}.{self.bigquery_dataset_name}.{self.bigquery_table}_view"
@@ -65,13 +65,12 @@ def delta_load_oracle_table_to_bigquery(oracle_client: Connection, bigquery_clie
     sql_pen_dev = f"""select * from {job_config.oracle_table} 
                     where {job_config.delta_column_name_oracle} > to_timestamp_tz('{maks_kjoretidspunkt_bq}', 'YYYY-MM-DD HH24:MI:SS.FF6TZH:TZM')"""
 
-    df_bq = pesys_utils.df_from_sql(sql_pen_dev, oracle_client)
+    df_bq = pesys_utils.df_from_sql(sql_pen_dev, oracle_client, arraysize=10_000)
     bigquery_job_config = LoadJobConfig(
         write_disposition=job_config.write_disposition,
         create_disposition=job_config.create_disposition,
         schema=job_config.bigquery_schema,
     )
-
 
     start = time.time()
     job = bigquery_client.load_table_from_dataframe(df_bq, job_config.bigquery_table_id, job_config=bigquery_job_config)

@@ -32,20 +32,20 @@ if __name__ == "__main__":
     client = gcp_utils.get_bigquery_client(project=GCP_PROJECT_ID, target_principal=TARGET_PRINCIPAL)
     pesys_utils.set_db_secrets(secret_name=GCP_SECRET_NAME)
     oracle_client = pesys_utils.connect_to_oracle()
-    for ORACLE_TABLE, TABLE_NAME in TABLES.items():
+    for BQ_TABLE, ORACLE_TABLE in TABLES.items():
         job_config = JobConfig(
             oracle_table=ORACLE_TABLE,
-            bigquery_table=TABLE_NAME,
+            bigquery_table=BQ_TABLE,
             gcp_project=GCP_PROJECT_ID,
             bigquery_dataset_name=DATASET_NAME,
             delta_column_name_oracle="kjoretidspunkt",
             delta_column_name_bigquery="kjoretidspunkt",
-            bigquery_schema=None,  # type: ignore
+            bigquery_schema=None,
         )
         delta_load_oracle_table_to_bigquery(
             oracle_client=oracle_client,
             bigquery_client=client,
             job_config=job_config,
         )
-        logging.info(f"Ferdig med tabellen {TABLE_NAME}.")
+        logging.info(f"Ferdig med tabellen {BQ_TABLE}.")
     logging.info("Fullført overføring av data fra Oracle til BigQuery.")

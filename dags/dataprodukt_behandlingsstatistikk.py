@@ -1,16 +1,48 @@
+import pendulum
 from airflow import DAG
 from datetime import datetime
-from pendulum import timezone
 from dataverk_airflow import python_operator
+from operators.dbt_operator import dbt_operator
 
-# DAG for overføring av data fra oracle til BQ for saksbehandlingsstatistikk
+
 with DAG(
-    dag_id="oracle_til_bq_sak",
-    description="overføring av data fra oracle til BQ for saksbehandlingsstatistikk",
-    start_date=datetime(2026, 1, 11, tzinfo=timezone("Europe/Oslo")),
-    schedule_interval="30 6,11,21 * * *",  # 30 min etter dbt_behandlingsstatistikk
+    dag_id="dataprodukt_behandlingsstatistikk",
+    start_date=datetime(2025, 12, 8, tzinfo=pendulum.timezone("Europe/Oslo")),
+    schedule_interval="0 6,11,21 * * *",  # Morgen, lønsj og kveld
     catchup=False,
 ) as dag:
+    sak_ufore_q2 = dbt_operator(
+        dag=dag,
+        name="sak_ufore_q2",
+        startup_timeout_seconds=60 * 10,
+        retries=5,
+        repo="navikt/pensjon-pen-dataprodukt",
+        script_path="dbt/dbt_run.py",
+        dbt_command="build -s +tag:sak",
+        allowlist=[
+            "dmv36-scan.adeo.no:1521",
+            "hub.getdbt.com",
+        ],
+        dbt_secret_name="pen-q2-pen_dataprodukt",
+        db_environment="pen_q2",
+    )
+
+    sak_ufore_prod = dbt_operator(
+        dag=dag,
+        name="sak_ufore_prod",
+        startup_timeout_seconds=60 * 10,
+        retries=5,
+        repo="navikt/pensjon-pen-dataprodukt",
+        script_path="dbt/dbt_run.py",
+        dbt_command="build -s +tag:sak",
+        allowlist=[
+            "dmv18-scan.adeo.no:1521",
+            "hub.getdbt.com",
+        ],
+        dbt_secret_name="pen-prod-pen_dataprodukt",
+        db_environment="pen_prod",
+    )
+
     datalast_ufore_q2 = python_operator(
         dag=dag,
         name="datalast_ufore_q2",
@@ -45,5 +77,5 @@ with DAG(
         ],
     )
 
-    datalast_ufore_q2
-    datalast_ufore_prod
+    sak_ufore_q2 >> datalast_ufore_q2
+    sak_ufore_prod >> datalast_ufore_prod

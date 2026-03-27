@@ -8,7 +8,7 @@ from operators.dbt_operator import dbt_operator
 with DAG(
     dag_id="dataprodukt_behandlingsstatistikk",
     start_date=datetime(2025, 12, 8, tzinfo=pendulum.timezone("Europe/Oslo")),
-    schedule_interval="0 6,11,21 * * *",  # Morgen, lønsj og kveld
+    schedule_interval="0 1,6,11,21 * * *",  # Morgen, lønsj og kveld
     catchup=False,
 ) as dag:
     sak_ufore_q2 = dbt_operator(

@@ -94,7 +94,7 @@ pycparser==3.0
 pydantic==2.12.5
 pydantic-core==2.41.5
 pydata-google-auth==1.9.1
-pygments==2.19.2
+pygments==2.20.0
 python-dateutil==2.9.0.post0
 python-json-logger==4.0.0
 pytz==2026.1.post1

@@ -22,13 +22,10 @@ format:
 # Ukas oppmerksomhet
 
 ## {height=70%}
-```{python}
-#| content: valuebox
-#| title: "Torsdag 26. mars er det seksjonsmøte!"
-#| color: primary
-#| icon: person-arms-up
-'Seksjonsmøtet 26. marsgår i møterom Gnisten kl 13:00 (begrenset med plasser) og du kan delta på Teams!'
-```
+::: {.card }
+<img src="https://i.pinimg.com/originals/d2/4e/a2/d24ea28de1a2de82013acf8f4ea2849f.gif" style="width:40%;"/>
+<img src="https://i.imgur.com/6oTyitD.gif?1" style="width:40%;"/>
+:::
 
 <!-- Gamle memes -->
 <!-- gentlemen, Navet har nyhetsside om Tek.Mod. https://i.imgflip.com/an4l2m.jpg -->
@@ -64,7 +61,6 @@ format:
 ::: {.card }
 <img src="https://i.imgflip.com/an4l2m.jpg" style="width:50%;"/>
 :::
-<!-- ![](../../bilder/etterlevelsesuka-slackbot.png) -->
 
 
 # Visjon

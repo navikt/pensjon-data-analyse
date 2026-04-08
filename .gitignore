@@ -9,3 +9,4 @@ __pycache__
 env/
 venv/
 .vscode/
+*.quarto_ipynb*

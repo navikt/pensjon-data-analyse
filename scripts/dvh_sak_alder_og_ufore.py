@@ -26,8 +26,8 @@ else:
 # grants for prod-data går via Datamarkedplassen
 DATASET_NAME = "saksbehandlingsstatistikk"
 TABLES = {
-    "saksbehandlingsstatistikk_alder": "pen_dataprodukt.saksbehandlingsstatistikk_alder",
-    "saksbehandlingsstatistikk_ufore": "pen_dataprodukt.saksbehandlingsstatistikk_ufore",
+    "saksbehandlingsstatistikk_alder": "pen_dataprodukt.behandlingsstatistikk_alder_meldinger",
+    "saksbehandlingsstatistikk_ufore": "pen_dataprodukt.behandlingsstatistikk_ufore_meldinger",
 }
 
 if __name__ == "__main__":

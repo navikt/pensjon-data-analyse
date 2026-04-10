@@ -46,7 +46,7 @@ with DAG(
     datalast_ufore_q2 = python_operator(
         dag=dag,
         name="datalast_ufore_q2",
-        script_path="scripts/dvh_sak_ufore.py",
+        script_path="scripts/dvh_sak_alder_og_ufore.py",
         repo="navikt/pensjon-data-analyse",
         requirements_path="requirements.txt",
         slack_channel="#pensak-airflow-alerts",
@@ -63,7 +63,7 @@ with DAG(
     datalast_ufore_prod = python_operator(
         dag=dag,
         name="datalast_ufore_prod",
-        script_path="scripts/dvh_sak_ufore.py",
+        script_path="scripts/dvh_sak_alder_og_ufore.py",
         repo="navikt/pensjon-data-analyse",
         requirements_path="requirements.txt",
         slack_channel="#pensak-airflow-alerts",

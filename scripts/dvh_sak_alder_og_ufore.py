@@ -22,27 +22,32 @@ elif ENVIRONMENT == "prod":
 else:
     raise ValueError(f"Ukjent environment: {ENVIRONMENT}")
 
-DATASET_NAME = "saksbehandlingsstatistikk"
-TABLE_NAME = "saksbehandlingsstatistikk_ufore"
-ORACLE_TABLE = "pen_dataprodukt.behandlingsstatistikk_ufore_meldinger"
 # grants for dev-data, se: https://console.cloud.google.com/bigquery?sq=230094999443:8ec4c0a3a32a4bd7b8862be1274fb077
 # grants for prod-data går via Datamarkedplassen
+DATASET_NAME = "saksbehandlingsstatistikk"
+TABLES = {
+    "saksbehandlingsstatistikk_alder": "pen_dataprodukt.saksbehandlingsstatistikk_alder",
+    "saksbehandlingsstatistikk_ufore": "pen_dataprodukt.saksbehandlingsstatistikk_ufore",
+}
 
 if __name__ == "__main__":
-    pesys_utils.set_db_secrets(secret_name=GCP_SECRET_NAME)
     client = gcp_utils.get_bigquery_client(project=GCP_PROJECT_ID, target_principal=TARGET_PRINCIPAL)
+    pesys_utils.set_db_secrets(secret_name=GCP_SECRET_NAME)
     oracle_client = pesys_utils.connect_to_oracle()
-    job_config = JobConfig(
-        oracle_table=ORACLE_TABLE,
-        delta_column_name_oracle="teknisk_tid",
-        gcp_project=GCP_PROJECT_ID,
-        bigquery_dataset_name=DATASET_NAME,
-        bigquery_table=TABLE_NAME,
-        delta_column_name_bigquery="teknisk_tid",
-    )
-    delta_load_oracle_table_to_bigquery(
-        oracle_client=oracle_client,
-        bigquery_client=client,
-        job_config=job_config,
-    )
+    for BQ_TABLE, ORACLE_TABLE in TABLES.items():
+        job_config = JobConfig(
+            oracle_table=ORACLE_TABLE,
+            bigquery_table=BQ_TABLE,
+            gcp_project=GCP_PROJECT_ID,
+            bigquery_dataset_name=DATASET_NAME,
+            delta_column_name_oracle="kjoretidspunkt",
+            delta_column_name_bigquery="kjoretidspunkt",
+            bigquery_schema=None,
+        )
+        delta_load_oracle_table_to_bigquery(
+            oracle_client=oracle_client,
+            bigquery_client=client,
+            job_config=job_config,
+        )
+        logging.info(f"Ferdig med tabellen {BQ_TABLE}.")
     logging.info("Fullført overføring av data fra Oracle til BigQuery.")

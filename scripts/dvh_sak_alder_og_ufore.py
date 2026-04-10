@@ -40,9 +40,8 @@ if __name__ == "__main__":
             bigquery_table=BQ_TABLE,
             gcp_project=GCP_PROJECT_ID,
             bigquery_dataset_name=DATASET_NAME,
-            delta_column_name_oracle="kjoretidspunkt",
-            delta_column_name_bigquery="kjoretidspunkt",
-            bigquery_schema=None,
+            delta_column_name_oracle="teknisk_tid",
+            delta_column_name_bigquery="teknisk_tid",
         )
         delta_load_oracle_table_to_bigquery(
             oracle_client=oracle_client,

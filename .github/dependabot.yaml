@@ -17,6 +17,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "⬆ "
     groups:
       pip:
         patterns:
@@ -29,6 +31,8 @@ updates:
     schedule:
       interval: "weekly"
       day: "tuesday"
+    commit-message:
+      prefix: "⬆ "
     groups:
       dag-images:
         patterns:

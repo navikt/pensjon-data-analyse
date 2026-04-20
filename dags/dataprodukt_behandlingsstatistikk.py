@@ -77,5 +77,39 @@ with DAG(
         ],
     )
 
-    dbt_sak_q2 >> datalast_q2
-    dbt_sak_prod >> datalast_prod
+    datalast_q2_v2 = python_operator(
+        dag=dag,
+        name="datalast_q2_v2",
+        script_path="scripts/dvh_sak_alder_og_ufore_v2.py",
+        repo="navikt/pensjon-data-analyse",
+        requirements_path="requirements.txt",
+        slack_channel="#pensak-airflow-alerts",
+        use_uv_pip_install=True,
+        python_version="3.12",
+        extra_envs={"ENVIRONMENT": "dev"},
+        allowlist=[
+            "secretmanager.googleapis.com",
+            "bigquery.googleapis.com",
+            "dmv36-scan.adeo.no:1521",  # q2
+        ],
+    )
+
+    datalast_prod_v2 = python_operator(
+        dag=dag,
+        name="datalast_prod_v2",
+        script_path="scripts/dvh_sak_alder_og_ufore_v2.py",
+        repo="navikt/pensjon-data-analyse",
+        requirements_path="requirements.txt",
+        slack_channel="#pensak-airflow-alerts",
+        use_uv_pip_install=True,
+        python_version="3.12",
+        extra_envs={"ENVIRONMENT": "prod"},
+        allowlist=[
+            "secretmanager.googleapis.com",
+            "bigquery.googleapis.com",
+            "dmv14-scan.adeo.no:1521",  # prod lesekopien
+        ],
+    )
+
+    dbt_sak_q2 >> [ datalast_q2, datalast_q2_v2 ]
+    dbt_sak_prod >> [ datalast_prod, datalast_prod_v2 ]

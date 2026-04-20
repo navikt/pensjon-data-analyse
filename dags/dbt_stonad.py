@@ -1,6 +1,7 @@
 import pendulum
 from airflow import DAG
 from datetime import datetime
+from dataverk_airflow import python_operator
 from operators.dbt_operator import dbt_operator
 
 
@@ -10,14 +11,14 @@ with DAG(
     schedule_interval="1 0 * * *",  # 00:01 every day - kjører som inkrementell på periode-feltet
     catchup=False,
 ) as dag:
-    stonad_alder_q2 = dbt_operator(
+    dbt_stonad_q2 = dbt_operator(
         dag=dag,
-        name="stonad_alder_q2",
+        name="dbt_stonad_q2",
         startup_timeout_seconds=60 * 10,
         retries=5,
         repo="navikt/pensjon-pen-dataprodukt",
         script_path="dbt/dbt_run.py",
-        dbt_command="build --exclude sql_pilot_original --exclude tag:analyse --exclude tag:sak",
+        dbt_command="build --select +tag:stonad+ --select +tag:diagnosekoder+",
         allowlist=[
             "dmv36-scan.adeo.no:1521",
             "hub.getdbt.com",
@@ -26,14 +27,14 @@ with DAG(
         db_environment="pen_q2",
     )
 
-    stonad_alder_prod = dbt_operator(
+    dbt_stonad_prod = dbt_operator(
         dag=dag,
-        name="stonad_alder_prod",
+        name="dbt_stonad_prod",
         startup_timeout_seconds=60 * 10,
         retries=5,
         repo="navikt/pensjon-pen-dataprodukt",
         script_path="dbt/dbt_run.py",
-        dbt_command="build --exclude sql_pilot_original --exclude tag:analyse --exclude tag:sak",
+        dbt_command="build --select +tag:stonad+ --select +tag:diagnosekoder+",
         allowlist=[
             "dmv18-scan.adeo.no:1521",
             "hub.getdbt.com",
@@ -42,5 +43,39 @@ with DAG(
         db_environment="pen_prod",
     )
 
-    stonad_alder_q2
-    stonad_alder_prod
+    datalast_stonad_q2 = python_operator(
+        dag=dag,
+        name="datalast_stonad_q2",
+        script_path="scripts/dvh_stonad_alder.py",
+        repo="navikt/pensjon-data-analyse",
+        requirements_path="requirements.txt",
+        slack_channel="#pensak-airflow-alerts",
+        use_uv_pip_install=True,
+        python_version="3.12",
+        extra_envs={"ENVIRONMENT": "dev"},
+        allowlist=[
+            "secretmanager.googleapis.com",
+            "bigquery.googleapis.com",
+            "dmv36-scan.adeo.no:1521",  # q2
+        ],
+    )
+
+    datalast_stonad_prod = python_operator(
+        dag=dag,
+        name="datalast_stonad_prod",
+        script_path="scripts/dvh_stonad_alder.py",
+        repo="navikt/pensjon-data-analyse",
+        requirements_path="requirements.txt",
+        slack_channel="#pensak-airflow-alerts",
+        use_uv_pip_install=True,
+        python_version="3.12",
+        extra_envs={"ENVIRONMENT": "prod"},
+        allowlist=[
+            "secretmanager.googleapis.com",
+            "bigquery.googleapis.com",
+            "dmv14-scan.adeo.no:1521",  # prod lesekopien
+        ],
+    )
+
+    dbt_stonad_q2 >> datalast_stonad_q2
+    dbt_stonad_prod >> datalast_stonad_prod

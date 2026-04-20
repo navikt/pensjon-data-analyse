@@ -19,7 +19,7 @@ dependencies = [
     "google-cloud-bigquery>=3.29.0",
     "google-cloud-secret-manager>=2.23.0",
     "google-cloud-bigquery-storage>=2.30.0",
-    "pydantic>=2.13.0",
+    "pydantic>=2.13.3",
 ]
 
 [dependency-groups]
@@ -27,7 +27,7 @@ dev = [
     "dataverk-airflow>=1.7.15",
     "pendulum>=3.1.0",
     "pytest>=9.0.3",
-    "ruff>=0.15.10",
+    "ruff>=0.15.11",
     "sqlfluff>=3.4.2",
 ]
 

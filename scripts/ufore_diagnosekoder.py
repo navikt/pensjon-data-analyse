@@ -18,7 +18,7 @@ df_diagnosekoder = pesys_utils.df_from_sql(
 con.close()
 
 client = gcp_utils.get_bigquery_client(
-    project="pensjon-saksbehandli-prod-1f83", target_principal="bq-airflow@wendelboe-prod-801c.iam.gserviceaccount.com"
+    project="pensjon-saksbehandli-prod-1f83", target_principal="bq-airflow-dvh@pensjon-saksbehandli-prod-1f83.iam.gserviceaccount.com"
 )
 job_config = LoadJobConfig(
     write_disposition="WRITE_TRUNCATE",

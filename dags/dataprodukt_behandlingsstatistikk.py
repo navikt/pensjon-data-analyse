@@ -11,9 +11,9 @@ with DAG(
     schedule_interval="0 1,6,11,21 * * *",  # Morgen, lønsj og kveld
     catchup=False,
 ) as dag:
-    sak_ufore_q2 = dbt_operator(
+    dbt_sak_q2 = dbt_operator(
         dag=dag,
-        name="sak_ufore_q2",
+        name="sak_q2",
         startup_timeout_seconds=60 * 10,
         retries=5,
         repo="navikt/pensjon-pen-dataprodukt",
@@ -27,9 +27,9 @@ with DAG(
         db_environment="pen_q2",
     )
 
-    sak_ufore_prod = dbt_operator(
+    dbt_sak_prod = dbt_operator(
         dag=dag,
-        name="sak_ufore_prod",
+        name="sak_prod",
         startup_timeout_seconds=60 * 10,
         retries=5,
         repo="navikt/pensjon-pen-dataprodukt",
@@ -43,9 +43,9 @@ with DAG(
         db_environment="pen_prod",
     )
 
-    datalast_ufore_q2 = python_operator(
+    datalast_q2 = python_operator(
         dag=dag,
-        name="datalast_ufore_q2",
+        name="datalast_q2",
         script_path="scripts/dvh_sak_alder_og_ufore.py",
         repo="navikt/pensjon-data-analyse",
         requirements_path="requirements.txt",
@@ -60,9 +60,9 @@ with DAG(
         ],
     )
 
-    datalast_ufore_prod = python_operator(
+    datalast_prod = python_operator(
         dag=dag,
-        name="datalast_ufore_prod",
+        name="datalast_prod",
         script_path="scripts/dvh_sak_alder_og_ufore.py",
         repo="navikt/pensjon-data-analyse",
         requirements_path="requirements.txt",
@@ -77,5 +77,5 @@ with DAG(
         ],
     )
 
-    sak_ufore_q2 >> datalast_ufore_q2
-    sak_ufore_prod >> datalast_ufore_prod
+    dbt_sak_q2 >> datalast_q2
+    dbt_sak_prod >> datalast_prod

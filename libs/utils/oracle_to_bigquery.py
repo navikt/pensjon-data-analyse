@@ -32,10 +32,6 @@ class JobConfig(BaseModel):
     def bigquery_table_id(self) -> str:
         return f"{self.gcp_project}.{self.bigquery_dataset_name}.{self.bigquery_table}"
 
-    @property
-    def bigquery_view_id(self) -> str:
-        return f"{self.gcp_project}.{self.bigquery_dataset_name}.{self.bigquery_table}_view"
-
 
 def delta_load_oracle_table_to_bigquery(oracle_client: Connection, bigquery_client: Client, job_config: JobConfig):
     """Laster data fra en Oracle-tabell til en BigQuery-tabell basert på endringer i en delta-kolonne."""

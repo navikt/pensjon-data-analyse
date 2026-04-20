@@ -77,5 +77,21 @@ with DAG(
         ],
     )
 
+    datalast_ufore_diagnosekoder_prod = python_operator(
+        dag=dag,
+        name="datalast_ufore_diagnosekoder_prod",
+        script_path="scripts/ufore_diagnosekoder.py",
+        repo="navikt/pensjon-data-analyse",
+        requirements_path="requirements.txt",
+        slack_channel="#pensak-airflow-alerts",
+        use_uv_pip_install=True,
+        python_version="3.12",
+        allowlist=[
+            "secretmanager.googleapis.com",
+            "bigquery.googleapis.com",
+            "dmv14-scan.adeo.no:1521",  # prod lesekopien
+        ],
+    )
+
     dbt_stonad_q2 >> datalast_stonad_q2
-    dbt_stonad_prod >> datalast_stonad_prod
+    dbt_stonad_prod >> datalast_stonad_prod >> datalast_ufore_diagnosekoder_prod

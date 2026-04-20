@@ -26,7 +26,6 @@ TABLES = {
     "stonadsstatistikk_alder_belop": "pen_dataprodukt.stonadsstatistikk_alder_belop",
     "stonadsstatistikk_alder_beregning": "pen_dataprodukt.stonadsstatistikk_alder_beregning",
     "stonadsstatistikk_alder_vedtak": "pen_dataprodukt.stonadsstatistikk_alder_vedtak",
-    "dataprodukt_ufore_diagnosekoder": "pen_dataprodukt.dataprodukt_ufore_diagnosekoder",
 }
 
 if __name__ == "__main__":

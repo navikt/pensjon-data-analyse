@@ -78,13 +78,3 @@ def delta_load_oracle_table_to_bigquery(oracle_client: Connection, bigquery_clie
     end = time.time()
 
     print(f"{len(df_bq)} rader ble skrevet til bigquery etter {end - start} sekunder.")
-
-    view_query = f"""
-    CREATE OR REPLACE VIEW `{job_config.bigquery_view_id}` as
-    select * from `{job_config.bigquery_table_id}`
-    """
-    try:
-        bigquery_client.query(view_query).result()
-        logging.info(f"View {job_config.bigquery_view_id} opprettet/oppdatert.")
-    except Exception as e:
-        logging.error(f"Feil ved oppretting/oppdatering av view {job_config.bigquery_view_id}: {e}")

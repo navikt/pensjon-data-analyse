@@ -10,7 +10,7 @@ dependencies = [
     "plotly>=6.7.0,<7.0.0", # Plotly > 6.0.0 og quarto dashbords er ikke kompatible
     "itables>=2.2.5",
     "oracledb>=2.5.1",
-    "pyarrow>=19.0.1",
+    "pyarrow>=24.0.0",
     "nbclient>=0.10.2",
     "nbformat>=5.10.4",
     "db-dtypes>=1.4.2",
@@ -19,7 +19,7 @@ dependencies = [
     "google-cloud-bigquery>=3.29.0",
     "google-cloud-secret-manager>=2.23.0",
     "google-cloud-bigquery-storage>=2.30.0",
-    "pydantic>=2.13.0",
+    "pydantic>=2.13.3",
 ]
 
 [dependency-groups]
@@ -27,7 +27,7 @@ dev = [
     "dataverk-airflow>=1.7.15",
     "pendulum>=3.1.0",
     "pytest>=9.0.3",
-    "ruff>=0.15.10",
+    "ruff>=0.15.11",
     "sqlfluff>=3.4.2",
 ]
 

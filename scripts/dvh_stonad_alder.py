@@ -14,14 +14,14 @@ ENVIRONMENT = "prod" if os.getenv("ENVIRONMENT") == "prod" else "dev"
 if ENVIRONMENT == "dev":
     GCP_PROJECT_ID = "pensjon-saksbehandli-dev-cb76"
     GCP_SECRET_NAME = "pen-q2-pen_dataprodukt"
-    TARGET_PRINCIPAL = "bq-airflow-dvh@pensjon-saksbehandli-dev-cb76.iam.gserviceaccount.com"
+    TARGET_PRINCIPAL = "bigquery-airflow-dvh@pensjon-saksbehandli-dev-cb76.iam.gserviceaccount.com"
 elif ENVIRONMENT == "prod":
     GCP_PROJECT_ID = "pensjon-saksbehandli-prod-1f83"
     GCP_SECRET_NAME = "pen-prod-lesekopien-pen_dataprodukt"
-    TARGET_PRINCIPAL = "bq-airflow-dvh@pensjon-saksbehandli-prod-1f83.iam.gserviceaccount.com"
+    TARGET_PRINCIPAL = "bigquery-airflow-dvh@pensjon-saksbehandli-prod-1f83.iam.gserviceaccount.com"
 else:
     raise ValueError(f"Ukjent environment: {ENVIRONMENT}")
-DATASET_NAME = "stonadsstatistikk"
+DATASET_NAME = "pen_dataprodukt_dataset"
 TABLES = {
     "stonadsstatistikk_alder_belop": "pen_dataprodukt.stonadsstatistikk_alder_belop",
     "stonadsstatistikk_alder_beregning": "pen_dataprodukt.stonadsstatistikk_alder_beregning",

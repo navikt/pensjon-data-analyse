@@ -23,7 +23,7 @@ else:
     raise ValueError(f"Ukjent environment: {ENVIRONMENT}")
 
 # grants for dev-data, se: https://console.cloud.google.com/bigquery?sq=230094999443:8ec4c0a3a32a4bd7b8862be1274fb077
-# grants for prod-data går via Datamarkedplassen
+# grants for prod-data går via https://github.com/navikt/wendelboe-bigquery-terraform/blob/main/prod/pen-dataprodukt-dataset.tf
 DATASET_NAME = "pen_dataprodukt_dataset"
 TABLES = {
     "saksbehandlingsstatistikk_alder": "pen_dataprodukt.behandlingsstatistikk_alder_meldinger",

@@ -43,10 +43,10 @@ with DAG(
         db_environment="pen_prod",
     )
 
-    datalast_q2_v2 = python_operator(
+    datalast_q2 = python_operator(
         dag=dag,
-        name="datalast_q2_v2",
-        script_path="scripts/dvh_sak_alder_og_ufore_v2.py",
+        name="datalast_q2",
+        script_path="scripts/dvh_sak_alder_og_ufore.py",
         repo="navikt/pensjon-data-analyse",
         requirements_path="requirements.txt",
         slack_channel="#pensak-airflow-alerts",
@@ -60,10 +60,10 @@ with DAG(
         ],
     )
 
-    datalast_prod_v2 = python_operator(
+    datalast_prod = python_operator(
         dag=dag,
-        name="datalast_prod_v2",
-        script_path="scripts/dvh_sak_alder_og_ufore_v2.py",
+        name="datalast_prod",
+        script_path="scripts/dvh_sak_alder_og_ufore.py",
         repo="navikt/pensjon-data-analyse",
         requirements_path="requirements.txt",
         slack_channel="#pensak-airflow-alerts",
@@ -77,5 +77,5 @@ with DAG(
         ],
     )
 
-    dbt_sak_q2 >> datalast_q2_v2
-    dbt_sak_prod >> datalast_prod_v2
+    dbt_sak_q2 >> datalast_q2
+    dbt_sak_prod >> datalast_prod

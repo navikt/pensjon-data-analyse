@@ -94,4 +94,4 @@ with DAG(
     )
 
     dbt_stonad_q2 >> datalast_stonad_q2
-    dbt_stonad_prod >> datalast_stonad_prod >> datalast_ufore_diagnosekoder_prod
+    dbt_stonad_prod >> [datalast_stonad_prod, datalast_ufore_diagnosekoder_prod]

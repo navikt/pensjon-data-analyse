@@ -9,12 +9,12 @@ dependencies = [
     "pandas>=3.0.2",
     "plotly>=6.7.0,<7.0.0", # Plotly > 6.0.0 og quarto dashbords er ikke kompatible
     "itables>=2.2.5",
-    "oracledb>=2.5.1",
+    "oracledb>=4.0.0",
     "pyarrow>=19.0.1",
     "nbclient>=0.10.2",
     "nbformat>=5.10.4",
     "db-dtypes>=1.4.2",
-    "jupyterlab>=4.3.5",
+    "jupyterlab>=4.5.7",
     "pandas-gbq>=0.35.0",
     "google-cloud-bigquery>=3.29.0",
     "google-cloud-secret-manager>=2.23.0",
@@ -27,7 +27,7 @@ dev = [
     "dataverk-airflow>=1.7.15",
     "pendulum>=3.1.0",
     "pytest>=9.0.3",
-    "ruff>=0.15.10",
+    "ruff>=0.15.12",
     "sqlfluff>=3.4.2",
 ]
 

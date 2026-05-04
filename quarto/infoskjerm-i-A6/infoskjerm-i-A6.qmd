@@ -23,11 +23,12 @@ format:
 
 ## {height=70%}
 ::: {.card }
-<img src="https://i.pinimg.com/originals/d2/4e/a2/d24ea28de1a2de82013acf8f4ea2849f.gif" style="width:40%;"/>
-<img src="https://i.imgur.com/6oTyitD.gif?1" style="width:40%;"/>
+<img src="https://i.imgflip.com/aquj5z.jpg" style="width:70%;"/>
 :::
 
 <!-- Gamle memes -->
+<!-- riksrevisjonen, titter på logger som en slu rev https://i.imgflip.com/aqujbq.jpg -->
+<!-- riksrevisjonen, begging for logger https://i.imgflip.com/aquj5z.jpg -->
 <!-- gentlemen, Navet har nyhetsside om Tek.Mod. https://i.imgflip.com/an4l2m.jpg -->
 <!-- ledelsen, how do you do fellow kids - https://i.imgflip.com/agwey5.jpg -->
 <!-- pesys vs pesys modernisert - https://i.imgflip.com/agmjoq.jpg -->
@@ -43,23 +44,23 @@ format:
 ## {height=60%}
 ```{python}
 #| content: valuebox
-#| title: "Har du fått med deg de siste nyhetssakene innen teknisk modernisering på Navet?"
+#| title: "T2 er rett rundt hjørnet!"
 #| color: info
 #| icon: stars
-'Teknisk modernisering av pensjons- og uføreområdet har fått sin egen side på Navet. Omgivelsene våre er nysgjerrige på hva vi jobber med og hvordan det går!'
+'Stramming mandag 11. mai'
 ```
 
 ## {height=30%}
 ```{python}
 #| content: valuebox
 #| icon: search
-'Søk opp teknisk modernisering på Navet og sjekk ut nyhetene!'
+'Målsafari tirsdag 12. mai'
 ```
 
 # fun
 ## {height=100%}
 ::: {.card }
-<img src="https://i.imgflip.com/an4l2m.jpg" style="width:50%;"/>
+<img src="https://i.imgflip.com/aqujbq.jpg" style="width:65%;"/>
 :::
 
 

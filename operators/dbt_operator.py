@@ -5,6 +5,7 @@ from airflow import DAG
 
 from dataverk_airflow import python_operator
 from images import get_image_name
+import json
 
 DBT_IMAGE = get_image_name("dbt")
 
@@ -21,6 +22,7 @@ def dbt_operator(
     dbt_command: str = "build",
     dbt_image: str = DBT_IMAGE,
     dbt_models: Optional[str] = None,
+    dbt_vars: Optional[dict] = None,
     do_xcom_push: bool = False,
     allowlist: list = [],
     slack_channel: str = Variable.get("SLACK_OPS_CHANNEL"),
@@ -33,6 +35,8 @@ def dbt_operator(
     }
     if dbt_models:
         env_vars["DBT_MODELS"] = dbt_models
+    if dbt_vars:
+        env_vars["DBT_VARS"] = json.dumps(dbt_vars)
 
     return python_operator(
         dag=dag,

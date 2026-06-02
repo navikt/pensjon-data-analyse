@@ -33,7 +33,7 @@ def python_operator_wrapped(
 
 
 with DAG(
-    dag_id="dataprodukter_daglig",
+    dag_id="last_fra_api",
     description="Daglig oppdatering av dataprodukter, altså BQ-tabeller",
     schedule_interval="0 6 1 * *", # den 1. hver måned kl 06
     start_date=datetime(2026, 6, 1, tzinfo=timezone("Europe/Oslo")),

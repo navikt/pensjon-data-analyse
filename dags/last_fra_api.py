@@ -25,7 +25,7 @@ def python_operator_wrapped(
         allowlist=[
             "secretmanager.googleapis.com",
             "bigquery.googleapis.com",
-            "dmv14-scan.adeo.no:1521",  # prod lesekopien
+            "norg2.intern.nav.no",  # api'er som brukes
         ],
         resources=resources,
         python_version="3.12",
@@ -42,7 +42,7 @@ with DAG(
     last_norg2_intern_nav = python_operator_wrapped(
         dag=dag,
         name="last_norg2_intern_nav",
-        script_path="scripts/load_org_enhet.py",
+        script_path="scripts/last_norg2_intern_nav.py",
     )
 
     last_norg2_intern_nav

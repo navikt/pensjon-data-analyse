@@ -17,7 +17,7 @@ with DAG(
         startup_timeout_seconds=60 * 10,
         retries=0,
         repo="navikt/pensjon-pen-dataprodukt",
-        script_path="dbt/dbt_run.py",
+        script_path="dbt_run.py",
         dbt_command="run -s tag:analyse",
         allowlist=[
             "dmv36-scan.adeo.no:1521",
@@ -33,7 +33,7 @@ with DAG(
         startup_timeout_seconds=60 * 10,
         retries=0,
         repo="navikt/pensjon-pen-dataprodukt",
-        script_path="dbt/dbt_run.py",
+        script_path="dbt_run.py",
         dbt_command="run -s tag:analyse",
         allowlist=[
             "dmv18-scan.adeo.no:1521",

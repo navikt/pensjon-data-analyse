@@ -29,7 +29,7 @@ with DAG(
         startup_timeout_seconds=60 * 10,
         retries=5,
         repo="navikt/pensjon-pen-dataprodukt",
-        script_path="dbt/dbt_run.py",
+        script_path="dbt_run.py",
         dbt_command="build --select +tag:stonad+ --select +tag:diagnosekoder+",
         dbt_vars={"periode": periode},
         allowlist=[
@@ -46,7 +46,7 @@ with DAG(
         startup_timeout_seconds=60 * 10,
         retries=5,
         repo="navikt/pensjon-pen-dataprodukt",
-        script_path="dbt/dbt_run.py",
+        script_path="dbt_run.py",
         dbt_command="build --select +tag:stonad+ --select +tag:diagnosekoder+",
         dbt_vars={"periode": periode},
         allowlist=[

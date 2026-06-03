@@ -15,7 +15,7 @@ with DAG(
         name="pen_dataprodukt",
         startup_timeout_seconds=60 * 10,
         repo="navikt/pensjon-pen-dataprodukt",
-        script_path="dbt/dbt_run.py",
+        script_path="dbt_run.py",
         dbt_command="docs generate",
         allowlist=[
             "dmv36-scan.adeo.no:1521",

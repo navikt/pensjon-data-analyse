@@ -27,7 +27,7 @@ dev = [
     "dataverk-airflow>=1.7.15",
     "pendulum>=3.1.0",
     "pytest>=9.0.3",
-    "ruff>=0.15.13",
+    "ruff>=0.15.15",
     "sqlfluff>=4.2.1",
 ]
 

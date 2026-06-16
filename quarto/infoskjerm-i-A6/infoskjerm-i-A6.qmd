@@ -27,6 +27,7 @@ format:
 :::
 
 <!-- Gamle memes -->
+<!-- fantasy-tdf meme https://i.imgflip.com/augfr2.jpg -->
 <!-- riksrevisjonen, titter på logger som en slu rev https://i.imgflip.com/aqujbq.jpg -->
 <!-- riksrevisjonen, begging for logger https://i.imgflip.com/aquj5z.jpg -->
 <!-- gentlemen, Navet har nyhetsside om Tek.Mod. https://i.imgflip.com/an4l2m.jpg -->
@@ -41,26 +42,19 @@ format:
 
 
 # Ukas oppmerksomhet 2
-## {height=60%}
+## {height=90%}
 ```{python}
 #| content: valuebox
-#| title: "T2 er rett rundt hjørnet!"
+#| title: "lovendringer uføretrygd"
 #| color: info
 #| icon: stars
-'Stramming mandag 11. mai'
-```
-
-## {height=30%}
-```{python}
-#| content: valuebox
-#| icon: search
-'Målsafari tirsdag 12. mai'
+'Fram til 1. juli jobber #team-ufore ekstra intenst med lovendringer. Send teamet en god dose omtanke i denne perioden!'
 ```
 
 # fun
 ## {height=100%}
 ::: {.card }
-<img src="https://i.imgflip.com/aqujbq.jpg" style="width:65%;"/>
+<img src="https://i.imgflip.com/augi1n.jpg" style="width:65%;"/>
 :::
 
 
@@ -159,7 +153,7 @@ format:
 #| title: "Hvordan få opp andre nettsider her?"
 #| color: dark
 #| icon: patch-question
-'Snakk med Brynjar/Eystein!'
+'Snakk med Nicholas/Eystein!'
 ```
 
 ## {height=40%}

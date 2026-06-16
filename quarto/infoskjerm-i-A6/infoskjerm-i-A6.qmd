@@ -23,7 +23,7 @@ format:
 
 ## {height=70%}
 ::: {.card }
-<img src="https://i.imgflip.com/aquj5z.jpg" style="width:70%;"/>
+<img src="https://i.imgflip.com/augfr2.jpg" style="width:70%;"/>
 :::
 
 <!-- Gamle memes -->

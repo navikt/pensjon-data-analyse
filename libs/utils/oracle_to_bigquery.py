@@ -46,7 +46,7 @@ def delta_load_oracle_table_to_bigquery(oracle_client: Connection, bigquery_clie
     # Sjekk om tabellen finnes og hent maks teknisk_tid
     maks_kjoretidspunkt_bq = "1900-01-01 00:00:00"
     try:  # hvis tabellen finnes, hent alle nye rader
-        query = f"select max({job_config.delta_column_name_bigquery}) as maks_kjoretidspunkt_bq from `{job_config.bigquery_table_id}`"
+        query = f"select cast(max({job_config.delta_column_name_bigquery}) as datetime) as maks_kjoretidspunkt_bq from `{job_config.bigquery_table_id}`"
         results = bigquery_client.query(query).result()
         df = results.to_dataframe()
     except NotFound:
@@ -59,7 +59,7 @@ def delta_load_oracle_table_to_bigquery(oracle_client: Connection, bigquery_clie
         maks_kjoretidspunkt_bq = df.iloc[0]["maks_kjoretidspunkt_bq"]
         logging.info(f"Maks kjoretidspunkt i BQ: {maks_kjoretidspunkt_bq}")
     sql_pen_dev = f"""select * from {job_config.oracle_table} 
-                    where {job_config.delta_column_name_oracle} > to_timestamp_tz('{maks_kjoretidspunkt_bq}', 'YYYY-MM-DD HH24:MI:SS.FF6TZH:TZM')"""
+                    where {job_config.delta_column_name_oracle} > to_timestamp('{maks_kjoretidspunkt_bq}', 'YYYY-MM-DD HH24:MI:SS.FF6')"""
 
     df_bq = pesys_utils.df_from_sql(sql_pen_dev, oracle_client, arraysize=10_000)
     bigquery_job_config = LoadJobConfig(

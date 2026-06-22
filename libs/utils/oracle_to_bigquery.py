@@ -58,10 +58,10 @@ def delta_load_oracle_table_to_bigquery(oracle_client: Connection, bigquery_clie
     if not df.empty and pd.notnull(df.iloc[0]["maks_kjoretidspunkt_bq"]):
         maks_kjoretidspunkt_bq = df.iloc[0]["maks_kjoretidspunkt_bq"]
         logging.info(f"Maks kjoretidspunkt i BQ: {maks_kjoretidspunkt_bq}")
-    sql_pen_dev = f"""select * from {job_config.oracle_table} 
+    sql_pen = f"""select * from {job_config.oracle_table} 
                     where {job_config.delta_column_name_oracle} > to_timestamp('{maks_kjoretidspunkt_bq}', 'YYYY-MM-DD HH24:MI:SS.FF6')"""
 
-    df_bq = pesys_utils.df_from_sql(sql_pen_dev, oracle_client, arraysize=10_000)
+    df_bq = pesys_utils.df_from_sql(sql_pen, oracle_client, arraysize=10_000)
     bigquery_job_config = LoadJobConfig(
         write_disposition=job_config.write_disposition,
         create_disposition=job_config.create_disposition,

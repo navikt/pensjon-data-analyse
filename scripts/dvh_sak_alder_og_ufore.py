@@ -42,7 +42,6 @@ if __name__ == "__main__":
             bigquery_dataset_name=DATASET_NAME,
             delta_column_name_oracle="teknisk_tid",
             delta_column_name_bigquery="teknisk_tid",
-            bigquery_schema=None,
         )
         delta_load_oracle_table_to_bigquery(
             oracle_client=oracle_client,

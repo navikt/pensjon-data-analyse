@@ -15,7 +15,7 @@ class DefaultSchemas(Enum):
         SchemaField("utbetalt_tid", enums.SqlTypeNames.TIMESTAMP),
         SchemaField("endret_tid", enums.SqlTypeNames.TIMESTAMP),
         SchemaField("forventetoppstart_tid", enums.SqlTypeNames.TIMESTAMP),
-        SchemaField("teknisk_tid", enums.SqlTypeNames.TIMESTAMP),
+        SchemaField("kjoretidspunkt", enums.SqlTypeNames.TIMESTAMP),
         SchemaField("sak_ytelse", enums.SqlTypeNames.STRING),
         SchemaField("sak_utland", enums.SqlTypeNames.STRING),
         SchemaField("behandling_type", enums.SqlTypeNames.STRING),
@@ -32,4 +32,5 @@ class DefaultSchemas(Enum):
         SchemaField("funksjonell_periode_tom", enums.SqlTypeNames.TIMESTAMP),
         SchemaField("fagsystem_navn", enums.SqlTypeNames.STRING),
         SchemaField("fagsystem_versjon", enums.SqlTypeNames.STRING),
+        SchemaField("teknisk_tid", enums.SqlTypeNames.TIMESTAMP),
     ]

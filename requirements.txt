@@ -93,7 +93,7 @@ pyasn1==0.6.3
 pyasn1-modules==0.4.2
 pycparser==3.0
 pydantic==2.13.4
-pydantic-core==2.46.4
+pydantic-core==2.47.0
 pydata-google-auth==1.9.1
 pygments==2.20.0
 pyopenssl==26.3.0

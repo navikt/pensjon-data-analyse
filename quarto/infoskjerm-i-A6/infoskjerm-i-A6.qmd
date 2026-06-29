@@ -48,7 +48,7 @@ format:
 #| title: "lovendringer uføretrygd"
 #| color: info
 #| icon: stars
-'Fram til 1. juli jobber #team-ufore ekstra intenst med lovendringer. Send teamet en god dose omtanke i denne perioden!'
+'Juli er her og det er is på sørvIStorget. Ta med deg en kollega på en ispause.'
 ```
 
 # fun

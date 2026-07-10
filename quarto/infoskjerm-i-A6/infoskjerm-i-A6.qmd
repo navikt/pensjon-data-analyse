@@ -23,7 +23,7 @@ format:
 
 ## {height=70%}
 ::: {.card }
-<img src="https://i.imgflip.com/augfr2.jpg" style="width:70%;"/>
+<img src="https://imgflip.com/i/awapgp.jpg" style="width:70%;"/>
 :::
 
 <!-- Gamle memes -->
@@ -45,7 +45,7 @@ format:
 ## {height=90%}
 ```{python}
 #| content: valuebox
-#| title: "lovendringer uføretrygd"
+#| title: "IPT"
 #| color: info
 #| icon: stars
 'Juli er her og det er is på sørvIStorget. Ta med deg en kollega på en ispause.'

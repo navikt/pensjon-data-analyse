@@ -10,12 +10,22 @@ from utils.oracle_to_bigquery import delta_load_oracle_table_to_bigquery, JobCon
 logging.basicConfig(level=logging.INFO)
 
 
-ENVIRONMENT = "prod" if os.getenv("ENVIRONMENT") == "prod" else "dev"
+ENVIRONMENT = os.getenv("ENVIRONMENT", "dev")
 if ENVIRONMENT == "dev":
+    GCP_PROJECT_ID = "spu-data-innsikt-dev-da53"
+    GCP_SECRET_NAME = "pen-q2-pen_dataprodukt"
+    TARGET_PRINCIPAL = "bigquery-airflow-dvh@spu-data-innsikt-dev-da53.iam.gserviceaccount.com"
+elif ENVIRONMENT == "prod":
+    GCP_PROJECT_ID = "spu-data-innsikt-prod-d663"
+    GCP_SECRET_NAME = "pen-prod-lesekopien-pen_dataprodukt"
+    TARGET_PRINCIPAL = "bigquery-airflow-dvh@spu-data-innsikt-prod-d663.iam.gserviceaccount.com"
+
+# Midlertidig mens DVH endrer views de leser fra
+elif ENVIRONMENT == "pensjon_saksbehandling_dev":
     GCP_PROJECT_ID = "pensjon-saksbehandli-dev-cb76"
     GCP_SECRET_NAME = "pen-q2-pen_dataprodukt"
     TARGET_PRINCIPAL = "bigquery-airflow-dvh@pensjon-saksbehandli-dev-cb76.iam.gserviceaccount.com"
-elif ENVIRONMENT == "prod":
+elif ENVIRONMENT == "pensjon_saksbehandling_prod":
     GCP_PROJECT_ID = "pensjon-saksbehandli-prod-1f83"
     GCP_SECRET_NAME = "pen-prod-lesekopien-pen_dataprodukt"
     TARGET_PRINCIPAL = "bigquery-airflow-dvh@pensjon-saksbehandli-prod-1f83.iam.gserviceaccount.com"

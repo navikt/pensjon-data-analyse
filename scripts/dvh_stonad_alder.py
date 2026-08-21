@@ -12,13 +12,13 @@ logging.basicConfig(level=logging.INFO)
 
 ENVIRONMENT = "prod" if os.getenv("ENVIRONMENT") == "prod" else "dev"
 if ENVIRONMENT == "dev":
-    GCP_PROJECT_ID = "pensjon-saksbehandli-dev-cb76"
+    GCP_PROJECT_ID = "spu-data-innsikt-dev-da53"
     GCP_SECRET_NAME = "pen-q2-pen_dataprodukt"
-    TARGET_PRINCIPAL = "bigquery-airflow-dvh@pensjon-saksbehandli-dev-cb76.iam.gserviceaccount.com"
+    TARGET_PRINCIPAL = "bigquery-airflow-dvh@spu-data-innsikt-dev-da53.iam.gserviceaccount.com"
 elif ENVIRONMENT == "prod":
-    GCP_PROJECT_ID = "pensjon-saksbehandli-prod-1f83"
+    GCP_PROJECT_ID = "spu-data-innsikt-prod-d663"
     GCP_SECRET_NAME = "pen-prod-lesekopien-pen_dataprodukt"
-    TARGET_PRINCIPAL = "bigquery-airflow-dvh@pensjon-saksbehandli-prod-1f83.iam.gserviceaccount.com"
+    TARGET_PRINCIPAL = "bigquery-airflow-dvh@spu-data-innsikt-prod-d663.iam.gserviceaccount.com"
 else:
     raise ValueError(f"Ukjent environment: {ENVIRONMENT}")
 DATASET_NAME = "pen_dataprodukt_dataset"

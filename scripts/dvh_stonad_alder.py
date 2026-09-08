@@ -5,7 +5,7 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent / "libs"))
 from utils import pesys_utils, gcp_utils
-from utils.oracle_to_bigquery import delta_load_oracle_table_to_bigquery, JobConfig, load_oracle_table_to_bigquery
+from utils.oracle_to_bigquery import delta_load_oracle_table_to_bigquery, JobConfig
 
 logging.basicConfig(level=logging.INFO)
 

@@ -49,4 +49,21 @@ if __name__ == "__main__":
             job_config=job_config,
         )
         logging.info(f"Ferdig med tabellen {BQ_TABLE}.")
+
+    # "styringsinfo_sak_uforetrygd": "pen_dataprodukt.styringsinfo_sak_uforetrygd"
+    job_config = JobConfig(
+        oracle_table="styringsinfo_sak_uforetrygd",
+        bigquery_table="pen_dataprodukt.styringsinfo_sak_uforetrygd",
+        gcp_project=GCP_PROJECT_ID,
+        bigquery_dataset_name=DATASET_NAME,
+        write_disposition="WRITE_TRUNCATE",
+        bigquery_schema=None,
+    )
+    delta_load_oracle_table_to_bigquery(
+        oracle_client=oracle_client,
+        bigquery_client=client,
+        job_config=job_config,
+    )
+
+    
     logging.info("Fullført overføring av data fra Oracle til BigQuery.")

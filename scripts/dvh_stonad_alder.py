@@ -56,6 +56,8 @@ if __name__ == "__main__":
         bigquery_table="pen_dataprodukt.styringsinfo_sak_uforetrygd",
         gcp_project=GCP_PROJECT_ID,
         bigquery_dataset_name=DATASET_NAME,
+        delta_column_name_oracle="kjoretidspunkt",
+        delta_column_name_bigquery="kjoretidspunkt",
         write_disposition="WRITE_TRUNCATE",
         bigquery_schema=None,
     )

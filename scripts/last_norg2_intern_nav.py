@@ -30,7 +30,7 @@ if __name__ == "__main__":
 
     dataset_name = "raw_api_data"
     table_name = "norg2_intern_nav"
-    project = "pensjon-saksbehandli-prod-1f83"
-    target_principal = "bigquery-airflow-dvh@pensjon-saksbehandli-prod-1f83.iam.gserviceaccount.com"
+    project = "spu-data-innsikt-prod-d663"
+    target_principal = "bigquery-airflow-dvh@spu-data-innsikt-prod-d663.iam.gserviceaccount.com"
     client = gcp_utils.get_bigquery_client(project=project, target_principal=target_principal)
     insert_raw_json(client, raw_json, project, dataset_name, table_name)

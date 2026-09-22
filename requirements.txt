@@ -80,7 +80,7 @@ pandocfilters==1.5.1
 parso==0.8.7
 pexpect==4.9.0
 platformdirs==4.11.12
-plotly==6.9.0
+plotly==7.1.0
 prometheus-client==0.26.0
 prompt-toolkit==3.0.53
 proto-plus==1.28.4
@@ -93,7 +93,7 @@ pyasn1==0.6.4
 pyasn1-modules==0.4.2
 pycparser==3.0
 pydantic==2.13.5
-pydantic-core==2.46.5
+pydantic-core==2.49.0
 pydata-google-auth==1.9.1
 pygments==2.21.0
 python-dateutil==2.9.0.post0

@@ -50,10 +50,10 @@ if __name__ == "__main__":
         )
         logging.info(f"Ferdig med tabellen {BQ_TABLE}.")
 
-    # "styringsinfo_sak_uforetrygd": "pen_dataprodukt.styringsinfo_sak_uforetrygd"
+    # "sak_uforetrygd": "pen_dataprodukt.sak_uforetrygd"
     job_config = JobConfig(
-        oracle_table="pen_dataprodukt.styringsinfo_sak_uforetrygd",
-        bigquery_table="styringscockpit_sak_ufore",
+        oracle_table="pen_dataprodukt.sak_uforetrygd",
+        bigquery_table="sak_uforetrygd",
         gcp_project=GCP_PROJECT_ID,
         bigquery_dataset_name=DATASET_NAME,
         delta_column_name_oracle="kjoretidspunkt",

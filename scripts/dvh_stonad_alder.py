@@ -28,6 +28,10 @@ TABLES = {
     "stonadsstatistikk_alder_vedtak": "pen_dataprodukt.stonadsstatistikk_alder_vedtak",
     "stonadsstatistikk_ufore": "pen_dataprodukt.stonadsstatistikk_ufore",
 }
+TABLES_WRITE_TRUNC = {
+    "sak_uforetrygd": "pen_dataprodukt.sak_uforetrygd",
+    "sakshistorikk_uforetrygd": "pen_dataprodukt.sakshistorikk_uforetrygd",
+}
 
 if __name__ == "__main__":
     client = gcp_utils.get_bigquery_client(project=GCP_PROJECT_ID, target_principal=TARGET_PRINCIPAL)
@@ -50,22 +54,23 @@ if __name__ == "__main__":
         )
         logging.info(f"Ferdig med tabellen {BQ_TABLE}.")
 
+    for BQ_TABLE, ORACLE_TABLE in TABLES_WRITE_TRUNC.items():
     # "sak_uforetrygd": "pen_dataprodukt.sak_uforetrygd"
-    job_config = JobConfig(
-        oracle_table="pen_dataprodukt.sak_uforetrygd",
-        bigquery_table="sak_uforetrygd",
-        gcp_project=GCP_PROJECT_ID,
-        bigquery_dataset_name=DATASET_NAME,
-        delta_column_name_oracle="kjoretidspunkt",
-        delta_column_name_bigquery="kjoretidspunkt",
-        write_disposition="WRITE_TRUNCATE",
-        bigquery_schema=None,
-    )
-    delta_load_oracle_table_to_bigquery(
-        oracle_client=oracle_client,
-        bigquery_client=client,
-        job_config=job_config,
-    )
+        job_config = JobConfig(
+            oracle_table=ORACLE_TABLE,
+            bigquery_table=BQ_TABLE,
+            gcp_project=GCP_PROJECT_ID,
+            bigquery_dataset_name=DATASET_NAME,
+            delta_column_name_oracle="kjoretidspunkt",
+            delta_column_name_bigquery="kjoretidspunkt",
+            write_disposition="WRITE_TRUNCATE",
+            bigquery_schema=None,
+        )
+        delta_load_oracle_table_to_bigquery(
+            oracle_client=oracle_client,
+            bigquery_client=client,
+            job_config=job_config,
+        )
 
     
     logging.info("Fullført overføring av data fra Oracle til BigQuery.")

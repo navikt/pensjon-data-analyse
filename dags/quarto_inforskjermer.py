@@ -38,7 +38,7 @@ def quarto_operator_wrapped(
                 "ephemeral-storage": "1400Mi",
             }
         ),
-        python_version="3.11",
+        python_version="3.12",
     )
 
 

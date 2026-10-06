@@ -291,7 +291,7 @@ fig_ufore.show()
 
 
 
-<!-- 
+
 # Alder og AFP
 ## rad 0 med tekst
 Tallene her gjelder for 1. januar 2025, og er til intern bruk.
@@ -343,6 +343,6 @@ fig_alderspensjon.update_layout(title="Alderspensjon og AFP per januar 2025 (int
 
 ```{python}
 fig_alderspensjon.show()
-``` -->
+``` 
 
 <!-- Todo: legge til Ytelsekombinasjoner, show(df_alle_kombinasjoner) -->

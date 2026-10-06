@@ -35,10 +35,10 @@ def quarto_operator_wrapped(
         resources=k8s.V1ResourceRequirements(
             requests={
                 "memory": "256Mi",
-                "ephemeral-storage": "700Mi",
+                "ephemeral-storage": "1400Mi",
             }
         ),
-        python_version="3.12",
+        python_version="3.11",
     )
 
 

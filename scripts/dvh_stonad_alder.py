@@ -63,7 +63,7 @@ if __name__ == "__main__":
             bigquery_dataset_name=DATASET_NAME,
             delta_column_name_oracle="kjoretidspunkt",
             delta_column_name_bigquery="kjoretidspunkt",
-            write_disposition="WRITE_TRUNCATE",
+            write_disposition="WRITE_TRUNCATE_DATA",
             bigquery_schema=None,
         )
         delta_load_oracle_table_to_bigquery(

@@ -49,6 +49,13 @@ with DAG(
         script_path="scripts/eo_oversikt.py",
         # eo_oversikt.sql, eo_oversikt_per_dag.sql, eo_varselbrev_sluttresultat.sql, eo_varselbrev_tidslinje.sql
     )
+    aarlig_omregning = python_operator_wrapped(
+        dag=dag,
+        name="aarlig_omregning",
+        script_path="scripts/aarlig_omregning.py",
+        # aarlig_omregning_manuelt.sql, aarlig_omregning_oppgavetyper.sql
+    )
 
     feilutbetalinger
     etteroppgjoret
+    aarlig_omregning

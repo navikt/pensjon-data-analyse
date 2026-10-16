@@ -98,13 +98,6 @@ with DAG(
         script_path="scripts/behandling/behandlingstid.py",
     )
 
-    aarlig_omregning = python_operator_wrapped(
-        dag=dag,
-        name="aarlig_omregning",
-        script_path="scripts/aarlig_omregning.py",
-    )
-
-
     aldersovergang
     vedtakstyper
     autobrev_inntektsendring
@@ -114,4 +107,3 @@ with DAG(
     manedlig_omregning
     behandling_manuell
     behandling_behandlingstid
-    aarlig_omregning

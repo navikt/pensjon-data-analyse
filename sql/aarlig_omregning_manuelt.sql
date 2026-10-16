@@ -1,5 +1,5 @@
 --- manuell vs automatisk prosessert per ytelse per aar
-select opp.opptjeningsaar + 2                              as aar,
+select opp.opptjeningsaar + 1                              as aar,
        opp.k_sak_t                                         as ytelse,
        count(case when opp.oppgave is not null then 1 end) as manuell,
        count(case when opp.oppgave is null then 1 end)     as auto

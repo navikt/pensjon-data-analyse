@@ -1,5 +1,5 @@
 --- antall oppgavetyper per aar
-select opp.opptjeningsaar + 2 as aar,
+select opp.opptjeningsaar + 1 as aar,
        opp.oppgave        as oppgavetype,
        count(*)           as antall_oppgaver
 from pen.t_opptjeningsendring_aarlig_oppsummering opp

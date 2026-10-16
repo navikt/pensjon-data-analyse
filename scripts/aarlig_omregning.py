@@ -36,8 +36,8 @@ job_config = LoadJobConfig(
 )
 
 # Load DataFrames to BigQuery
-job1 = client.load_table_from_dataframe(df_manuelt, bq_aarlig_omregning_manuelt, job_config=job_config).result()
+job1 = client.load_table_from_dataframe(df_manuelt, bq_aarlig_omregning_manuelt, job_config=job_config)
 job1.result()
 
-job2 = client.load_table_from_dataframe(df_oppgavetyper, bq_aarlig_omregning_oppgavetyper, job_config=job_config).result()
+job2 = client.load_table_from_dataframe(df_oppgavetyper, bq_aarlig_omregning_oppgavetyper, job_config=job_config)
 job2.result()

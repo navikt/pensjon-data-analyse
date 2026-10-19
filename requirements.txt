@@ -15,7 +15,7 @@ cffi==2.1.1
 charset-normalizer==3.5.2
 comm==0.2.3
 cryptography==50.0.2
-db-dtypes==1.7.2
+db-dtypes==1.8.0
 debugpy==1.8.22
 defusedxml==0.7.1
 executing==2.3.0
@@ -24,8 +24,8 @@ fqdn==1.6.0
 google-api-core==2.42.0
 google-auth==2.62.0
 google-auth-oauthlib==1.5.0
-google-cloud-bigquery==3.46.1
-google-cloud-bigquery-storage==2.42.0
+google-cloud-bigquery==3.46.2
+google-cloud-bigquery-storage==2.43.0
 google-cloud-core==2.8.0
 google-cloud-secret-manager==2.31.0
 google-crc32c==1.9.0
@@ -79,7 +79,7 @@ pandas-gbq==0.35.2
 pandocfilters==1.5.1
 parso==0.8.7
 pexpect==4.9.0
-platformdirs==4.13.0
+platformdirs==4.13.3
 plotly==7.1.0
 prometheus-client==0.26.0
 prompt-toolkit==3.0.53

@@ -28,8 +28,8 @@ lint:
 format:
     @printf "Formaterer Python-kode med Ruff\n"
     @uv run ruff format .
-    @printf "Formaterer SQL-kode med sqlfluff\n"
-    @uv run sqlfluff fix --check
+    #@printf "Formaterer SQL-kode med sqlfluff\n"
+    #@uv run sqlfluff fix --check
 
 # Generer requirements.txt
 requirements:

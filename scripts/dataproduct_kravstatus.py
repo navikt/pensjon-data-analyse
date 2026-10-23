@@ -1,12 +1,12 @@
 import logging
-from datetime import datetime
-from google.cloud.bigquery import LoadJobConfig, SchemaField, enums
-
 import sys
+from datetime import datetime
 from pathlib import Path
 
+from google.cloud.bigquery import LoadJobConfig, SchemaField, enums
+
 sys.path.append(str(Path(__file__).parent.parent / "libs"))
-from utils import pesys_utils, gcp_utils
+from utils import gcp_utils, pesys_utils
 
 # OBS! Dette kjøres som en append i BQ, så ved dobbeltkjøring vil det bli duplikater
 # Det betyr også at endring på tabellen vil fjerne historikk

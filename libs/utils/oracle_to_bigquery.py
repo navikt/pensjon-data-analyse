@@ -1,11 +1,11 @@
 import logging
 import time
-from pydantic import BaseModel
 
 import pandas as pd
-from google.cloud.bigquery import Client, Dataset, enums, LoadJobConfig
+from google.cloud.bigquery import Client, Dataset, LoadJobConfig, enums
 from google.cloud.exceptions import NotFound
 from oracledb import Connection
+from pydantic import BaseModel
 
 from utils import pesys_utils
 from utils.schemas import DefaultSchemas

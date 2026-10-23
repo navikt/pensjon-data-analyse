@@ -1,11 +1,11 @@
+import json
 from typing import Optional
 
-from airflow.models import Variable
 from airflow import DAG
-
+from airflow.models import Variable
 from dataverk_airflow import python_operator
+
 from images import get_image_name
-import json
 
 DBT_IMAGE = get_image_name("dbt")
 

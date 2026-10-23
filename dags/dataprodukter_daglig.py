@@ -1,13 +1,15 @@
-from airflow import DAG
 from datetime import datetime
-from pendulum import timezone
-from kubernetes import client as k8s
+
+from airflow import DAG
 from dataverk_airflow import python_operator
+from kubernetes import client as k8s
+from pendulum import timezone
 
 # Bør vudere om de tre dataproduktene Vebjørn lagde kan saneres.
 # Først kartlegg om de er i bruk, feks i Metabase. Det gjelder:
 # - laaste_vedtak
 # - kravstatus
+
 
 # DAG for daglig oppdaterte dataprodukter
 def python_operator_wrapped(

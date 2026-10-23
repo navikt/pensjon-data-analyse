@@ -1,11 +1,12 @@
 import sys
 from pathlib import Path
+
 from google.cloud.bigquery import LoadJobConfig
 
 from scripts.behandling.manuell.underkategori_mapper import map_underkategori_kode
 
 sys.path.append(str(Path(__file__).parent.parent.parent.parent / "libs"))
-from utils import pesys_utils, gcp_utils
+from utils import gcp_utils, pesys_utils
 
 # OBS! Dette kjøres som en append i BQ, så ved dobbeltkjøring vil det bli duplikater
 PROJECT = "pensjon-saksbehandli-prod-1f83"
@@ -23,8 +24,7 @@ con.close()
 df_antall_oppgaver_mapped = map_underkategori_kode(df_antall_oppgaver)
 
 client = gcp_utils.get_bigquery_client(
-    project=PROJECT,
-    target_principal="bq-airflow@wendelboe-prod-801c.iam.gserviceaccount.com"
+    project=PROJECT, target_principal="bq-airflow@wendelboe-prod-801c.iam.gserviceaccount.com"
 )
 job_config = LoadJobConfig(
     write_disposition="WRITE_APPEND",

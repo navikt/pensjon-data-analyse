@@ -1,4 +1,5 @@
 import pytest
+
 from .get_image import get_image_name
 
 

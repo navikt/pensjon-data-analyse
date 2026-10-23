@@ -1,8 +1,9 @@
+from datetime import datetime
+
 import pendulum
 from airflow import DAG
-from datetime import datetime
-from operators.dbt_operator import dbt_operator
 
+from operators.dbt_operator import dbt_operator
 
 with DAG(
     dag_id="dbt_docs",

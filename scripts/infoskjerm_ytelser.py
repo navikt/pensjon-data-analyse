@@ -1,12 +1,11 @@
 import logging
-from google.cloud.bigquery import LoadJobConfig
-
 import sys
 from pathlib import Path
 
-sys.path.append(str(Path(__file__).parent.parent / "libs"))
-from utils import pesys_utils, gcp_utils
+from google.cloud.bigquery import LoadJobConfig
 
+sys.path.append(str(Path(__file__).parent.parent / "libs"))
+from utils import gcp_utils, pesys_utils
 
 bq_ytelser_antall_kombinasjoner = "wendelboe-prod-801c.infoskjerm.ytelser_antall_kombinasjoner"
 bq_ytelser_per_alderskull = "wendelboe-prod-801c.infoskjerm.ytelser_per_alderskull"

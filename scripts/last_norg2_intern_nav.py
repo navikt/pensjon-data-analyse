@@ -1,13 +1,13 @@
 # API https://norg2.intern.nav.no/norg2/api/v1/enhet
 
-from pathlib import Path
 import sys
+from pathlib import Path
 
 import requests
-sys.path.append(str(Path(__file__).parent.parent / "libs"))
-from utils import gcp_utils
 
+sys.path.append(str(Path(__file__).parent.parent / "libs"))
 from google.cloud import bigquery
+from utils import gcp_utils
 
 
 def fetch_raw_json() -> str:

@@ -1,9 +1,10 @@
 import logging
+from datetime import datetime
 
 import pendulum
 from airflow import DAG
-from datetime import datetime
 from dataverk_airflow import python_operator
+
 from operators.dbt_operator import dbt_operator
 
 
@@ -14,13 +15,13 @@ def prev_month_yyyymm():
     last_day_of_previous_month = first_day_of_current_month - pendulum.duration(days=1)
     return last_day_of_previous_month.strftime("%Y%m")
 
+
 with DAG(
     dag_id="dbt_stonad",
     start_date=datetime(2025, 6, 30, tzinfo=pendulum.timezone("Europe/Oslo")),
     schedule_interval="1 0 * * *",  # 00:01 every day - kjører som inkrementell på periode-feltet
     catchup=False,
 ) as dag:
-    
     periode = prev_month_yyyymm()
 
     dbt_stonad_q2 = dbt_operator(

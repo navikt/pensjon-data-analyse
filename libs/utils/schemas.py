@@ -1,5 +1,7 @@
-from google.cloud.bigquery import SchemaField, enums
 from enum import Enum
+
+from google.cloud.bigquery import SchemaField, enums
+
 
 class DefaultSchemas(Enum):
     BEHANDLINGSSTATISTIKK_MELDINGER: list[SchemaField] = [

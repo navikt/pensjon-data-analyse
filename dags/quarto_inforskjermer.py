@@ -1,9 +1,10 @@
-from airflow import DAG
 from datetime import datetime
-from pendulum import timezone
+
+from airflow import DAG
 from airflow.models import Variable
-from kubernetes import client as k8s
 from dataverk_airflow import python_operator, quarto_operator
+from kubernetes import client as k8s
+from pendulum import timezone
 
 
 def quarto_operator_wrapped(

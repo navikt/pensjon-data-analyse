@@ -1,10 +1,11 @@
 import logging
 import sys
-from google.cloud.bigquery import LoadJobConfig
 from pathlib import Path
 
+from google.cloud.bigquery import LoadJobConfig
+
 sys.path.append(str(Path(__file__).parent.parent / "libs"))
-from utils import pesys_utils, gcp_utils
+from utils import gcp_utils, pesys_utils
 
 logging.basicConfig(level=logging.INFO)
 
@@ -17,9 +18,7 @@ tuning = 10000
 pesys_utils.set_db_secrets(secret_name="pen-prod-lesekopien-pen_dataprodukt")
 con = pesys_utils.connect_to_oracle()
 
-df_manuelt = pesys_utils.pandas_from_sql(
-    "../sql/aarlig_omregning_manuelt.sql", con=con, tuning=tuning, lowercase=True
-)
+df_manuelt = pesys_utils.pandas_from_sql("../sql/aarlig_omregning_manuelt.sql", con=con, tuning=tuning, lowercase=True)
 df_oppgavetyper = pesys_utils.pandas_from_sql(
     "../sql/aarlig_omregning_oppgavetyper.sql", con=con, tuning=tuning, lowercase=True
 )
@@ -27,8 +26,7 @@ con.close()
 
 # bigquery
 client = gcp_utils.get_bigquery_client(
-    project="pensjon-saksbehandli-prod-1f83",
-    target_principal="bq-airflow@wendelboe-prod-801c.iam.gserviceaccount.com"
+    project="pensjon-saksbehandli-prod-1f83", target_principal="bq-airflow@wendelboe-prod-801c.iam.gserviceaccount.com"
 )
 job_config = LoadJobConfig(
     write_disposition="WRITE_TRUNCATE",

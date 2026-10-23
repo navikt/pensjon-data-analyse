@@ -1,9 +1,12 @@
-import sys
 import logging
+import sys
 from pathlib import Path
+
 from google.cloud.bigquery import LoadJobConfig
+
 sys.path.append(str(Path(__file__).parent.parent / "libs"))
-from utils import pesys_utils, gcp_utils
+from utils import gcp_utils, pesys_utils
+
 logging.basicConfig(level=logging.INFO)
 
 bq_target = "pensjon-saksbehandli-prod-1f83.pen_dataprodukt_dataset.dataprodukt_ufore_diagnosekoder"
@@ -11,17 +14,16 @@ bq_target = "pensjon-saksbehandli-prod-1f83.pen_dataprodukt_dataset.dataprodukt_
 pesys_utils.set_db_secrets(secret_name="pen-prod-lesekopien-pen_dataprodukt")
 con = pesys_utils.connect_to_oracle()
 df_diagnosekoder = pesys_utils.df_from_sql(
-    sql = "select * from pen_dataprodukt.dataprodukt_ufore_diagnosekoder",
+    sql="select * from pen_dataprodukt.dataprodukt_ufore_diagnosekoder",
     connection=con,
     arraysize=10000,
 )
 con.close()
 
 client = gcp_utils.get_bigquery_client(
-    project="pensjon-saksbehandli-prod-1f83", target_principal="bigquery-airflow-dvh@pensjon-saksbehandli-prod-1f83.iam.gserviceaccount.com"
+    project="pensjon-saksbehandli-prod-1f83",
+    target_principal="bigquery-airflow-dvh@pensjon-saksbehandli-prod-1f83.iam.gserviceaccount.com",
 )
-job_config = LoadJobConfig(
-    write_disposition="WRITE_TRUNCATE"
-)
+job_config = LoadJobConfig(write_disposition="WRITE_TRUNCATE")
 run_job = client.load_table_from_dataframe(df_diagnosekoder, bq_target, job_config=job_config)
 run_job.result()

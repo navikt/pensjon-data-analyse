@@ -1,15 +1,14 @@
 import logging
-import pandas as pd
-from time import time
-from datetime import datetime
-from google.cloud.bigquery import Client, LoadJobConfig
-
 import sys
+from datetime import datetime
 from pathlib import Path
+from time import time
+
+import pandas as pd
+from google.cloud.bigquery import Client, LoadJobConfig
 
 sys.path.append(str(Path(__file__).parent.parent.parent / "libs"))
 from utils import pesys_utils
-
 
 logging.basicConfig(level=logging.INFO)
 pesys_utils.set_db_secrets(secret_name="pen-prod-lesekopien-pen_airflow")

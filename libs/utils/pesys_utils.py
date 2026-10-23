@@ -1,9 +1,10 @@
-import os
 import json
 import logging
+import os
+from time import time
+
 import oracledb
 import pandas as pd
-from time import time
 from google.cloud import secretmanager
 
 

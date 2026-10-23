@@ -1,11 +1,11 @@
+import logging
 import os
 import sys
-import logging
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent / "libs"))
-from utils import pesys_utils, gcp_utils
-from utils.oracle_to_bigquery import delta_load_oracle_table_to_bigquery, JobConfig
+from utils import gcp_utils, pesys_utils
+from utils.oracle_to_bigquery import JobConfig, delta_load_oracle_table_to_bigquery
 
 logging.basicConfig(level=logging.INFO)
 
@@ -55,7 +55,7 @@ if __name__ == "__main__":
         logging.info(f"Ferdig med tabellen {BQ_TABLE}.")
 
     for BQ_TABLE, ORACLE_TABLE in TABLES_WRITE_TRUNC.items():
-    # "sak_uforetrygd": "pen_dataprodukt.sak_uforetrygd"
+        # "sak_uforetrygd": "pen_dataprodukt.sak_uforetrygd"
         job_config = JobConfig(
             oracle_table=ORACLE_TABLE,
             bigquery_table=BQ_TABLE,
@@ -72,5 +72,4 @@ if __name__ == "__main__":
             job_config=job_config,
         )
 
-    
     logging.info("Fullført overføring av data fra Oracle til BigQuery.")

@@ -1,8 +1,9 @@
-import requests
 import json
-from pathlib import Path
-import pandas as pd
 from io import StringIO
+from pathlib import Path
+
+import pandas as pd
+import requests
 
 
 def get_df_befolkning(year: int = 2025):

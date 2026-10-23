@@ -1,5 +1,5 @@
+from google.auth import default, impersonated_credentials
 from google.cloud.bigquery import Client
-from google.auth import impersonated_credentials, default
 
 
 def get_bigquery_client(project: str, target_principal: str = None):

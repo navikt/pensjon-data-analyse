@@ -1,9 +1,10 @@
+from datetime import datetime
+
 import pendulum
 from airflow import DAG
-from datetime import datetime
 from dataverk_airflow import python_operator
-from operators.dbt_operator import dbt_operator
 
+from operators.dbt_operator import dbt_operator
 
 with DAG(
     dag_id="dataprodukt_behandlingsstatistikk",
@@ -32,7 +33,7 @@ with DAG(
         name="sak_prod",
         startup_timeout_seconds=60 * 10,
         retries=2,
-        retry_delay=1 * 60 ,
+        retry_delay=1 * 60,
         repo="navikt/pensjon-pen-dataprodukt",
         script_path="dbt_run.py",
         dbt_command="build -s +tag:sbs",
@@ -114,4 +115,3 @@ with DAG(
 
     dbt_sak_q2 >> datalast_q2 >> datalast_q2_pensjon_saksbehandling
     dbt_sak_prod >> datalast_prod >> datalast_prod_pensjon_saksbehandling
-    

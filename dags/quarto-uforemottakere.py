@@ -1,8 +1,9 @@
-from airflow import DAG
 from datetime import datetime
-from pendulum import timezone
+
+from airflow import DAG
 from airflow.models import Variable
 from dataverk_airflow import quarto_operator
+from pendulum import timezone
 
 with DAG(
     dag_id="quarto-uforemottakere",

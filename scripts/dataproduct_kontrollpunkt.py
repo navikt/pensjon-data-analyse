@@ -1,11 +1,12 @@
 import logging
-from time import time
-from google.cloud.bigquery import LoadJobConfig
 import sys
 from pathlib import Path
+from time import time
+
+from google.cloud.bigquery import LoadJobConfig
 
 sys.path.append(str(Path(__file__).parent.parent / "libs"))
-from utils import pesys_utils, gcp_utils
+from utils import gcp_utils, pesys_utils
 
 table_id = "pensjon-saksbehandli-prod-1f83.kontrollpunkt.kontrollpunkt_daglig"
 # Metabase, se https://metabase.ansatt.nav.no/reference/databases/353/tables/3320/questions

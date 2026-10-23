@@ -1,8 +1,8 @@
-from airflow import DAG
 from datetime import datetime
-from pendulum import timezone
-from dataverk_airflow import python_operator
 
+from airflow import DAG
+from dataverk_airflow import python_operator
+from pendulum import timezone
 
 with DAG(
     dag_id="teamkatalogen_historikk_dbt",

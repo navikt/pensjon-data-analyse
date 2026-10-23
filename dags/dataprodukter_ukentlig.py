@@ -1,8 +1,10 @@
-from airflow import DAG
 from datetime import datetime
-from pendulum import timezone
-from kubernetes import client as k8s
+
+from airflow import DAG
 from dataverk_airflow import python_operator
+from kubernetes import client as k8s
+from pendulum import timezone
+
 
 # DAG for ukentlig oppdaterte dataprodukter
 def python_operator_wrapped(
@@ -10,7 +12,7 @@ def python_operator_wrapped(
     dag: DAG,
     name: str,
     script_path: str,
-    resources: k8s.V1ResourceRequirements = None, # type: ignore
+    resources: k8s.V1ResourceRequirements = None,  # type: ignore
 ):
     """Wrapper dataverk_airflow.python_operator with default arguments."""
     return python_operator(

@@ -1,11 +1,11 @@
+import logging
 import os
 import sys
-import logging
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent / "libs"))
-from utils import pesys_utils, gcp_utils
-from utils.oracle_to_bigquery import delta_load_oracle_table_to_bigquery, JobConfig
+from utils import gcp_utils, pesys_utils
+from utils.oracle_to_bigquery import JobConfig, delta_load_oracle_table_to_bigquery
 
 logging.basicConfig(level=logging.INFO)
 

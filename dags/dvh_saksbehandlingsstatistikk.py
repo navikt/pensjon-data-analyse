@@ -21,7 +21,7 @@ with DAG(
         requirements_path="requirements.txt",
         slack_channel="#pensak-airflow-alerts",
         use_uv_pip_install=True,
-        python_version="3.13",
+        python_version="3.12",
         extra_envs={"ENVIRONMENT": "prod"},
         allowlist=[
             "secretmanager.googleapis.com",

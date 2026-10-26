@@ -8,7 +8,7 @@ import pandas as pd
 from google.cloud import secretmanager
 
 
-def set_db_secrets(secret_name: str, project_id: str="230094999443"):
+def set_db_secrets(secret_name: str, project_id: str = "230094999443"):
     """Setter secrets fra GSM som miljøvariabler, for å kunne kjøre connect_to_oracle().
     Hvis DB_USER og DB_PASSWORD er satt allerede for lokal kjøring, så endres de ikke.
     Dette skal være i hemmelighetene, med eksempelverdier for Q2:

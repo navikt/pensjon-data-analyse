@@ -21,7 +21,7 @@ else:
 
 # grants for dev-data, se: https://console.cloud.google.com/bigquery?sq=230094999443:8ec4c0a3a32a4bd7b8862be1274fb077
 # grants for prod-data går via https://github.com/navikt/wendelboe-bigquery-terraform/blob/main/prod/pen-dataprodukt-dataset.tf
-DATASET_NAME = "dvh-sky-spu"
+DATASET_NAME = "dvh_sky_spu"
 TABLES = {
     "kodeverk": "sky_spu.kodeverk",
 }

@@ -23,7 +23,7 @@ else:
 # grants for prod-data går via https://github.com/navikt/wendelboe-bigquery-terraform/blob/main/prod/pen-dataprodukt-dataset.tf
 DATASET_NAME = "dvh_sky_spu"
 TABLES = {
-    "kodeverk": "sky_spu.kodeverk",
+    "SBX_SAK.FAK_RAPPORT_TORG_MND_SPU": "sky_spu.FAK_RAPPORT_TORG_MND_SPU",
 }
 
 if __name__ == "__main__":
@@ -36,8 +36,9 @@ if __name__ == "__main__":
             bigquery_table=BQ_TABLE,
             gcp_project=GCP_PROJECT_ID,
             bigquery_dataset_name=DATASET_NAME,
-            delta_column_name_oracle="teknisk_tid",
-            delta_column_name_bigquery="teknisk_tid",
+            delta_column_name_oracle="innreg_tid", # brukes ikke når det er write_truncate, men må ha en verdi
+            delta_column_name_bigquery="innreg_tid", # brukes ikke når det er write_truncate, men må ha en verdi
+            write_disposition="WRITE_TRUNCATE", # endre til WRITE_TRUNCATE_DATA med eksplisitt skjema
             bigquery_schema=None,
         )
         delta_load_oracle_table_to_bigquery(

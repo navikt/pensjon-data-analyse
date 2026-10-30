@@ -10,7 +10,7 @@ from dataverk_airflow import python_operator
 with DAG(
     dag_id="dvh_saksbehandlingsstatistikk",
     start_date=datetime(2026, 10, 25, tzinfo=pendulum.timezone("Europe/Oslo")),
-    schedule_interval="0 6 * * *",  # 06:00 every day
+    schedule_interval=None,  # Kjøres kun manuelt
     catchup=False,
 ) as dag:
     datalast_dvh_sbs_prod = python_operator(
@@ -26,7 +26,7 @@ with DAG(
         allowlist=[
             "secretmanager.googleapis.com",
             "bigquery.googleapis.com",
-            "dmv03-scan.adeo.no:1521",  # prod lesekopien
+            "dmv03-scan.adeo.no:1521",  # DVH PROD
         ],
     )
     datalast_dvh_sbs_prod

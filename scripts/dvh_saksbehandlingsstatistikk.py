@@ -23,7 +23,7 @@ else:
 # grants for prod-data går via https://github.com/navikt/wendelboe-bigquery-terraform/blob/main/prod/pen-dataprodukt-dataset.tf
 DATASET_NAME = "dvh_sky_spu"
 TABLES = {
-    "SBX_SAK.FAK_RAPPORT_TORG_MND_SPU": "sky_spu.FAK_RAPPORT_TORG_MND_SPU",
+    "sbx_sak__fak_rapport_torg_mnd_spu": "SBX_SAK.FAK_RAPPORT_TORG_MND_SPU",
 }
 
 if __name__ == "__main__":

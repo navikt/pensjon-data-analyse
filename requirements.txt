@@ -96,7 +96,7 @@ pydantic==2.14.3
 pydantic-core==2.50.4
 pydata-google-auth==1.9.1
 pygments==2.21.0
-python-dateutil==2.9.0.post0
+python-dateutil==4.0.0
 python-json-logger==4.2.0
 pyyaml==6.0.3
 pyzmq==27.3.0

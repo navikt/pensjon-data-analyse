@@ -79,3 +79,34 @@ def delta_load_oracle_table_to_bigquery(oracle_client: Connection, bigquery_clie
     end = time.time()
 
     print(f"{len(df_bq)} rader ble skrevet til bigquery etter {end - start} sekunder.")
+
+def load_oracle_table_to_bigquery(oracle_client: Connection, bigquery_client: Client, job_config: JobConfig):
+    """Laster data fra en Oracle-tabell til en BigQuery-tabell basert på endringer i en delta-kolonne."""
+
+    dataset = job_config.bigquery_dataset
+    try:
+        bigquery_client.get_dataset(dataset)
+    except NotFound:
+        dataset = bigquery_client.create_dataset(dataset)
+        logging.info(f"Datasettet {job_config.bigquery_dataset} er opprettet.")
+
+    if job_config.bigquery_schema:
+        columns = ", ".join(field.name for field in job_config.bigquery_schema)
+    else:
+        columns = "*"
+
+    sql_pen = f"""select {columns} from {job_config.oracle_table} """
+
+    df_bq = pesys_utils.df_from_sql(sql_pen, oracle_client, arraysize=10_000)
+    bigquery_job_config = LoadJobConfig(
+        write_disposition=job_config.write_disposition,
+        create_disposition=job_config.create_disposition,
+        schema=job_config.bigquery_schema,
+    )
+
+    start = time.time()
+    job = bigquery_client.load_table_from_dataframe(df_bq, job_config.bigquery_table_id, job_config=bigquery_job_config)
+    job.result()
+    end = time.time()
+
+    print(f"{len(df_bq)} rader ble skrevet til bigquery etter {end - start} sekunder.")

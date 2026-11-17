@@ -5,7 +5,7 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent / "libs"))
 from utils import gcp_utils, pesys_utils
-from utils.oracle_to_bigquery import JobConfig, delta_load_oracle_table_to_bigquery
+from utils.oracle_to_bigquery import JobConfig, load_oracle_table_to_bigquery
 
 logging.basicConfig(level=logging.INFO)
 
@@ -23,7 +23,12 @@ else:
 # grants for prod-data går via https://github.com/navikt/wendelboe-bigquery-terraform/blob/main/prod/pen-dataprodukt-dataset.tf
 DATASET_NAME = "dvh_sky_spu"
 TABLES = {
-    "sbx_sak__fak_rapport_torg_mnd_spu": "SBX_SAK.FAK_RAPPORT_TORG_MND_SPU",
+    "dvh_sbs__behandling_aarsak_dim_mv": "DVH_SBS.BEHANDLING_AARSAK_DIM_MV",
+    "dvh_sbs__behandling_metode_dim_mv": "DVH_SBS.BEHANDLING_METODE_DIM_MV",
+    "dvh_sbs__behandling_resultat_dim_mv": "DVH_SBS.BEHANDLING_RESULTAT_DIM_MV",
+    "dvh_sbs__behandling_status_dim_mv": "DVH_SBS.BEHANDLING_STATUS_DIM_MV",
+    "dvh_sbs__behandling_type_dim_mv": "DVH_SBS.BEHANDLING_TYPE_DIM_MV",
+    "dvh_sbs__sak_ytelse_dim_mv": "DVH_SBS.SAK_YTELSE_DIM_MV"
 }
 
 if __name__ == "__main__":
@@ -36,12 +41,10 @@ if __name__ == "__main__":
             bigquery_table=BQ_TABLE,
             gcp_project=GCP_PROJECT_ID,
             bigquery_dataset_name=DATASET_NAME,
-            delta_column_name_oracle="innreg_tid", # brukes ikke når det er write_truncate, men må ha en verdi
-            delta_column_name_bigquery="innreg_tid", # brukes ikke når det er write_truncate, men må ha en verdi
             write_disposition="WRITE_TRUNCATE", # endre til WRITE_TRUNCATE_DATA med eksplisitt skjema
             bigquery_schema=None,
         )
-        delta_load_oracle_table_to_bigquery(
+        load_oracle_table_to_bigquery(
             oracle_client=oracle_client,
             bigquery_client=client,
             job_config=job_config,

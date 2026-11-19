@@ -15,7 +15,7 @@ ENVIRONMENT = os.getenv("ENVIRONMENT", "dev")
 if ENVIRONMENT == "prod":
     GCP_PROJECT_ID = "spu-data-innsikt-prod-d663"
     GCP_PROJECT_ID_NUMERIC = "927737712588"
-    GCP_SECRET_NAME = "dvh-prod-sky-spu"
+    GCP_SECRET_NAME = "dvh-prod-sky-spu-srv"
     TARGET_PRINCIPAL = "bigquery-airflow-dvh@spu-data-innsikt-prod-d663.iam.gserviceaccount.com"
 else:
     raise ValueError(f"Ukjent environment: {ENVIRONMENT}")

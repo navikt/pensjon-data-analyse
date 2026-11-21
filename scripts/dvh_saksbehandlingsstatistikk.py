@@ -36,7 +36,7 @@ if __name__ == "__main__":
         df_sbh = pesys_utils.pandas_from_sql(
             sqlfile=oracle_sql_path,
             con=oracle_client,
-            tuning=200_000,
+            tuning=10_000,
             lowercase=True,
         )
     job_config = LoadJobConfig(schema=schema, write_disposition="WRITE_TRUNCATE")

@@ -70,7 +70,7 @@ class DefaultSchemas(Enum):
         SchemaField("funksjonell_periode_fom", enums.SqlTypeNames.DATETIME),
         SchemaField("funksjonell_periode_tom", enums.SqlTypeNames.DATETIME),
         SchemaField("sak_utland", enums.SqlTypeNames.STRING),
-        SchemaField("k6_flagg", enums.SqlTypeNames.STRING),
+        # SchemaField("k6_flagg", enums.SqlTypeNames.STRING),
         SchemaField("lastet_tid", enums.SqlTypeNames.DATETIME),
         SchemaField("funk_tid_dato", enums.SqlTypeNames.DATETIME),
         SchemaField("funk_tid_sekund", enums.SqlTypeNames.DATETIME),

@@ -70,7 +70,7 @@ def pandas_from_sql(sqlfile, con, tuning=None, lowercase=False):
     with con.cursor() as cursor:
         start = time()
         if tuning:
-            cursor.prefetchrows = tuning
+            # cursor.prefetchrows = tuning denne vil man vanligvis ikke endre
             cursor.arraysize = tuning
         with open(sqlfile) as sql:
             cursor.execute(sql.read())

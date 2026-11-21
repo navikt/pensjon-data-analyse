@@ -1,0 +1,33 @@
+import logging
+from datetime import datetime
+
+import pendulum
+from airflow import DAG
+from dataverk_airflow import python_operator
+
+
+
+with DAG(
+    dag_id="dvh_saksbehandlingsstatistikk_dimensjoner",
+    start_date=datetime(2026, 10, 25, tzinfo=pendulum.timezone("Europe/Oslo")),
+    schedule_interval=None,  # Kjøres kun manuelt
+    catchup=False,
+) as dag:
+    datalast_dvh_sbs_dim = python_operator(
+        dag=dag,
+        name="datalast_dvh_sbs_dim",
+        script_path="scripts/dvh_saksbehandlingsstatistikk_dimensjoner.py",
+        repo="navikt/pensjon-data-analyse",
+        requirements_path="requirements.txt",
+        slack_channel="#pensak-airflow-alerts",
+        use_uv_pip_install=True,
+        python_version="3.12",
+        extra_envs={"ENVIRONMENT": "prod"},
+        allowlist=[
+            "secretmanager.googleapis.com",
+            "bigquery.googleapis.com",
+            "dmv03-scan.adeo.no:1521",  # DVH PROD
+        ],
+    )
+    datalast_dvh_sbs_dim
+

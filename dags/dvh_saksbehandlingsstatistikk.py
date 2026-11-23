@@ -1,9 +1,11 @@
+from http import client
 import logging
 from datetime import datetime
 
 import pendulum
 from airflow import DAG
 from dataverk_airflow import python_operator
+from kubernetes import client
 
 
 
@@ -28,6 +30,10 @@ with DAG(
             "bigquery.googleapis.com",
             "dmv03-scan.adeo.no:1521",  # DVH PROD
         ],
+        resources=client.V1ResourceRequirements(
+            requests={"memory": "16G"},
+            limits={"memory": "16G"}
+        ),
     )
     datalast_dvh_sbs_prod
 

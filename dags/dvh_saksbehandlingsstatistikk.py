@@ -32,8 +32,8 @@ with DAG(
             "dmv03-scan.adeo.no:1521",  # DVH PROD
         ],
         resources=client.V1ResourceRequirements(
-            requests={"memory": "16G"},
-            limits={"memory": "16G"}
+            requests={"memory": "32G"},
+            limits={"memory": "32G"}
         ),
     )
     datalast_dvh_sbs_prod

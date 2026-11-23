@@ -57,3 +57,4 @@ utbetalt_tid,
 forventet_oppstart_tid,
 cast(begge_flagg as varchar(1)) as begge_flagg
 from sbx_sak.spu_analyse
+where funk_tid_til = '01.01.9999 00.00.00,000000000'
